@@ -1,0 +1,17 @@
+{
+    "@context": "\/api\/3\/contexts\/SystemViewTemplate",
+    "@type": "SystemViewTemplate",
+    "type": "form",
+    "config": {
+        "rows": []
+    },
+    "module": "v_m_instances",
+    "filters": [],
+    "isDefault": true,
+    "visible": true,
+    "viewOptions": "form",
+    "name": "Base Template",
+    "system": false,
+    "uuid": "modules-v_m_instances-form",
+    "newUuid": "d1881da6-8e5e-47e9-8fbd-8988b08c8439"
+}

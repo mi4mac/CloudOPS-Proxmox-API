@@ -1,0 +1,11 @@
+{
+  "@context": "/api/3/contexts/WorkflowCollection",
+  "@type": "WorkflowCollection",
+  "name": "Proxmox API Samples",
+  "description": "Sample playbooks for the API Connector Proxmox – test connection, get next VMID, clone VM.",
+  "visible": true,
+  "image": null,
+  "uuid": "b100c200-d300-e400-f500-617181920212",
+  "deletedAt": null,
+  "recordTags": []
+}

@@ -1,0 +1,17 @@
+{
+    "@context": "\/api\/3\/contexts\/SystemViewTemplate",
+    "@type": "SystemViewTemplate",
+    "type": "form",
+    "config": {
+        "rows": []
+    },
+    "module": "network_interfaces",
+    "filters": [],
+    "isDefault": true,
+    "visible": true,
+    "viewOptions": "form",
+    "name": "Base Template",
+    "system": false,
+    "uuid": "modules-network_interfaces-form",
+    "newUuid": "bcc34931-62d5-4255-8bd7-3b81aef3b403"
+}

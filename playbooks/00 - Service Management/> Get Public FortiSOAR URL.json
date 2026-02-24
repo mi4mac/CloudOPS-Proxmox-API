@@ -1,0 +1,254 @@
+{
+    "@context": "\/api\/3\/contexts\/Workflow",
+    "@type": "Workflow",
+    "triggerLimit": null,
+    "name": "> Get Public FortiSOAR URL",
+    "aliasName": null,
+    "tag": null,
+    "description": "Set Server_FQHN global variable",
+    "isActive": true,
+    "debug": true,
+    "singleRecordExecution": false,
+    "remoteExecutableFlag": false,
+    "parameters": [],
+    "synchronous": false,
+    "collection": "\/api\/3\/workflow_collections\/f1c80355-697f-4a71-971b-0988c871491d",
+    "versions": [],
+    "triggerStep": "\/api\/3\/workflow_steps\/07963cc9-ab75-4673-8029-975a253d9ebb",
+    "steps": [
+        {
+            "@type": "WorkflowStep",
+            "name": "Configuration",
+            "description": null,
+            "arguments": {
+                "uri": "{{vars.request.uri}}",
+                "server_fqdn": "{{globalVars.Server_fqhn}}"
+            },
+            "status": null,
+            "top": "160",
+            "left": "120",
+            "stepType": "\/api\/3\/workflow_step_types\/04d0cf46-b6a8-42c4-8683-60a7eaa69e8f",
+            "group": null,
+            "uuid": "1a48ec57-6ca3-4a1d-9bcb-dbc4e0d7b079"
+        },
+        {
+            "@type": "WorkflowStep",
+            "name": "FQDN or IP Address",
+            "description": null,
+            "arguments": {
+                "is_ip_address": "{{vars.fqdn|ipaddr}}"
+            },
+            "status": null,
+            "top": "300",
+            "left": "560",
+            "stepType": "\/api\/3\/workflow_step_types\/04d0cf46-b6a8-42c4-8683-60a7eaa69e8f",
+            "group": null,
+            "uuid": "a2c3a38f-3d8d-4169-ae15-f651b0034ce0"
+        },
+        {
+            "@type": "WorkflowStep",
+            "name": "Get Base URl",
+            "description": null,
+            "arguments": {
+                "fqdn": "{{vars.uri|regex_search('(?<=^https:\/\/)([^\/:]+)')}}",
+                "fortisoar_url": "{{vars.uri|regex_search('(?<=^https:\/\/)[a-zA-Z0-9.-]+(?:\\:[0-9]+)?')}}"
+            },
+            "status": null,
+            "top": "300",
+            "left": "120",
+            "stepType": "\/api\/3\/workflow_step_types\/04d0cf46-b6a8-42c4-8683-60a7eaa69e8f",
+            "group": null,
+            "uuid": "c0efd751-2405-4123-88d8-87162596eb27"
+        },
+        {
+            "@type": "WorkflowStep",
+            "name": "Get FortiSOAR SNAT IP",
+            "description": null,
+            "arguments": {
+                "params": {
+                    "url": "https:\/\/ifconfig.me",
+                    "body": "",
+                    "method": "GET",
+                    "params": "",
+                    "verify": true,
+                    "headers": "",
+                    "password": "",
+                    "username": "",
+                    "auth_config": "",
+                    "is_upload_file": ""
+                },
+                "version": "3.7.0",
+                "connector": "cyops_utilities",
+                "operation": "api_call",
+                "operationTitle": "Utils: Make REST API Call",
+                "step_variables": []
+            },
+            "status": null,
+            "top": "580",
+            "left": "560",
+            "stepType": "\/api\/3\/workflow_step_types\/0109f35d-090b-4a2b-bd8a-94cbc3508562",
+            "group": null,
+            "uuid": "3d6abf2f-25f6-4a1a-a941-8ca1c508b8d9"
+        },
+        {
+            "@type": "WorkflowStep",
+            "name": "Resolve FQDN",
+            "description": null,
+            "arguments": {
+                "name": "DNS",
+                "when": "{{not vars.is_ip_address}}",
+                "config": "bf240069-d813-422b-a761-6dd641b3f95d",
+                "params": {
+                    "qtype": "A",
+                    "domain": "{{vars.fqdn}}"
+                },
+                "version": "1.0.0",
+                "connector": "dns",
+                "operation": "lookup_domain",
+                "operationTitle": "Lookup FQDN\/Domain",
+                "pickFromTenant": false,
+                "step_variables": []
+            },
+            "status": null,
+            "top": "440",
+            "left": "560",
+            "stepType": "\/api\/3\/workflow_step_types\/0bfed618-0316-11e7-93ae-92361f002671",
+            "group": null,
+            "uuid": "00e19df8-d5a9-48ca-a06d-3da20dc61d6f"
+        },
+        {
+            "@type": "WorkflowStep",
+            "name": "Start",
+            "description": null,
+            "arguments": {
+                "__triggerLimit": true,
+                "step_variables": {
+                    "input": {
+                        "params": []
+                    }
+                },
+                "triggerOnSource": true,
+                "triggerOnReplicate": false
+            },
+            "status": null,
+            "top": "20",
+            "left": "120",
+            "stepType": "\/api\/3\/workflow_step_types\/b348f017-9a94-471f-87f8-ce88b6a7ad62",
+            "group": null,
+            "uuid": "07963cc9-ab75-4673-8029-975a253d9ebb"
+        },
+        {
+            "@type": "WorkflowStep",
+            "name": "Update FortiSOAR FQDN",
+            "description": null,
+            "arguments": {
+                "params": {
+                    "macro": "Server_fqhn",
+                    "value": "{{vars.fortisoar_url}}"
+                },
+                "version": "3.7.0",
+                "connector": "cyops_utilities",
+                "operation": "updatemacro",
+                "operationTitle": "FSR: Create\/Update Global Variables",
+                "step_variables": []
+            },
+            "status": null,
+            "top": "440",
+            "left": "120",
+            "stepType": "\/api\/3\/workflow_step_types\/0109f35d-090b-4a2b-bd8a-94cbc3508562",
+            "group": null,
+            "uuid": "dd92f18f-c77f-43d7-bb95-56a6bce2432f"
+        }
+    ],
+    "routes": [
+        {
+            "@type": "WorkflowRoute",
+            "name": "Configuration -> Copy of Configuration",
+            "targetStep": "\/api\/3\/workflow_steps\/c0efd751-2405-4123-88d8-87162596eb27",
+            "sourceStep": "\/api\/3\/workflow_steps\/1a48ec57-6ca3-4a1d-9bcb-dbc4e0d7b079",
+            "label": null,
+            "isExecuted": false,
+            "group": null,
+            "uuid": "339beb10-385a-4c23-89a7-2196923c6ffc"
+        },
+        {
+            "@type": "WorkflowRoute",
+            "name": "FQDN or IP Address -> Resolve FQDN",
+            "targetStep": "\/api\/3\/workflow_steps\/00e19df8-d5a9-48ca-a06d-3da20dc61d6f",
+            "sourceStep": "\/api\/3\/workflow_steps\/a2c3a38f-3d8d-4169-ae15-f651b0034ce0",
+            "label": null,
+            "isExecuted": false,
+            "group": null,
+            "uuid": "e9dd0e9f-e118-4313-afc7-251bda8773e5"
+        },
+        {
+            "@type": "WorkflowRoute",
+            "name": "Get Base URl -> FQDN or IP Address",
+            "targetStep": "\/api\/3\/workflow_steps\/a2c3a38f-3d8d-4169-ae15-f651b0034ce0",
+            "sourceStep": "\/api\/3\/workflow_steps\/c0efd751-2405-4123-88d8-87162596eb27",
+            "label": null,
+            "isExecuted": false,
+            "group": null,
+            "uuid": "95aeb3b4-b0d9-4889-80c3-a99dd1f58bfd"
+        },
+        {
+            "@type": "WorkflowRoute",
+            "name": "Get Base URl -> Update FortiSOAR FQDN",
+            "targetStep": "\/api\/3\/workflow_steps\/dd92f18f-c77f-43d7-bb95-56a6bce2432f",
+            "sourceStep": "\/api\/3\/workflow_steps\/c0efd751-2405-4123-88d8-87162596eb27",
+            "label": null,
+            "isExecuted": false,
+            "group": null,
+            "uuid": "cd589d06-d025-4813-932c-765c7f3f6c8f"
+        },
+        {
+            "@type": "WorkflowRoute",
+            "name": "Resolve FQDN -> Get FortiSOAR SNAT IP",
+            "targetStep": "\/api\/3\/workflow_steps\/3d6abf2f-25f6-4a1a-a941-8ca1c508b8d9",
+            "sourceStep": "\/api\/3\/workflow_steps\/00e19df8-d5a9-48ca-a06d-3da20dc61d6f",
+            "label": null,
+            "isExecuted": false,
+            "group": null,
+            "uuid": "261896c0-196a-4943-a526-d790904bc11b"
+        },
+        {
+            "@type": "WorkflowRoute",
+            "name": "Start -> Configuration",
+            "targetStep": "\/api\/3\/workflow_steps\/1a48ec57-6ca3-4a1d-9bcb-dbc4e0d7b079",
+            "sourceStep": "\/api\/3\/workflow_steps\/07963cc9-ab75-4673-8029-975a253d9ebb",
+            "label": null,
+            "isExecuted": false,
+            "group": null,
+            "uuid": "37f40a97-066f-4f0f-9a21-7d558c55379c"
+        }
+    ],
+    "groups": [
+        {
+            "@type": "WorkflowGroup",
+            "name": "Training section",
+            "description": "This branch of the playbook is just to get you familiar with network automation",
+            "type": "note",
+            "isCollapsed": false,
+            "hasTriggerStep": false,
+            "hideInLogs": true,
+            "metadata": [],
+            "reusable": false,
+            "top": "660",
+            "left": "540",
+            "height": "0",
+            "width": "300",
+            "uuid": "0abe0ef1-2c80-4470-8eca-7da65346a7fc",
+            "recordTags": []
+        }
+    ],
+    "priority": "\/api\/3\/picklists\/2b563c61-ae2c-41c0-a85a-c9709585e3f2",
+    "playbookOrigin": "\/api\/3\/picklists\/15c1e8c9-22bf-4e66-8fbb-0a502d4a4a3f",
+    "isEditable": true,
+    "uuid": "7814fba9-faf0-46c9-871a-f7637a625d97",
+    "owners": [],
+    "isPrivate": false,
+    "deletedAt": null,
+    "recordTags": [
+        "Utility"
+    ]
+}

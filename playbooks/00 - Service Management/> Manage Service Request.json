@@ -1,0 +1,464 @@
+{
+    "@context": "\/api\/3\/contexts\/Workflow",
+    "@type": "Workflow",
+    "triggerLimit": null,
+    "name": "> Manage Service Request",
+    "aliasName": null,
+    "tag": null,
+    "description": "Process created VM instances requests",
+    "isActive": true,
+    "debug": true,
+    "singleRecordExecution": false,
+    "remoteExecutableFlag": false,
+    "parameters": [],
+    "synchronous": false,
+    "collection": "\/api\/3\/workflow_collections\/f1c80355-697f-4a71-971b-0988c871491d",
+    "versions": [],
+    "triggerStep": "\/api\/3\/workflow_steps\/e670db75-787c-4593-99c4-dbcbceababbf",
+    "steps": [
+        {
+            "@type": "WorkflowStep",
+            "name": "AD User Enrichment",
+            "description": null,
+            "arguments": {
+                "arguments": {
+                    "user": "{{vars.steps.Get_User_LoginID.data.usersresp[0].loginid}}",
+                    "fsr_recorded_email": "{{vars.requestor.email}}"
+                },
+                "apply_async": false,
+                "step_variables": [],
+                "pass_parent_env": false,
+                "pass_input_record": false,
+                "workflowReference": "\/api\/3\/workflows\/a2df7418-b4a8-44de-93b6-cdac0fc62d7a"
+            },
+            "status": null,
+            "top": "440",
+            "left": "300",
+            "stepType": "\/api\/3\/workflow_step_types\/74932bdc-b8b6-4d24-88c4-1a4dfbc524f3",
+            "group": null,
+            "uuid": "c420d3ae-bf5b-485c-90af-883a12d9d4ef"
+        },
+        {
+            "@type": "WorkflowStep",
+            "name": "Configuration",
+            "description": null,
+            "arguments": {
+                "requestor": "{{vars.input.records[0].requestor}}",
+                "users_query_payload": "{\n    \"users\": [\"{{vars.input.records[0].requestor.userId}}\"]\n}",
+                "default_approver_email": "cloud-ops@fortielab.com"
+            },
+            "status": null,
+            "top": "165",
+            "left": "300",
+            "stepType": "\/api\/3\/workflow_step_types\/04d0cf46-b6a8-42c4-8683-60a7eaa69e8f",
+            "group": null,
+            "uuid": "2af10d40-fb03-4f51-ba05-79cc61c674ad"
+        },
+        {
+            "@type": "WorkflowStep",
+            "name": "Get Approval",
+            "description": null,
+            "arguments": {
+                "type": "InputBased",
+                "input": {
+                    "schema": {
+                        "title": "VM Instance Service Request Approval Form",
+                        "description": "##### A new service request is awaiting your approval from:\n{{vars.steps.AD_User_Enrichment.user_details | json2html(row_fields=[\"email\",\"domain\",\"jobTitle\",\"memberOf\",\"reportsTo\",\"department\",\"managerEmail\",\"mobileNumber\",\"managerPhoneNumber\"], template=\"Stylized with row selection\", display=\"Vertical\", styling=false, table_style={})}}\n\n\n##### Requested VM Specs\n{%- set _vm_spec={\"VM Type\": vars.input.records[0].vMType.itemValue, \"Delete VM After\": arrow.get(vars.input.records[0].deleteAfter).format(\"DD-MM-YYYY HH:mm\")}-%}\n{{_vm_spec | json2html(row_fields=[], template=\"Stylized with row selection\", display=\"Vertical\", styling=false, table_style={})}}\n",
+                        "inputVariables": []
+                    }
+                },
+                "record": "{{ vars.input.records[0][\"@id\"] }}",
+                "agent_id": null,
+                "resources": "v_m_instances",
+                "is_approval": false,
+                "owner_detail": {
+                    "isAssigned": false,
+                    "assignedToTeam": [],
+                    "assignedToField": null,
+                    "emailRecipients": "{{vars.approver_email}}",
+                    "assignedToPerson": [],
+                    "assignedToRecord": false
+                },
+                "isRecordLinked": true,
+                "step_variables": [],
+                "response_mapping": {
+                    "options": [
+                        {
+                            "option": "Approve",
+                            "primary": true,
+                            "step_iri": "\/api\/3\/workflow_steps\/a01dac50-49ee-454e-9aa4-33538a545358"
+                        },
+                        {
+                            "option": "Reject",
+                            "step_iri": "\/api\/3\/workflow_steps\/20ba711b-6b68-4075-94de-4304116b34f8"
+                        }
+                    ],
+                    "duplicateOption": false,
+                    "customSuccessMessage": "Awaiting Playbook resumed successfully."
+                },
+                "inputExternalUser": true,
+                "email_notification": {
+                    "enabled": false,
+                    "smtpParameters": []
+                },
+                "customEmailExternal": false,
+                "customEmailInternal": false,
+                "inline_channel_list": [],
+                "external_channel_list": [
+                    "\/api\/3\/picklists\/afb18b7f-510b-471a-9b9c-7f4646edd4bb"
+                ],
+                "unauthenticated_input": true,
+                "external_email_subject": "A FortiSOAR playbook is requesting your input",
+                "internal_email_subject": null,
+                "custom_email_body_external": null,
+                "custom_email_body_internal": null,
+                "external_email_attachments": null,
+                "internal_email_attachments": null
+            },
+            "status": null,
+            "top": "860",
+            "left": "300",
+            "stepType": "\/api\/3\/workflow_step_types\/fc04082a-d7dc-4299-96fb-6837b1baa0fe",
+            "group": null,
+            "uuid": "37874afd-431d-43f2-9143-63868c5d602f"
+        },
+        {
+            "@type": "WorkflowStep",
+            "name": "Get User LoginID",
+            "description": null,
+            "arguments": {
+                "params": {
+                    "iri": "\/api\/auth\/query\/users",
+                    "body": "{{vars.users_query_payload}}",
+                    "method": "POST"
+                },
+                "version": "3.7.0",
+                "connector": "cyops_utilities",
+                "operation": "make_cyops_request",
+                "operationTitle": "FSR: Make FortiSOAR API Call",
+                "step_variables": []
+            },
+            "status": null,
+            "top": "300",
+            "left": "300",
+            "stepType": "\/api\/3\/workflow_step_types\/0109f35d-090b-4a2b-bd8a-94cbc3508562",
+            "group": null,
+            "uuid": "e978c323-f4c1-42f6-becf-a80a5c9a6bd2"
+        },
+        {
+            "@type": "WorkflowStep",
+            "name": "Manager Email Found",
+            "description": null,
+            "arguments": {
+                "conditions": [
+                    {
+                        "option": "yes",
+                        "step_iri": "\/api\/3\/workflow_steps\/cd68749b-cfef-4f84-a2fe-8b6e783f9d56",
+                        "condition": "{{ vars.steps.AD_User_Enrichment.user_details.managerEmail and vars.steps.AD_User_Enrichment.user_details.managerEmail|length > 0 }}",
+                        "step_name": "Set Approver"
+                    },
+                    {
+                        "option": "no",
+                        "default": true,
+                        "step_iri": "\/api\/3\/workflow_steps\/5eb64317-d75c-412a-8289-38dc587856da",
+                        "step_name": "Set Default Approver"
+                    }
+                ],
+                "step_variables": []
+            },
+            "status": null,
+            "top": "560",
+            "left": "300",
+            "stepType": "\/api\/3\/workflow_step_types\/12254cf5-5db7-4b1a-8cb1-3af081924b28",
+            "group": null,
+            "uuid": "55512072-f91f-4e5c-a7cd-9fbab935b83a"
+        },
+        {
+            "@type": "WorkflowStep",
+            "name": "Provision VM Instances",
+            "description": null,
+            "arguments": {
+                "arguments": {
+                    "vm_instance": "{{vars.input.records[0]}}"
+                },
+                "apply_async": false,
+                "step_variables": [],
+                "pass_parent_env": true,
+                "pass_input_record": false,
+                "workflowReference": "\/api\/3\/workflows\/73cc92fc-b6c0-4529-bd53-9b6b118ae94a"
+            },
+            "status": null,
+            "top": "1000",
+            "left": "100",
+            "stepType": "\/api\/3\/workflow_step_types\/74932bdc-b8b6-4d24-88c4-1a4dfbc524f3",
+            "group": null,
+            "uuid": "a01dac50-49ee-454e-9aa4-33538a545358"
+        },
+        {
+            "@type": "WorkflowStep",
+            "name": "Rejection Notification",
+            "description": null,
+            "arguments": {
+                "when": "{{vars.steps.AD_User_Enrichment['user_details'].email and vars.steps.AD_User_Enrichment['user_details'].email|length > 0}}",
+                "config": "88c3d39c-2fa9-4731-b00d-29815008f17c",
+                "params": {
+                    "body": "<p>Dear {{vars.input.records[0].requestor.firstname}}<\/p>\n<p>We are sorry to inform you that your request for a new VM instance has been rejected by {{vars.approver_email}}. Edit the business justification and try again.<\/p>\n<p>Regards,<\/p>\n<p>Cloud-Ops Team.<\/p>",
+                    "subject": "VM Request:{{vars.input.records[0].id}} has been rejected",
+                    "iri_list": "",
+                    "cc_recipients": "",
+                    "to_recipients": "{{vars.steps.AD_User_Enrichment['user_details'].email}}",
+                    "bcc_recipients": ""
+                },
+                "version": "2.6.0",
+                "from_str": "admin@example.com",
+                "connector": "smtp",
+                "operation": "send_email",
+                "operationTitle": "Send Email",
+                "step_variables": []
+            },
+            "status": null,
+            "top": "1000",
+            "left": "500",
+            "stepType": "\/api\/3\/workflow_step_types\/4c0019b2-055c-44d0-968c-678a0c2d762e",
+            "group": null,
+            "uuid": "20ba711b-6b68-4075-94de-4304116b34f8"
+        },
+        {
+            "@type": "WorkflowStep",
+            "name": "Set Approver",
+            "description": null,
+            "arguments": {
+                "approver_email": "{{vars.steps.AD_User_Enrichment.user_details.managerEmail}}"
+            },
+            "status": null,
+            "top": "720",
+            "left": "500",
+            "stepType": "\/api\/3\/workflow_step_types\/04d0cf46-b6a8-42c4-8683-60a7eaa69e8f",
+            "group": null,
+            "uuid": "cd68749b-cfef-4f84-a2fe-8b6e783f9d56"
+        },
+        {
+            "@type": "WorkflowStep",
+            "name": "Set Default Approver",
+            "description": null,
+            "arguments": {
+                "approver_email": "{{vars.default_approver_email}}"
+            },
+            "status": null,
+            "top": "720",
+            "left": "100",
+            "stepType": "\/api\/3\/workflow_step_types\/04d0cf46-b6a8-42c4-8683-60a7eaa69e8f",
+            "group": null,
+            "uuid": "5eb64317-d75c-412a-8289-38dc587856da"
+        },
+        {
+            "@type": "WorkflowStep",
+            "name": "Start",
+            "description": null,
+            "arguments": {
+                "resource": "v_m_instances",
+                "resources": [
+                    "v_m_instances"
+                ],
+                "__triggerLimit": true,
+                "step_variables": {
+                    "input": {
+                        "params": [],
+                        "records": [
+                            "{{vars.input.records[0]}}"
+                        ]
+                    }
+                },
+                "triggerOnSource": true,
+                "fieldbasedtrigger": {
+                    "sort": [],
+                    "limit": 30,
+                    "logic": "AND",
+                    "filters": [
+                        {
+                            "type": "array",
+                            "field": "approvalStatus",
+                            "value": [
+                                "\/api\/3\/picklists\/a81e3b2b-8d0a-4ef0-9ef2-b286d8adb75b",
+                                "\/api\/3\/picklists\/5907b468-4805-4724-af60-238559cdecf9"
+                            ],
+                            "module": "approvalStatus",
+                            "display": "",
+                            "operator": "nin",
+                            "template": "multiselectpicklist",
+                            "OPERATOR_KEY": "$",
+                            "previousOperator": "nin",
+                            "previousTemplate": "multiselectpicklist"
+                        },
+                        {
+                            "type": "object",
+                            "field": "requestor",
+                            "value": "false",
+                            "_value": {
+                                "@id": "false",
+                                "display": "",
+                                "itemValue": ""
+                            },
+                            "operator": "isnull"
+                        }
+                    ]
+                },
+                "triggerOnReplicate": false
+            },
+            "status": null,
+            "top": "30",
+            "left": "300",
+            "stepType": "\/api\/3\/workflow_step_types\/ea155646-3821-4542-9702-b246da430a8d",
+            "group": null,
+            "uuid": "e670db75-787c-4593-99c4-dbcbceababbf"
+        },
+        {
+            "@type": "WorkflowStep",
+            "name": "Update VM Instance",
+            "description": null,
+            "arguments": {
+                "resource": {
+                    "status": "\/api\/3\/picklists\/522672e2-cf80-4d4a-baf9-98ff7f423302"
+                },
+                "operation": "Append",
+                "collection": "{{vars.input.records[0]['@id']}}",
+                "__recommend": [],
+                "collectionType": "\/api\/3\/v_m_instances",
+                "fieldOperation": {
+                    "recordTags": "Append"
+                },
+                "step_variables": []
+            },
+            "status": null,
+            "top": "1140",
+            "left": "500",
+            "stepType": "\/api\/3\/workflow_step_types\/b593663d-7d13-40ce-a3a3-96dece928722",
+            "group": null,
+            "uuid": "0d84cb72-110c-4ec4-a9dd-6b22cdda1e81"
+        }
+    ],
+    "routes": [
+        {
+            "@type": "WorkflowRoute",
+            "name": "AD User Enrichment -> Manager Contact Found",
+            "targetStep": "\/api\/3\/workflow_steps\/55512072-f91f-4e5c-a7cd-9fbab935b83a",
+            "sourceStep": "\/api\/3\/workflow_steps\/c420d3ae-bf5b-485c-90af-883a12d9d4ef",
+            "label": null,
+            "isExecuted": false,
+            "group": null,
+            "uuid": "dee4a5cc-f451-47b7-96ac-2410cc7b7e41"
+        },
+        {
+            "@type": "WorkflowRoute",
+            "name": "Configuration -> Get Username",
+            "targetStep": "\/api\/3\/workflow_steps\/e978c323-f4c1-42f6-becf-a80a5c9a6bd2",
+            "sourceStep": "\/api\/3\/workflow_steps\/2af10d40-fb03-4f51-ba05-79cc61c674ad",
+            "label": null,
+            "isExecuted": false,
+            "group": null,
+            "uuid": "00e80f51-1a5c-431d-90e5-3fc48e3aaf9e"
+        },
+        {
+            "@type": "WorkflowRoute",
+            "name": "Get Approval -> Provision VM Instances",
+            "targetStep": "\/api\/3\/workflow_steps\/a01dac50-49ee-454e-9aa4-33538a545358",
+            "sourceStep": "\/api\/3\/workflow_steps\/37874afd-431d-43f2-9143-63868c5d602f",
+            "label": "Approve",
+            "isExecuted": false,
+            "group": null,
+            "uuid": "a431fb88-9a42-4c5b-a1eb-4903d1c1c8b0"
+        },
+        {
+            "@type": "WorkflowRoute",
+            "name": "Get Approval -> Rejection Notification",
+            "targetStep": "\/api\/3\/workflow_steps\/20ba711b-6b68-4075-94de-4304116b34f8",
+            "sourceStep": "\/api\/3\/workflow_steps\/37874afd-431d-43f2-9143-63868c5d602f",
+            "label": "Reject",
+            "isExecuted": false,
+            "group": null,
+            "uuid": "27f95d20-dfec-46e0-a2dc-1ef1a78c1442"
+        },
+        {
+            "@type": "WorkflowRoute",
+            "name": "Get User LoginID -> AD User Enrichment",
+            "targetStep": "\/api\/3\/workflow_steps\/c420d3ae-bf5b-485c-90af-883a12d9d4ef",
+            "sourceStep": "\/api\/3\/workflow_steps\/e978c323-f4c1-42f6-becf-a80a5c9a6bd2",
+            "label": null,
+            "isExecuted": false,
+            "group": null,
+            "uuid": "a3110461-4646-4200-8ce9-f687032d3b06"
+        },
+        {
+            "@type": "WorkflowRoute",
+            "name": "Manager Email Found -> Set Approver",
+            "targetStep": "\/api\/3\/workflow_steps\/cd68749b-cfef-4f84-a2fe-8b6e783f9d56",
+            "sourceStep": "\/api\/3\/workflow_steps\/55512072-f91f-4e5c-a7cd-9fbab935b83a",
+            "label": "yes",
+            "isExecuted": false,
+            "group": null,
+            "uuid": "39e4d89c-7722-4ca6-864d-2299a77e766c"
+        },
+        {
+            "@type": "WorkflowRoute",
+            "name": "Manager Email Found -> Set Default Approver",
+            "targetStep": "\/api\/3\/workflow_steps\/5eb64317-d75c-412a-8289-38dc587856da",
+            "sourceStep": "\/api\/3\/workflow_steps\/55512072-f91f-4e5c-a7cd-9fbab935b83a",
+            "label": "no",
+            "isExecuted": false,
+            "group": null,
+            "uuid": "f2ca2f8c-64a6-49d2-90a2-b016c442e0a6"
+        },
+        {
+            "@type": "WorkflowRoute",
+            "name": "Rejection Notification -> Update VM Instance",
+            "targetStep": "\/api\/3\/workflow_steps\/0d84cb72-110c-4ec4-a9dd-6b22cdda1e81",
+            "sourceStep": "\/api\/3\/workflow_steps\/20ba711b-6b68-4075-94de-4304116b34f8",
+            "label": null,
+            "isExecuted": false,
+            "group": null,
+            "uuid": "5aa0ec9d-e018-444b-a74a-11e205c3f563"
+        },
+        {
+            "@type": "WorkflowRoute",
+            "name": "Set Approver -> Get Approval",
+            "targetStep": "\/api\/3\/workflow_steps\/37874afd-431d-43f2-9143-63868c5d602f",
+            "sourceStep": "\/api\/3\/workflow_steps\/cd68749b-cfef-4f84-a2fe-8b6e783f9d56",
+            "label": null,
+            "isExecuted": false,
+            "group": null,
+            "uuid": "584f52c1-3f90-4f82-98bd-97cf3d4dc4d3"
+        },
+        {
+            "@type": "WorkflowRoute",
+            "name": "Set Default Approver -> Get Approval",
+            "targetStep": "\/api\/3\/workflow_steps\/37874afd-431d-43f2-9143-63868c5d602f",
+            "sourceStep": "\/api\/3\/workflow_steps\/5eb64317-d75c-412a-8289-38dc587856da",
+            "label": null,
+            "isExecuted": false,
+            "group": null,
+            "uuid": "82bc245d-3913-4d12-8f4f-85a84c64af9c"
+        },
+        {
+            "@type": "WorkflowRoute",
+            "name": "Start -> Configuration",
+            "targetStep": "\/api\/3\/workflow_steps\/2af10d40-fb03-4f51-ba05-79cc61c674ad",
+            "sourceStep": "\/api\/3\/workflow_steps\/e670db75-787c-4593-99c4-dbcbceababbf",
+            "label": null,
+            "isExecuted": false,
+            "group": null,
+            "uuid": "4113d794-7553-4ab3-9720-140c3ed676a0"
+        }
+    ],
+    "groups": [],
+    "priority": "\/api\/3\/picklists\/2b563c61-ae2c-41c0-a85a-c9709585e3f2",
+    "playbookOrigin": "\/api\/3\/picklists\/15c1e8c9-22bf-4e66-8fbb-0a502d4a4a3f",
+    "isEditable": true,
+    "uuid": "1185601f-09b4-429d-b840-53dea35e2f12",
+    "owners": [],
+    "isPrivate": false,
+    "deletedAt": null,
+    "recordTags": [
+        "Approval",
+        "Enrichment"
+    ]
+}

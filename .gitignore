@@ -1,0 +1,33 @@
+# Build / package
+*.zip
+!/solution-pack-proxmox-api-migration.zip
+pack_build/
+
+# Project files
+00 - Service Management working.json
+
+# macOS
+.DS_Store
+
+# IDE / editor
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# Cursor
+.cursor/
+agent-tools/
+
+# Placeholders (empty or stray)
+/Provision
+/Manage
+/Get
+/Destroy
+/AD
+CloudOPS-Prx-pack-install/Provision
+CloudOPS-Prx-pack-install/Manage
+CloudOPS-Prx-pack-install/Get
+CloudOPS-Prx-pack-install/Destroy
+CloudOPS-Prx-pack-install/AD

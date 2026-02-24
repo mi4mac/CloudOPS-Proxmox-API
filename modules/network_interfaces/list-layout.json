@@ -1,0 +1,30 @@
+{
+    "@context": "\/api\/3\/contexts\/SystemViewTemplate",
+    "@type": "SystemViewTemplate",
+    "type": "rows",
+    "config": {
+        "rows": [
+            {
+                "columns": [
+                    {
+                        "widgets": [
+                            {
+                                "type": "grid",
+                                "config": []
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    "module": "network_interfaces",
+    "filters": [],
+    "isDefault": true,
+    "visible": true,
+    "viewOptions": "list",
+    "name": "Base Template",
+    "system": false,
+    "uuid": "modules-network_interfaces-list",
+    "newUuid": "ab213a0f-2376-4caf-abcb-8b5682bd6e38"
+}

@@ -1,0 +1,50 @@
+{
+  "@context": "/api/3/contexts/PicklistName",
+  "@id": "/api/3/picklist_names/a47a3ca3-ac28-470a-bf78-a23f462d51a7",
+  "@type": "PicklistName",
+  "name": "VM Type",
+  "system": false,
+  "picklists": [
+    {
+      "@id": "/api/3/picklists/6b1a558e-69a8-444d-9614-43cd9aa08e03",
+      "@type": "Picklist",
+      "itemValue": "Rocky9-VM",
+      "orderIndex": 0,
+      "color": null,
+      "icon": null,
+      "listName": "/api/3/picklist_names/a47a3ca3-ac28-470a-bf78-a23f462d51a7",
+      "uuid": "6b1a558e-69a8-444d-9614-43cd9aa08e03"
+    },
+    {
+      "@id": "/api/3/picklists/4ba4ed66-015c-4ce5-94a3-fdee72d83b73",
+      "@type": "Picklist",
+      "itemValue": "Debian13-CT",
+      "orderIndex": 1,
+      "color": null,
+      "icon": null,
+      "listName": "/api/3/picklist_names/a47a3ca3-ac28-470a-bf78-a23f462d51a7",
+      "uuid": "4ba4ed66-015c-4ce5-94a3-fdee72d83b73"
+    },
+    {
+      "@id": "/api/3/picklists/c8f2a91e-3b4d-4e5f-a6b7-8c9d0e1f2a3b",
+      "@type": "Picklist",
+      "itemValue": "RockyLinux9-CT",
+      "orderIndex": 2,
+      "color": null,
+      "icon": null,
+      "listName": "/api/3/picklist_names/a47a3ca3-ac28-470a-bf78-a23f462d51a7",
+      "uuid": "c8f2a91e-3b4d-4e5f-a6b7-8c9d0e1f2a3b"
+    },
+    {
+      "@id": "/api/3/picklists/d1e2f3a4-b5c6-4d7e-8f9a-0b1c2d3e4f5a",
+      "@type": "Picklist",
+      "itemValue": "Ubuntu2204-CT",
+      "orderIndex": 3,
+      "color": null,
+      "icon": null,
+      "listName": "/api/3/picklist_names/a47a3ca3-ac28-470a-bf78-a23f462d51a7",
+      "uuid": "d1e2f3a4-b5c6-4d7e-8f9a-0b1c2d3e4f5a"
+    }
+  ],
+  "uuid": "a47a3ca3-ac28-470a-bf78-a23f462d51a7"
+}

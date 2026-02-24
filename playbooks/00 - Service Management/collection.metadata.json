@@ -1,0 +1,11 @@
+{
+    "@context": "\/api\/3\/contexts\/WorkflowCollection",
+    "@type": "WorkflowCollection",
+    "name": "00 - Service Management",
+    "description": null,
+    "visible": true,
+    "image": null,
+    "uuid": "f1c80355-697f-4a71-971b-0988c871491d",
+    "deletedAt": null,
+    "recordTags": []
+}

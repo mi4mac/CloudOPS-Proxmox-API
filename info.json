@@ -1,0 +1,171 @@
+{
+    "fsrMinCompatibility": "7.2.0",
+    "version": "2.1.0",
+    "date": "2026-02-20T12:00:00+00:00",
+    "exported_from": "fsr-stable",
+    "exported_by": "CS Admin",
+    "contents": {
+        "connectors": [
+            {
+                "name": "HTTP",
+                "apiName": "http"
+            },
+            {
+                "name": "API Connector Proxmox",
+                "apiName": "proxmox-api"
+            }
+        ],
+        "picklistNames": [
+            {
+                "name": "VM Status"
+            },
+            {
+                "name": "VM Type"
+            }
+        ],
+        "modules": {
+            "network_interfaces": {
+                "name": "Network Interfaces",
+                "apiName": "network_interfaces"
+            },
+            "v_m_instances": {
+                "name": "VM Instances",
+                "apiName": "v_m_instances"
+            }
+        },
+        "viewTemplates": {
+            "network_interfaces": {
+                "name": "Network Interfaces",
+                "apiName": "network_interfaces",
+                "views": [
+                    "list",
+                    "form",
+                    "detail"
+                ]
+            },
+            "v_m_instances": {
+                "name": "VM Instances",
+                "apiName": "v_m_instances",
+                "views": [
+                    "detail",
+                    "list",
+                    "form"
+                ]
+            }
+        },
+        "views": {
+            "navigation": [
+                "Dashboard",
+                "Queue & Shift Management",
+                "Incident Response",
+                "Automation",
+                "Resources",
+                "Reports",
+                "Widget Library",
+                "Content Hub",
+                "Help",
+                "User Community",
+                "Simulations",
+                "Vulnerability Management",
+                "Threat Intel Management",
+                "Knowledge Base",
+                "Service Management"
+            ]
+        },
+        "roles": [
+            {
+                "name": "Full App Permissions"
+            },
+            {
+                "name": "SOC Analyst"
+            }
+        ],
+        "actors": [
+            {
+                "name": "atlas Me"
+            }
+        ],
+        "globalVariables": [
+            {
+                "name": "Server_fqhn",
+                "value": "fsr-stable",
+                "default_value": "master.fortisoar.in"
+            },
+            {
+                "name": "infrastructure_team_email",
+                "value": "cloud-ops@fortielab.com",
+                "default_value": "cloud-ops@fortielab.com"
+            },
+            {
+                "name": "proxmox_api_host",
+                "value": "192.168.222.222",
+                "default_value": "192.168.222.222"
+            },
+            {
+                "name": "proxmox_api_port",
+                "value": "8006",
+                "default_value": "8006"
+            },
+            {
+                "name": "proxmox_api_token",
+                "value": "user@pve!token-id=<YOUR_PROXMOX_API_TOKEN_UUID>",
+                "default_value": "user@pve!token-id=<YOUR_PROXMOX_API_TOKEN_UUID>"
+            },
+            {
+                "name": "proxmox_node_name",
+                "value": "pve",
+                "default_value": "pve"
+            },
+            {
+                "name": "proxmox_storage",
+                "value": "local-lvm",
+                "default_value": "local-lvm"
+            },
+            {
+                "name": "proxmox_default_node",
+                "value": "pve",
+                "default_value": "pve"
+            },
+            {
+                "name": "proxmox_bridge",
+                "value": "vmbr0",
+                "default_value": "vmbr0"
+            },
+            {
+                "name": "proxmox_vlan_tag",
+                "value": "255",
+                "default_value": "255"
+            },
+            {
+                "name": "proxmox_gateway",
+                "value": "10.255.255.1",
+                "default_value": "10.255.255.1"
+            },
+            {
+                "name": "proxmox_template_rocky9_vm",
+                "value": "9000",
+                "default_value": "9000"
+            },
+            {
+                "name": "proxmox_template_ubuntu2204_ct",
+                "value": "local:vztmpl/ubuntu-22.04-standard_22.04-1_amd64.tar.zst",
+                "default_value": "local:vztmpl/ubuntu-22.04-standard_22.04-1_amd64.tar.zst"
+            },
+            {
+                "name": "proxmox_template_debian13_ct",
+                "value": "local:vztmpl/debian-13-standard_13.1-2_amd64.tar.zst",
+                "default_value": "local:vztmpl/debian-13-standard_13.1-2_amd64.tar.zst"
+            },
+            {
+                "name": "proxmox_template_rockylinux9_ct",
+                "value": "local:vztmpl/rockylinux-9-default_20240912_amd64.tar.xz",
+                "default_value": "local:vztmpl/rockylinux-9-default_20240912_amd64.tar.xz"
+            }
+        ],
+        "playbooks": [
+            {
+                "name": "00 - Service Management"
+            }
+        ]
+    }
+}
