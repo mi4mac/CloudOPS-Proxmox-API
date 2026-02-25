@@ -9,6 +9,19 @@ Requirements
 - Proxmox VE with API access and a token
 - Proxmox API connector (`proxmox-api`) installed from `API Connector Proxmox.tgz`
 
+Proxmox preparation (mandatory)
+-------------------------------
+Before installing the connector and pack, prepare Proxmox as follows (see `PROXMOX_9.1.5_SPECIFIC_NOTES.md` and `TOKEN_CAPABILITIES.md` for full commands and explanations):
+
+1. **Create a dedicated FortiSOAR user and role**
+   - Create a Proxmox user (for example `fortisoar@pve`).
+   - Create the custom role `FortiSOAR-Role` with the minimal privileges listed in `PROXMOX_9.1.5_SPECIFIC_NOTES.md` (covers VM/CT lifecycle and required datastore permissions).
+2. **Create an API token for that user**
+   - Create a token (for example `fortisoar-token`) and store the token value securely.
+   - Use the `PVEAPIToken={user}@{realm}!{token_id}={token_secret}` format when configuring the connector.
+3. **Assign the role/ACLs to the user and/or token**
+   - Assign `FortiSOAR-Role` on `/` (and, if needed, on your storage paths) to the user or token as shown in the Proxmox notes.
+
 Contents
 --------
 - Modules and views for VM instances and network interfaces

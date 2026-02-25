@@ -26,18 +26,24 @@ What’s included
 
 Installation (high level)
 -------------------------
-1. **Connector**
+1. **Prepare Proxmox (user, role, token)**
+   - Follow `PROXMOX_9.1.5_SPECIFIC_NOTES.md` and `TOKEN_CAPABILITIES.md` to:
+     - Create a dedicated Proxmox user for FortiSOAR.
+     - Create the `FortiSOAR-Role` with the required privileges.
+     - Create an API token for that user and assign the role/ACLs.
+
+2. **Connector**
    - Build the connector package:
      ```bash
      tar -czvf "API Connector Proxmox.tgz" "proxmox-api/"
      ```
    - Import `API Connector Proxmox.tgz` into FortiSOAR and create at least one configuration (host, port, API token).
 
-2. **Solution pack**
+3. **Solution pack**
    - Import `solution-pack-proxmox-api-migration.zip` via FortiSOAR Content Hub / Packs.
-   - Adjust global variables for your environment (host, token, node, storage, templates) as described in `SCHRITT_2_GLOBAL_VARIABLES.md`.
+   - (Optional) Adjust global variables for your environment (node, storage, templates) as described in `SCHRITT_2_GLOBAL_VARIABLES.md` if you want to override the built‑in defaults.
 
-3. **Quick test**
+4. **Quick test**
    - Follow `TESTING_GUIDE.md` for a small CT/VM provision + destroy smoke test.
 
 Security & placeholders
