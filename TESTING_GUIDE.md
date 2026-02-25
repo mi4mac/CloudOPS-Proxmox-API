@@ -331,6 +331,7 @@ qm status <VMID>
    - ✅ Approval form shows VM details.
    - ✅ Approval workflow works.
    - ✅ VM/container is deleted after approval.
+   - ✅ If no decision is made within **10 minutes**, the approval input times out and the playbook follows the cancel path.
 
 **Test 10.1: Approval accepted**
 - [ ] Approve the request.

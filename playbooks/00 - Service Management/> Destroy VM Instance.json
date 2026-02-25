@@ -270,7 +270,7 @@
                 "timeout": {
                     "days": 0,
                     "hours": 0,
-                    "minutes": 30,
+                    "minutes": 10,
                     "step_iri": "\/api\/3\/workflow_steps\/s1t2u3v4-w5x6-7890-abcd-ef1234567894"
                 },
                 "agent_id": null,
