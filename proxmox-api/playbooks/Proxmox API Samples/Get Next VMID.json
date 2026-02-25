@@ -5,7 +5,7 @@
   "name": "Get Next VMID",
   "aliasName": null,
   "tag": null,
-  "description": "Sample: Ermittelt die nächste verfügbare VMID (Get Next VMID) von der konfigurierten Proxmox-Instanz.",
+  "description": "Sample: Gets the next available VMID (Get Next VMID) from the configured Proxmox instance.",
   "isActive": true,
   "debug": true,
   "singleRecordExecution": false,

@@ -1,10 +1,10 @@
-Icons für den Connector (optional).
+Icons for the connector (optional).
 
-Legen Sie hier folgende Dateien ab, damit der Connector in FortiSOAR mit Icon angezeigt wird:
+Place the following files here so that the connector is displayed with a custom icon in FortiSOAR:
 
-- proxmox_small.png  (z. B. 32x32 px)
-- proxmox_large.png  (z. B. 64x64 px oder 128x128 px)
+- proxmox_small.png  (for example 32x32 px)
+- proxmox_large.png  (for example 64x64 px or 128x128 px)
 
-Formate: .png oder .jpg
+Supported formats: .png or .jpg
 
-Falls die Dateien fehlen, verwendet FortiSOAR ein Standard-Icon.
+If these files are missing, FortiSOAR uses a default icon.

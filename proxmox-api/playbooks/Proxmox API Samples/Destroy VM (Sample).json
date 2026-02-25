@@ -5,7 +5,7 @@
   "name": "Destroy VM (Sample)",
   "aliasName": null,
   "tag": null,
-  "description": "Sample: Stoppt und löscht eine VM (Stop VM, Destroy VM). VMID und Node anpassen oder per Variable übergeben.",
+  "description": "Sample: Stops and deletes a VM (Stop VM, Destroy VM). Adjust VMID and node, or pass them via variables.",
   "isActive": true,
   "debug": true,
   "singleRecordExecution": false,

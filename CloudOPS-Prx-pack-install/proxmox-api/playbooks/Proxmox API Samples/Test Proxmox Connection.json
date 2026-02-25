@@ -5,7 +5,7 @@
   "name": "Test Proxmox Connection",
   "aliasName": null,
   "tag": null,
-  "description": "Sample: Ruft die Proxmox-Version ab (Get Version). Prüft die Verbindung zur konfigurierten Proxmox-Instanz.",
+  "description": "Sample: Retrieves the Proxmox version (Get Version). Verifies connectivity to the configured Proxmox instance.",
   "isActive": true,
   "debug": true,
   "singleRecordExecution": false,

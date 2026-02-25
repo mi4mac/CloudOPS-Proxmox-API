@@ -5,7 +5,7 @@
   "name": "Clone VM (Sample)",
   "aliasName": null,
   "tag": null,
-  "description": "Sample: Klont eine VM von einem Template (Clone VM). Node, Template-VMID, New-VMID und Name anpassen oder per Variable übergeben.",
+  "description": "Sample: Clones a VM from a template (Clone VM). Adjust node, template VMID, new VMID and name, or pass them via variables.",
   "isActive": true,
   "debug": true,
   "singleRecordExecution": false,
