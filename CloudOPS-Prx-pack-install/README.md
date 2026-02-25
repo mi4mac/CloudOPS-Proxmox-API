@@ -11,7 +11,7 @@ What’s included
   - Playbooks for request → approve → provision → destroy → cleanup, plus **> Refresh Proxmox Inventory**.
   - UI layouts for list/detail views, including the **two‑row VM Instances list** (top: requested VMs/CTs, bottom: Proxmox inventory not tracked in `v_m_instances`).
 - Prebuilt content:
-  - `extended.zip` – Importable solution pack built from `CloudOPS-Prx-pack-install/` (includes the new `proxmox_inventory` module and inventory views).
+  - `solution-pack-proxmox-api-migration.zip` – Importable solution pack built from `CloudOPS-Prx-pack-install/` (includes the `proxmox_inventory` module and inventory views).
   - `API Connector Proxmox.tgz` – Importable connector package.
 - Documentation (English):
   - `PACK_README.md` – Pack overview, installation & upgrade.
