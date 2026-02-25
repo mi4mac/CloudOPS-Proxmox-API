@@ -24,11 +24,11 @@ If you want to override the built‑in defaults, create the following global var
 #### 2.1 Proxmox API host
 
 - **Name:** `proxmox_api_host`  
-- **Value:** `192.168.222.222`  
-- **Default Value:** `192.168.222.222`  
+- **Value:** `<YOUR_PROXMOX_SERVER_IP>`  
+- **Default Value:** `<YOUR_PROXMOX_SERVER_IP>`  
 - **Type:** String  
 - **Encrypted:** ❌ No  
-- **Description:** Proxmox server IP address or hostname  
+- **Description:** Proxmox server IP address or hostname (for example `192.168.222.222`)  
 
 #### 2.2 Proxmox API port
 
@@ -37,7 +37,7 @@ If you want to override the built‑in defaults, create the following global var
 - **Default Value:** `8006`  
 - **Type:** String  
 - **Encrypted:** ❌ No  
-- **Description:** Proxmox API port (default: 8006)
+- **Description:** Proxmox API port (default: 8006). **Adapt this to the port used by your Proxmox server if it differs.**
 
 #### 2.3 Proxmox API token ⚠️ **IMPORTANT: Must be stored encrypted**
 
@@ -59,7 +59,7 @@ If you want to override the built‑in defaults, create the following global var
 - **Default Value:** `pve`  
 - **Type:** String  
 - **Encrypted:** ❌ No  
-- **Description:** Name of the Proxmox node (default: `pve`)
+- **Description:** Name of the Proxmox node (default: `pve`). **Change this to the node name used in your environment.**
 
 #### 2.5 Proxmox storage
 
@@ -68,7 +68,7 @@ If you want to override the built‑in defaults, create the following global var
 - **Default Value:** `local-lvm`  
 - **Type:** String  
 - **Encrypted:** ❌ No  
-- **Description:** Storage ID for VM/container disks
+- **Description:** Storage ID for VM/container disks. **Adjust to the storage identifier you actually use (for example `local-zfs`, `ceph-storage`, etc.).**
 
 #### 2.6 Proxmox bridge
 
@@ -77,7 +77,7 @@ If you want to override the built‑in defaults, create the following global var
 - **Default Value:** `vmbr0`  
 - **Type:** String  
 - **Encrypted:** ❌ No  
-- **Description:** Network bridge for VMs/containers
+- **Description:** Network bridge for VMs/containers. **Change this to the bridge used in your Proxmox setup (for example `vmbr1`).**
 
 #### 2.7 Proxmox VLAN tag
 
@@ -86,7 +86,7 @@ If you want to override the built‑in defaults, create the following global var
 - **Default Value:** `255`  
 - **Type:** String  
 - **Encrypted:** ❌ No  
-- **Description:** VLAN tag for network interfaces
+- **Description:** VLAN tag for network interfaces. **Adapt this to the VLAN tagging scheme of your environment or leave empty if you do not use VLANs.**
 
 #### 2.8 Proxmox gateway
 
@@ -95,7 +95,7 @@ If you want to override the built‑in defaults, create the following global var
 - **Default Value:** `10.255.255.1`  
 - **Type:** String  
 - **Encrypted:** ❌ No  
-- **Description:** Default gateway for VMs/containers
+- **Description:** Default gateway for VMs/containers. **Replace this with the correct gateway used in your Proxmox network.**
 
 #### 2.9 Proxmox template: Rocky 9 VM
 
@@ -104,7 +104,7 @@ If you want to override the built‑in defaults, create the following global var
 - **Default Value:** `9000`  
 - **Type:** String  
 - **Encrypted:** ❌ No  
-- **Description:** VMID of the Rocky 9 VM template
+- **Description:** VMID of the Rocky 9 VM template. **Change to the VMID of your own Rocky 9 (or equivalent) template.**
 
 #### 2.10 Proxmox template: Ubuntu 22.04 CT
 
@@ -113,7 +113,7 @@ If you want to override the built‑in defaults, create the following global var
 - **Default Value:** `local:vztmpl/ubuntu-22.04-standard_22.04-1_amd64.tar.zst`  
 - **Type:** String  
 - **Encrypted:** ❌ No  
-- **Description:** Template path for the Ubuntu 22.04 container
+- **Description:** Template path for the Ubuntu 22.04 container. **Adjust to the actual Ubuntu template path on your Proxmox storage.**
 
 #### 2.11 Proxmox template: Debian 13 CT
 
@@ -122,7 +122,7 @@ If you want to override the built‑in defaults, create the following global var
 - **Default Value:** `local:vztmpl/debian-13-standard_13.1-2_amd64.tar.zst`  
 - **Type:** String  
 - **Encrypted:** ❌ No  
-- **Description:** Template path for the Debian 13 container
+- **Description:** Template path for the Debian 13 container. **Adapt this to the Debian 13 (or equivalent) template you use.**
 
 #### 2.12 Proxmox template: Rocky Linux 9 CT
 
@@ -131,7 +131,7 @@ If you want to override the built‑in defaults, create the following global var
 - **Default Value:** `local:vztmpl/rockylinux-9-default_20240912_amd64.tar.xz`  
 - **Type:** String  
 - **Encrypted:** ❌ No  
-- **Description:** Template path for the Rocky Linux 9 container
+- **Description:** Template path for the Rocky Linux 9 container. **Change this to the correct path of your Rocky Linux 9 CT template.**
 
 ---
 
