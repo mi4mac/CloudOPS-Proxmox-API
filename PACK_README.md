@@ -27,6 +27,7 @@ Contents
 - Modules and views for VM instances and network interfaces
 - Playbooks for requesting, provisioning, destroying, and refreshing Proxmox inventory
 - Optional global variables to override default node, storage, network, and template settings
+- A sample **actor** (`atlas Me`) and an **AD user enrichment** flow that demonstrate how to plug into an existing directory / user model – these must be adapted to the real users and directory integration in your environment.
 
 Installation
 ------------
