@@ -1,0 +1,60 @@
+{
+    "@context": "\/api\/3\/contexts\/PicklistName",
+    "@id": "\/api\/3\/picklist_names\/b99e5bf7-288d-4974-bc67-8f163abdbc56",
+    "@type": "PicklistName",
+    "name": "VM Status",
+    "system": false,
+    "picklists": [
+        {
+            "@id": "\/api\/3\/picklists\/87e8de7b-4ca7-41f2-b3ee-bc367faf489c",
+            "@type": "Picklist",
+            "itemValue": "Destroyed",
+            "orderIndex": 1,
+            "color": "#ff0000",
+            "icon": null,
+            "listName": "\/api\/3\/picklist_names\/b99e5bf7-288d-4974-bc67-8f163abdbc56",
+            "uuid": "87e8de7b-4ca7-41f2-b3ee-bc367faf489c"
+        },
+        {
+            "@id": "\/api\/3\/picklists\/541c0fde-adaf-44cd-89d2-e7adf05f438d",
+            "@type": "Picklist",
+            "itemValue": "Pending Approval",
+            "orderIndex": 2,
+            "color": "#d1d796",
+            "icon": null,
+            "listName": "\/api\/3\/picklist_names\/b99e5bf7-288d-4974-bc67-8f163abdbc56",
+            "uuid": "541c0fde-adaf-44cd-89d2-e7adf05f438d"
+        },
+        {
+            "@id": "\/api\/3\/picklists\/3a009813-79af-4d41-8eeb-cec911d4821c",
+            "@type": "Picklist",
+            "itemValue": "Failed",
+            "orderIndex": 3,
+            "color": "#ee7c24",
+            "icon": null,
+            "listName": "\/api\/3\/picklist_names\/b99e5bf7-288d-4974-bc67-8f163abdbc56",
+            "uuid": "3a009813-79af-4d41-8eeb-cec911d4821c"
+        },
+        {
+            "@id": "\/api\/3\/picklists\/81dd9b98-c14d-4ef7-9e4d-22951c11958d",
+            "@type": "Picklist",
+            "itemValue": "Active",
+            "orderIndex": 0,
+            "color": "#249c48",
+            "icon": null,
+            "listName": "\/api\/3\/picklist_names\/b99e5bf7-288d-4974-bc67-8f163abdbc56",
+            "uuid": "81dd9b98-c14d-4ef7-9e4d-22951c11958d"
+        },
+        {
+            "@id": "\/api\/3\/picklists\/abce2612-5ab6-41b8-808b-0f8291adb747",
+            "@type": "Picklist",
+            "itemValue": "Rejected",
+            "orderIndex": 4,
+            "color": "#ac2924",
+            "icon": null,
+            "listName": "\/api\/3\/picklist_names\/b99e5bf7-288d-4974-bc67-8f163abdbc56",
+            "uuid": "abce2612-5ab6-41b8-808b-0f8291adb747"
+        }
+    ],
+    "uuid": "b99e5bf7-288d-4974-bc67-8f163abdbc56"
+}

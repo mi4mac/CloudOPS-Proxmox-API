@@ -2,20 +2,35 @@
 
 ## Overview
 
-The **> Refresh Proxmox Inventory** playbook compares the current VM and container list from Proxmox with the records in the FortiSOAR `v_m_instances` module and generates a synchronization report.
+The **> Refresh Proxmox Inventory** playbook:
+
+- Pulls the current VM and container list from Proxmox (including config for disks and interfaces).
+- Upserts a lightweight snapshot into the `proxmox_inventory` module (one record per VM/CT).
+- Compares this inventory with the FortiSOAR `v_m_instances` module and generates a synchronization report.
+
+This powers the **two‑row `VM Instances` list view**:
+
+- **Top grid:** Requested / managed instances (`v_m_instances`).
+- **Bottom grid:** Proxmox VMs/CTs that exist on Proxmox but are **not yet tracked** in `v_m_instances` (`proxmox_inventory` with `tracked = false`).
 
 ## Flow
 
-1. **List VMs** – Fetch all VMs on the default node (from the connector configuration).
-2. **List Containers** – Fetch all LXC containers on the default node.
+1. **List VMs** – Fetch all VMs on the default node (from the connector configuration), with config and computed disk/interface summaries.
+2. **List Containers** – Fetch all LXC containers on the default node, with config and computed disk/interface summaries.
 3. **Get VM Instances** – Load all `v_m_instances` records from FortiSOAR.
 4. **Build Sync Report** – Build Proxmox IDs and `vm_records`.
 5. **Compute Orphaned and Not Tracked** – Calculate:
    - **Orphaned:** Records with a `proxmoxId` that no longer exist on Proxmox.
-   - **Not Tracked:** Proxmox VMs/CTs that do not have a corresponding `v_m_instances` record.
-6. **Set Sync Report** – Create an HTML report.
-7. **Get Sync Log Record** – Look up a record with the name `Inventory-Sync-Log`.
-8. **Has Sync Log Record?** – If it exists → **Append Report to Sync Log**, otherwise → **Create Sync Log Record** (automatically created once if missing).
+   - **Not Tracked:** Proxmox VM/CT IDs that do not have a corresponding `v_m_instances` record.
+6. **Sync Proxmox VMs** – For each VM from Proxmox, **upsert** a record in `proxmox_inventory` via `/api/3/upsert/proxmox_inventory`:
+   - Keyed by `proxmoxId`.
+   - Stores name, node, type, status, CPU cores, memory (MB), disk (GB), last‑seen timestamp.
+   - Stores human‑friendly **Disks** and **Interfaces** summaries based on Proxmox config.
+   - Sets `tracked = true` if there is a matching `v_m_instances.proxmoxId`, otherwise `false`.
+7. **Sync Proxmox Containers** – Same as step 6, but for LXC containers.
+8. **Set Sync Report** – Create an HTML report.
+9. **Get Sync Log Record** – Look up a record with the name `Inventory-Sync-Log`.
+10. **Has Sync Log Record?** – If it exists → **Append Report to Sync Log**, otherwise → **Create Sync Log Record** (automatically created once if missing).
 
 ## Report contents
 
@@ -37,8 +52,9 @@ Behaviour:
 
 ## Prerequisites
 
-- **proxmox-api** connector (v1.1.0) with a configured **Default Node Name**
-- FortiSOAR **cyops_utilities** connector (for `make_cyops_request`, `no_op`)
+- **proxmox-api** connector (version **2.0.4** or later) with a configured **Default Node Name**.
+  - The connector’s `list_vms` / `list_containers` operations must support `include_config` and compute `disksSummary` and `interfacesSummary`.
+- FortiSOAR **cyops_utilities** connector (for `make_cyops_request`, `no_op`).
 
 ## File
 

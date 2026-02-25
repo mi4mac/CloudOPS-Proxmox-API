@@ -1,0 +1,150 @@
+{
+    "@context": "\/api\/3\/contexts\/SystemViewTemplate",
+    "@type": "SystemViewTemplate",
+    "type": "rows",
+    "config": {
+        "rows": [
+            {
+                "columns": [
+                    {
+                        "widgets": [
+                            {
+                                "type": "primaryDetail",
+                                "config": {
+                                    "wid": "b9e312f3-c743-4ca6-b418-096f9b864387",
+                                    "idField": "id",
+                                    "picklistFieldReadOnly": false,
+                                    "titleFieldReadOnly": false,
+                                    "featuredRelationship": {
+                                        "field": null,
+                                        "preText": "Under Investigation In",
+                                        "query": null,
+                                        "statusField": null,
+                                        "sort": []
+                                    },
+                                    "picklistField": "status",
+                                    "titleField": "name"
+                                }
+                            },
+                            {
+                                "type": "editableFormGroup",
+                                "config": {
+                                    "wid": "8f0c8dc7-fb6f-49c4-96c1-d9c86a893eb9",
+                                    "rows": [
+                                        {
+                                            "columns": [
+                                                {
+                                                    "fields": [
+                                                        {
+                                                            "name": "proxmoxId",
+                                                            "highlightMode": true,
+                                                            "linky": true,
+                                                            "readOnly": true
+                                                        },
+                                                        {
+                                                            "name": "proxmoxCluster",
+                                                            "highlightMode": true,
+                                                            "linky": true,
+                                                            "readOnly": false
+                                                        },
+                                                        {
+                                                            "name": "status",
+                                                            "highlightMode": true,
+                                                            "linky": true,
+                                                            "readOnly": false
+                                                        },
+                                                        {
+                                                            "name": "department",
+                                                            "highlightMode": true,
+                                                            "linky": true,
+                                                            "readOnly": false
+                                                        },
+                                                        {
+                                                            "name": "memoryMB",
+                                                            "highlightMode": true,
+                                                            "linky": true,
+                                                            "readOnly": false
+                                                        },
+                                                        {
+                                                            "name": "requestor",
+                                                            "highlightMode": true,
+                                                            "linky": true,
+                                                            "readOnly": false
+                                                        },
+                                                        {
+                                                            "name": "vMType",
+                                                            "highlightMode": true,
+                                                            "linky": true,
+                                                            "readOnly": false
+                                                        },
+                                                        {
+                                                            "name": "networkInterfaces",
+                                                            "highlightMode": true,
+                                                            "linky": true,
+                                                            "readOnly": false
+                                                        },
+                                                        {
+                                                            "name": "deleteAfter",
+                                                            "highlightMode": true,
+                                                            "linky": true,
+                                                            "readOnly": false
+                                                        }
+                                                    ],
+                                                    "style": "col-lg-6"
+                                                },
+                                                {
+                                                    "fields": [
+                                                        {
+                                                            "name": "businessJustification",
+                                                            "highlightMode": true,
+                                                            "linky": true,
+                                                            "readOnly": false
+                                                        },
+                                                        {
+                                                            "name": "logs",
+                                                            "highlightMode": true,
+                                                            "linky": true,
+                                                            "readOnly": false
+                                                        }
+                                                    ],
+                                                    "style": "col-lg-6"
+                                                }
+                                            ]
+                                        }
+                                    ],
+                                    "title": "VM Instance"
+                                }
+                            }
+                        ],
+                        "style": "col-lg-12"
+                    }
+                ],
+                "wid": "5f81959b-7fbe-4ae9-af6a-ec053a9ba971",
+                "_collapsed": false
+            }
+        ],
+        "wid": "2ece9f93-b712-4713-b2fb-de19712e4a32",
+        "actionButtons": [
+            {
+                "id": "/api/3/workflows/41ea49b2-01a1-47c0-a66b-29e1f844135d",
+                "name": "Destroy VM Instance",
+                "icon": "fa fa-trash"
+            },
+            {
+                "id": "/api/3/workflows/a1b2c3d4-e5f6-7890-abcd-0a0b0c0d0e0f",
+                "name": "Refresh Status from Proxmox",
+                "icon": "fa fa-sync"
+            }
+        ],
+        "metadata": []
+    },
+    "module": "v_m_instances",
+    "filters": [],
+    "isDefault": true,
+    "visible": true,
+    "viewOptions": "detail",
+    "name": "Base Template",
+    "system": false,
+    "uuid": "modules-v_m_instances-detail",
+    "newUuid": "30db1fd4-b128-4fb9-94fd-c3c7ed52e008"
+}

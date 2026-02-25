@@ -1,0 +1,56 @@
+[
+    {
+        "@context": "\/api\/3\/contexts\/Person",
+        "@type": "Person",
+        "firstname": "atlas",
+        "lastname": "Me",
+        "title": null,
+        "department": "IT",
+        "email": "atlas@fortielab.com",
+        "description": null,
+        "phoneFax": null,
+        "phoneHome": null,
+        "phoneMobile": null,
+        "phoneWork": null,
+        "csActive": true,
+        "accessType": "Concurrent",
+        "companyId": null,
+        "type": null,
+        "userType": null,
+        "avatar": null,
+        "uuid": "ed35f5db-1eb0-47f0-abc2-9c2fdf025ca6",
+        "roles": [
+            "\/api\/3\/roles\/7b56d139-7ee6-455e-8658-35727e202b8a"
+        ],
+        "teams": [
+            "\/api\/3\/teams\/6e569c09-3bd4-40f1-98b0-cc994464c3c5"
+        ],
+        "userId": "a1a94168-1c23-44fc-8250-47ebdb17f1e7",
+        "@settings": "\/api\/3\/user_settings\/ed35f5db-1eb0-47f0-abc2-9c2fdf025ca6",
+        "@userSettings": {
+            "user": {
+                "view": {
+                    "details": {
+                        "v_m_instances": {
+                            "subtabs": {
+                                "Related Records": "network_interfaces"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "user": {
+            "loginid": "atlas",
+            "uuid": "a1a94168-1c23-44fc-8250-47ebdb17f1e7",
+            "user_type": 2,
+            "access_type": "Concurrent",
+            "status": 1,
+            "domain": "10.222.248.34",
+            "bind_name": null,
+            "tenant": "exo-ui",
+            "nfa_status": "Disabled",
+            "is_logged_in": false
+        }
+    }
+]

@@ -1,0 +1,17 @@
+{
+    "NETWORK_INTERFACES": {
+        "MODULE_DETAILS": {
+            "SINGULAR_NAME": "Network Interface",
+            "PLURAL_NAME": "Network Interfaces"
+        },
+        "FIELDS": {
+            "NAME": "Name",
+            "IPADDRESS": "IP Address",
+            "NETMASK": "Netmask",
+            "GATEWAY": "Gateway",
+            "DESCRIPTION": "Description",
+            "DNS": "DNS",
+            "VMINSTANCES": "VM Instances"
+        }
+    }
+}

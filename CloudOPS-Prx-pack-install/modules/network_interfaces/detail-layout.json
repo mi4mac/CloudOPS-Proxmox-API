@@ -1,0 +1,144 @@
+{
+    "@context": "\/api\/3\/contexts\/SystemViewTemplate",
+    "@type": "SystemViewTemplate",
+    "type": "rows",
+    "config": {
+        "rows": [
+            {
+                "columns": [
+                    {
+                        "widgets": [
+                            {
+                                "type": "primaryDetail",
+                                "config": {
+                                    "wid": "da5fde06-bdf3-405b-aefb-bcaa8aa39d34",
+                                    "idField": "id",
+                                    "picklistFieldReadOnly": false,
+                                    "titleFieldReadOnly": false,
+                                    "featuredRelationship": {
+                                        "field": "vMInstances",
+                                        "preText": "Under Investigation In",
+                                        "query": {
+                                            "sort": [],
+                                            "limit": 30,
+                                            "logic": "AND",
+                                            "filters": []
+                                        },
+                                        "statusField": "status",
+                                        "sort": []
+                                    },
+                                    "titleField": "iPAddress"
+                                }
+                            },
+                            {
+                                "type": "editableFormGroup",
+                                "config": {
+                                    "wid": "1ed75111-6c92-4b13-8380-4463363a9f6b",
+                                    "rows": [
+                                        {
+                                            "columns": [
+                                                {
+                                                    "fields": [
+                                                        {
+                                                            "name": "iPAddress",
+                                                            "highlightMode": true,
+                                                            "linky": true,
+                                                            "readOnly": false
+                                                        },
+                                                        {
+                                                            "name": "netmask",
+                                                            "highlightMode": true,
+                                                            "linky": true,
+                                                            "readOnly": false
+                                                        },
+                                                        {
+                                                            "name": "gateway",
+                                                            "highlightMode": true,
+                                                            "linky": true,
+                                                            "readOnly": false
+                                                        },
+                                                        {
+                                                            "name": "dNS",
+                                                            "highlightMode": true,
+                                                            "linky": true,
+                                                            "readOnly": false
+                                                        }
+                                                    ],
+                                                    "style": "col-lg-6"
+                                                },
+                                                {
+                                                    "fields": [
+                                                        {
+                                                            "name": "description",
+                                                            "highlightMode": true,
+                                                            "linky": true,
+                                                            "readOnly": false
+                                                        }
+                                                    ],
+                                                    "style": "col-lg-6"
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                }
+                            }
+                        ],
+                        "style": "col-lg-12"
+                    }
+                ],
+                "wid": "fe06a092-7c7e-4a46-9e5b-605b8289a0dc",
+                "_collapsed": false
+            },
+            {
+                "columns": [
+                    {
+                        "widgets": [
+                            {
+                                "type": "tabs",
+                                "config": {
+                                    "tabs": [
+                                        {
+                                            "title": "Related Records",
+                                            "widget": {
+                                                "type": "relationship.subtab",
+                                                "config": {
+                                                    "excludes": [
+                                                        "notes",
+                                                        "comments",
+                                                        "userOwners",
+                                                        "attachments"
+                                                    ],
+                                                    "wid": "d38f50a5-3309-49c3-9e52-806950a47582"
+                                                },
+                                                "visible": true
+                                            },
+                                            "show": true,
+                                            "visible": true,
+                                            "icon": "fa fa-none"
+                                        }
+                                    ],
+                                    "wid": "89dac1c3-c204-430d-8602-d18dccf93f66"
+                                }
+                            }
+                        ],
+                        "style": "col-lg-12"
+                    }
+                ],
+                "wid": "38b9d11b-69ef-4373-9212-0d2160572fe2",
+                "_collapsed": false
+            }
+        ],
+        "wid": "78842948-3b67-44cb-8915-fc074c0237ea",
+        "actionButtons": [],
+        "metadata": []
+    },
+    "module": "network_interfaces",
+    "filters": [],
+    "isDefault": true,
+    "visible": true,
+    "viewOptions": "detail",
+    "name": "Base Template",
+    "system": false,
+    "uuid": "modules-network_interfaces-detail",
+    "newUuid": "e9622e1a-5d4e-4c0c-88b6-ea32318387d5"
+}

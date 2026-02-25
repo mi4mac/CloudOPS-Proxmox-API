@@ -1,0 +1,19 @@
+{
+    "V_M_INSTANCES": {
+        "MODULE_DETAILS": {
+            "SINGULAR_NAME": "VM Instance",
+            "PLURAL_NAME": "VM Instances"
+        },
+        "FIELDS": {
+            "LOGS": "Logs",
+            "DELETEAFTER": "Delete After",
+            "VMTYPE": "VM Type",
+            "DEPARTMENT": "Department",
+            "BUSINESSJUSTIFICATION": "Business Justification",
+            "NAME": "Name",
+            "REQUESTOR": "Requestor",
+            "NETWORKINTERFACES": "Network Interfaces",
+            "STATUS": "Status"
+        }
+    }
+}
