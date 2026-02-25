@@ -138,9 +138,9 @@ Create the following global variables **in this order**.
 
 ---
 
-## Verification
+## Verification (optional but recommended)
 
-After creating all variables:
+After creating the variables (if you decide to use them):
 
 1. **Check the list**
    - Go to **Settings → Global Variables**.
@@ -158,7 +158,7 @@ After creating all variables:
 
 ---
 
-## Using the variables in playbooks
+## Using the variables in playbooks (optional overrides)
 
 You can access the variables in playbooks like this:
 
@@ -170,20 +170,20 @@ You can access the variables in playbooks like this:
 # API token (for Authorization header)
 {{globalVars.proxmox_api_token}}
 
-# Node and storage
-{{globalVars.proxmox_node_name or 'pve'}}
-{{globalVars.proxmox_storage}}
+# Node and storage (all have safe in-playbook defaults)
+{{globalVars.proxmox_node_name or 'pve'}}           {# default node if unset #}
+{{globalVars.proxmox_storage | default('local-lvm')}} {# default storage if unset #}
 
-# Network configuration
-{{globalVars.proxmox_bridge}}
-{{globalVars.proxmox_vlan_tag}}
-{{globalVars.proxmox_gateway}}
+# Network configuration (all have safe in-playbook defaults)
+{{globalVars.proxmox_bridge | default('vmbr0')}}
+{{globalVars.proxmox_vlan_tag | default('255')}}
+{{globalVars.proxmox_gateway  | default('10.255.255.1')}}
 
-# Templates
-{{globalVars.proxmox_template_rocky9_vm}}
-{{globalVars.proxmox_template_ubuntu2204_ct}}
-{{globalVars.proxmox_template_debian13_ct}}
-{{globalVars.proxmox_template_rockylinux9_ct}}
+# Templates (all have safe in-playbook defaults)
+{{globalVars.proxmox_template_rocky9_vm        | default(9000)}}
+{{globalVars.proxmox_template_ubuntu2204_ct    | default('local:vztmpl/ubuntu-22.04-standard_22.04-1_amd64.tar.zst')}}
+{{globalVars.proxmox_template_debian13_ct      | default('local:vztmpl/debian-13-standard_13.1-2_amd64.tar.zst')}}
+{{globalVars.proxmox_template_rockylinux9_ct   | default('local:vztmpl/rockylinux-9-default_20240912_amd64.tar.xz')}}
 ```
 
 ---

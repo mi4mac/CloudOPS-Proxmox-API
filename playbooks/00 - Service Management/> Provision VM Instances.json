@@ -130,7 +130,7 @@
                 "name": "API Connector Proxmox",
                 "config": "''",
                 "params": {
-                    "storage": "{{ globalVars.proxmox_storage }}"
+                    "storage": "{{ globalVars.proxmox_storage | default('local-lvm') }}"
                 },
                 "version": "2.0.0",
                 "connector": "proxmox-api",
