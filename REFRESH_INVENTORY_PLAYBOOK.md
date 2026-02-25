@@ -50,6 +50,8 @@ Behaviour:
 - If this record already exists, the HTML report is appended on every run to the **Logs** field of that record.
 - If the record does **not** exist, the step **Create Sync Log Record** will automatically create it (with just `name = Inventory-Sync-Log`). The first run in this state only shows the report in the **Execution Details**; from the second run onwards, the report is also appended to the log record.
 
+**Design note:** In the FortiSOAR playbook UI the steps **Append Report to Sync Log**, **Create Sync Log Record** and **Has Sync Log Record** can look visually “unconnected”, but they are still wired via the conditional step **Has Sync Log Record** and are required for the sync‑log feature to work. Do **not** delete these steps unless you intentionally remove the entire sync‑log behaviour. The step **No Sync Log Record** is optional and can be safely removed if you do not need it.
+
 ## Prerequisites
 
 - **proxmox-api** connector (version **2.0.4** or later) with a configured **Default Node Name**.
