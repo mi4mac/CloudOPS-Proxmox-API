@@ -13,14 +13,14 @@ Contents
 --------
 - Modules and views for VM instances and network interfaces
 - Playbooks for requesting, provisioning, destroying, and refreshing Proxmox inventory
-- Global variables for Proxmox connection and templates
+- Optional global variables to override default node, storage, network, and template settings
 
 Installation
 ------------
 1. Import the connector package `API Connector Proxmox.tgz` in FortiSOAR.
-2. Import this solution pack `solution-pack-proxmox-api-migration.tgz`.
-3. Update the Proxmox-related global variables (host, port, token, node, storage, templates).
-4. Configure the `proxmox-api` connector with the correct host, port, and token.
+2. Configure the `proxmox-api` connector with the correct **host**, **port**, and **API token** (these values are read from the connector configuration, not from global variables).
+3. Import this solution pack `solution-pack-proxmox-api-migration.tgz` or `solution-pack-proxmox-api-migration.zip`.
+4. (Optional) If you want to override the built‑in defaults for node, storage, network, or templates, create/update the corresponding Proxmox global variables as described in `SCHRITT_2_GLOBAL_VARIABLES.md`.
 
 Upgrade
 -------
@@ -28,7 +28,7 @@ To upgrade from a previous version of this pack:
 
 1. **Connector**: Ensure you are using the latest `API Connector Proxmox.tgz` shipped with this repo (it contains fixes for DELETE, container features, etc.).
 2. **Pack import**: Import the updated `solution-pack-proxmox-api-migration.zip` (or `.tgz`) into FortiSOAR. Existing data in `v_m_instances` and `network_interfaces` is preserved.
-3. **Global variables**: After import, review the Proxmox global variables and adjust for your environment (host, token, templates). See `SCHRITT_2_GLOBAL_VARIABLES.md` for details.
+3. **Global variables** (optional): After import, you can review the Proxmox global variables and adjust them if you want to override the defaults for node, storage, network, or templates. See `SCHRITT_2_GLOBAL_VARIABLES.md` for details.
 4. **Roles / permissions**: Make sure users who should manage VMs have access to the `VM Instances` module and relevant playbooks.
 
 Post-upgrade quick test

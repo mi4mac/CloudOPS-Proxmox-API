@@ -2,12 +2,9 @@
 
 ## Overview
 
-The Proxmox‑related global variables are **already included in the content pack** (`info.json` + `playbooks/globalVariables.json`) and are usually created automatically when you **import the pack** into FortiSOAR.
+As of the current pack version, the **Proxmox API connection** (host, port, token) is configured **only on the `proxmox-api` connector configuration** and is **no longer read from global variables**.  
 
-- **If they already exist after pack import:**  
-  Just verify that `proxmox_api_token` is encrypted and adjust the values (host, token, templates, etc.) for your environment.
-- **If they were not created automatically:**  
-  Create them manually as described below.
+The global variables described below are now **optional overrides** for defaults used by the playbooks (node, storage, network, templates). The pack works out of the box with the connector configuration alone; use these globals only if you want to centralize or override those defaults.
 
 **Estimated effort:** 15–20 minutes
 
@@ -20,9 +17,9 @@ The Proxmox‑related global variables are **already included in the content pac
 1. Log in to FortiSOAR.
 2. Navigate to **Settings → Global Variables**.
 
-### 2. Create the global variables
+### 2. (Optional) Create the global variables
 
-Create the following global variables **in this order**.
+If you want to override the built‑in defaults, create the following global variables **in this order**.
 
 #### 2.1 Proxmox API host
 
