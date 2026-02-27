@@ -35,6 +35,10 @@
             "proxmox_inventory": {
                 "name": "Proxmox Inventory",
                 "apiName": "proxmox_inventory"
+            },
+            "docker_containers": {
+                "name": "Docker Containers",
+                "apiName": "docker_containers"
             }
         },
         "viewTemplates": {
@@ -61,6 +65,15 @@
                 "apiName": "proxmox_inventory",
                 "views": [
                     "list"
+                ]
+            },
+            "docker_containers": {
+                "name": "Docker Containers",
+                "apiName": "docker_containers",
+                "views": [
+                    "list",
+                    "form",
+                    "detail"
                 ]
             }
         },

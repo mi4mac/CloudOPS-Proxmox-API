@@ -1,0 +1,19 @@
+{
+  "DOCKER_CONTAINERS": {
+    "MODULE_DETAILS": {
+      "SINGULAR_NAME": "Docker Container",
+      "PLURAL_NAME": "Docker Containers"
+    },
+    "FIELDS": {
+      "DOCKERID": "dockerId",
+      "NAME": "name",
+      "IMAGE": "image",
+      "STATUS": "status",
+      "NODE": "node",
+      "CPU_CORES": "cpuCores",
+      "MEMORY_MB": "memoryMB",
+      "SWAP_MB": "swapMB",
+      "LAST_SEEN": "lastSeen"
+    }
+  }
+}

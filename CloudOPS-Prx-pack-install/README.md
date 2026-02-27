@@ -10,8 +10,9 @@ What’s included
   - `VM Instances`, `Network Interfaces` and `Proxmox Inventory` modules.
   - Playbooks for request → approve → provision → destroy → cleanup, plus **> Refresh Proxmox Inventory**.
   - UI layouts for list/detail views, including the **two‑row VM Instances list** (top: requested VMs/CTs, bottom: Proxmox inventory not tracked in `v_m_instances`).
+  - Optional **Docker Containers** module, navigation entry, roles, and the **> Refresh Docker Inventory** playbook to sync Docker Engine containers into FortiSOAR.
 - Prebuilt content:
-  - `solution-pack-proxmox-api-migration.zip` – Importable solution pack built from `CloudOPS-Prx-pack-install/` (includes the `proxmox_inventory` module and inventory views).
+  - `solution-pack-proxmox-api-migration.zip` – Importable solution pack built from `CloudOPS-Prx-pack-install/` (includes the `proxmox_inventory` module, inventory views, and the optional Docker Containers module + playbook wiring).
   - `API Connector Proxmox.tgz` – Importable connector package.
 - Documentation (English):
   - `PACK_README.md` – Pack overview, installation & upgrade.
@@ -46,6 +47,38 @@ Installation (high level)
 
 4. **Quick test**
    - Follow `TESTING_GUIDE.md` for a small CT/VM provision + destroy smoke test.
+
+Optional: Docker inventory integration
+--------------------------------------
+The pack can also surface Docker containers in a dedicated **Docker Containers** module and menu entry.
+
+Prerequisites:
+- A reachable Docker Engine API (for example `http://192.168.222.223:2375`).
+- The **Docker** FortiSOAR connector installed and configured (repository: `mi4mac/docker`).
+
+Steps:
+1. **Configure the Docker connector**  
+   - Server Address: Docker host IP (for example `192.168.222.223`).  
+   - Port: Docker Engine TCP port (for example `2375`).  
+   - Protocol: `HTTP` (or `HTTPS` if you have TLS configured).  
+   - Verify SSL: disabled for plain HTTP, or configured with the correct CA/cert paths for HTTPS.  
+   - Use the connector’s **Get Version** / **Get Info** operations to confirm connectivity.
+
+2. **Import the solution pack**  
+   - Import `solution-pack-proxmox-api-migration.zip` as usual.  
+   - During import you should see:
+     - The **Docker Containers** module as an existing module (if you already created it via UI) or a new module.  
+     - The **Service Management → Docker** navigation entry.
+
+3. **Make `dockerId` unique (post‑install)**  
+   - In FortiSOAR go to **Settings → Modules → Docker Containers**.  
+   - Ensure all existing Docker Container records have **unique** `dockerId` values (or clear them out if you are starting fresh).  
+   - Configure `dockerId` as the unique key for the module and **Publish All Modules**.  
+   - If you see an error like *“could not create unique index … duplicate records exist”*, delete the duplicates first and then publish again.
+
+4. **Refresh Docker inventory**  
+   - Run the **> Refresh Docker Inventory** playbook in the **00 - Service Management** collection.  
+   - The playbook uses the Docker connector’s `list_containers` operation to upsert one record per container into the `docker_containers` module, keyed by `dockerId`, and updates `name`, `image`, `status`, and `lastSeen` on subsequent runs.
 
 Security & placeholders
 -----------------------

@@ -542,6 +542,21 @@
                             }
                         },
                         "title": "VM Instances"
+                    },
+                    {
+                        "editMode": false,
+                        "icon": "fa fa-cube",
+                        "require": {
+                            "action": "read",
+                            "module": "docker_containers"
+                        },
+                        "state": {
+                            "name": "main.modules.list",
+                            "parameters": {
+                                "module": "docker_containers"
+                            }
+                        },
+                        "title": "Docker"
                     }
                 ],
                 "mergeType": "merge",

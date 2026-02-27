@@ -25,7 +25,9 @@ Before installing the connector and pack, prepare Proxmox as follows (see `PROXM
 Contents
 --------
 - Modules and views for VM instances, network interfaces, and **Proxmox inventory** (`proxmox_inventory`).
+- Optional **Docker Containers** module and views for Docker Engine containers (see “Docker inventory (optional)” below).
 - Playbooks for requesting, provisioning, destroying, and refreshing Proxmox inventory.
+- The **> Refresh Docker Inventory** playbook (optional) to sync Docker Engine containers into the Docker Containers module.
 - Optional global variables to override default node, storage, network, and template settings
 - A sample **actor** (`atlas Me`) and an **AD user enrichment** flow that demonstrate how to plug into an existing directory / user model – these must be adapted to the real users and directory integration in your environment.
 
@@ -68,6 +70,25 @@ Usage
   - Sync Proxmox VMs/CTs into the `proxmox_inventory` module (including CPU, memory, disk, disks summary, interfaces summary).
   - Mark items as **tracked** when they have a corresponding `v_m_instances` record.
   - Populate the second grid in the `VM Instances` list view with **untracked** Proxmox VMs/CTs (inventory items not yet requested in FortiSOAR).
+
+Docker inventory (optional)
+---------------------------
+If you also want to track Docker containers in FortiSOAR:
+
+1. **Install and configure the Docker connector**
+   - Install the Docker connector (for example from the `mi4mac/docker` repository).  
+   - Configure it to talk to your Docker Engine API (for example `http://192.168.222.223:2375`) and verify **Get Version** / **Get Info** succeed.
+
+2. **Docker Containers module**
+   - This pack includes an optional **Docker Containers** module, views, navigation item under **Service Management → Docker**, and the **> Refresh Docker Inventory** playbook.
+   - After import, go to **Settings → Modules → Docker Containers** and ensure:
+     - All existing records have unique `dockerId` values (or clear records if you are starting fresh).
+     - `dockerId` is configured as the unique key and **Publish All Modules** succeeds.  
+       - If you see a publish error about a *unique index* and **duplicate records**, delete the duplicate `dockerId` rows first and publish again.
+
+3. **Refresh Docker inventory**
+   - Run the **> Refresh Docker Inventory** playbook in the **00 - Service Management** collection.
+   - The playbook calls the Docker `list_containers` operation and upserts one record per container into the `docker_containers` module, keyed by `dockerId`. Subsequent runs update existing records (status, image, `lastSeen`, etc.) instead of creating duplicates.
 
 Related documentation
 ---------------------

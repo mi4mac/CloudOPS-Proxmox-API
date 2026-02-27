@@ -1,0 +1,64 @@
+{
+  "@context": "/api/3/contexts/SystemViewTemplate",
+  "@type": "SystemViewTemplate",
+  "type": "rows",
+  "config": {
+    "rows": [
+      {
+        "columns": [
+          {
+            "widgets": [
+              {
+                "type": "editableForm",
+                "config": {
+                  "fields": [
+                    "dockerId",
+                    "name",
+                    "image",
+                    "status",
+                    "node",
+                    "cpuCores",
+                    "memoryMB",
+                    "swapMB",
+                    "lastSeen"
+                  ]
+                }
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "columns": [
+          {
+            "widgets": [
+              {
+                "type": "tabs",
+                "config": {
+                  "tabs": [
+                    {
+                      "title": "Related Records",
+                      "widget": {
+                        "type": "relationship.subtab",
+                        "config": []
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "module": "docker_containers",
+  "filters": [],
+  "isDefault": true,
+  "visible": true,
+  "viewOptions": "detail",
+  "name": "Base Template",
+  "system": false,
+  "uuid": "modules-docker_containers-detail",
+  "newUuid": "df57ea9f-cd48-4aa4-a0e5-5e4bfb467525"
+}
