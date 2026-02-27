@@ -13,7 +13,8 @@ What’s included
   - Optional **Docker Containers** module, navigation entry, roles, and the **> Refresh Docker Inventory** playbook to sync Docker Engine containers into FortiSOAR.
 - Prebuilt content:
   - `solution-pack-proxmox-api-migration.zip` – Importable solution pack built from `CloudOPS-Prx-pack-install/` (includes the `proxmox_inventory` module, inventory views, and the optional Docker Containers module + playbook wiring).
-  - `API Connector Proxmox.tgz` – Importable connector package.
+  - `API Connector Proxmox.tgz` – Importable Proxmox connector package.
+  - `docker-2.0.1.tgz` – Importable Docker connector package (from the `mi4mac/docker` connector).
 - Documentation (English):
   - `PACK_README.md` – Pack overview, installation & upgrade.
   - `SCHRITT_2_GLOBAL_VARIABLES.md` – Proxmox‑related global variables (step‑by‑step).
@@ -34,12 +35,15 @@ Installation (high level)
      - Create the `FortiSOAR-Role` with the required privileges.
      - Create an API token for that user and assign the role/ACLs.
 
-2. **Connector**
-   - Build the connector package:
+2. **Connectors**
+   - Proxmox:
      ```bash
      tar -czvf "API Connector Proxmox.tgz" "proxmox-api/"
      ```
-   - Import `API Connector Proxmox.tgz` into FortiSOAR and create at least one configuration (host, port, API token).
+     Import `API Connector Proxmox.tgz` into FortiSOAR and create at least one configuration (host, port, API token).
+   - Docker:
+     - Import `docker-2.0.1.tgz` (Docker connector) into FortiSOAR.
+     - Configure it to talk to your Docker Engine API endpoint (for example `http://192.168.222.223:2375`) and verify **Get Version** / **Get Info** succeed.
 
 3. **Solution pack**
    - Import `solution-pack-proxmox-api-migration.zip` via FortiSOAR Content Hub / Packs.

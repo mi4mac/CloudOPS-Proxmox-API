@@ -8,6 +8,7 @@ Requirements
 - FortiSOAR 7.2.0 or later
 - Proxmox VE with API access and a token
 - Proxmox API connector (`proxmox-api`) installed from `API Connector Proxmox.tgz`
+- Docker Engine API reachable from FortiSOAR (for Docker inventory, via `docker-2.0.1.tgz`)
 
 Proxmox preparation (mandatory)
 -------------------------------
@@ -34,9 +35,11 @@ Contents
 Installation
 ------------
 1. Import the connector package `API Connector Proxmox.tgz` in FortiSOAR.
-2. Configure the `proxmox-api` connector with the correct **host**, **port**, and **API token** (these values are read from the connector configuration, not from global variables). The inventory features described below require connector version **2.0.4** or later.
-3. Import this solution pack from `solution-pack-proxmox-api-migration.zip` (built from `CloudOPS-Prx-pack-install/`).
-4. (Optional) If you want to override the built‑in defaults for node, storage, network, or templates, create/update the corresponding Proxmox global variables as described in `SCHRITT_2_GLOBAL_VARIABLES.md`.
+2. Import the Docker connector package `docker-2.0.1.tgz` in FortiSOAR.
+3. Configure the `proxmox-api` connector with the correct **host**, **port**, and **API token** (these values are read from the connector configuration, not from global variables). The inventory features described below require connector version **2.0.4** or later.
+4. Configure the `docker` connector with the correct Docker Engine API endpoint (for example `http://192.168.222.223:2375`) and verify **Get Version** / **Get Info** succeed.
+5. Import this solution pack from `solution-pack-proxmox-api-migration.zip` (built from `CloudOPS-Prx-pack-install/`).
+6. (Optional) If you want to override the built‑in defaults for node, storage, network, or templates, create/update the corresponding Proxmox global variables as described in `SCHRITT_2_GLOBAL_VARIABLES.md`.
 
 Upgrade
 -------
