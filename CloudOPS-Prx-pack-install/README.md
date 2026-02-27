@@ -12,7 +12,7 @@ What’s included
   - UI layouts for list/detail views, including the **two‑row VM Instances list** (top: requested VMs/CTs, bottom: Proxmox inventory not tracked in `v_m_instances`).
   - Optional **Docker Containers** module, navigation entry, roles, and the **> Refresh Docker Inventory** playbook to sync Docker Engine containers into FortiSOAR.
 - Prebuilt content:
-  - `solution-pack-proxmox-api-migration.zip` – Importable solution pack built from `CloudOPS-Prx-pack-install/` (includes the `proxmox_inventory` module, inventory views, and the optional Docker Containers module + playbook wiring).
+  - `CloudOPS Solution Pack Proxmox_Docker.zip` – Importable solution pack built from `CloudOPS-Prx-pack-install/` (includes the `proxmox_inventory` module, inventory views, and the optional Docker Containers module + playbook wiring).
   - `API Connector Proxmox.tgz` – Importable connector package.
 - Documentation (English):
   - `PACK_README.md` – Pack overview, installation & upgrade.
@@ -42,7 +42,7 @@ Installation (high level)
    - Import `API Connector Proxmox.tgz` into FortiSOAR and create at least one configuration (host, port, API token).
 
 3. **Solution pack**
-   - Import `solution-pack-proxmox-api-migration.zip` via FortiSOAR Content Hub / Packs.
+   - Import `CloudOPS Solution Pack Proxmox_Docker.zip` via FortiSOAR Content Hub / Packs.
    - (Optional) Adjust global variables for your environment (node, storage, templates) as described in `SCHRITT_2_GLOBAL_VARIABLES.md` if you want to override the built‑in defaults.
 
 4. **Quick test**
@@ -65,7 +65,7 @@ Steps:
    - Use the connector’s **Get Version** / **Get Info** operations to confirm connectivity.
 
 2. **Import the solution pack**  
-   - Import `solution-pack-proxmox-api-migration.zip` as usual.  
+   - Import `CloudOPS Solution Pack Proxmox_Docker.zip` as usual.  
    - During import you should see:
      - The **Docker Containers** module as an existing module (if you already created it via UI) or a new module.  
      - The **Service Management → Docker** navigation entry.

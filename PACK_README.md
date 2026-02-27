@@ -38,7 +38,7 @@ Installation
 2. Import the Docker connector package `docker-2.0.1.tgz` in FortiSOAR.
 3. Configure the `proxmox-api` connector with the correct **host**, **port**, and **API token** (these values are read from the connector configuration, not from global variables). The inventory features described below require connector version **2.0.4** or later.
 4. Configure the `docker` connector with the correct Docker Engine API endpoint (for example `http://192.168.222.223:2375`) and verify **Get Version** / **Get Info** succeed.
-5. Import this solution pack from `solution-pack-proxmox-api-migration.zip` (built from `CloudOPS-Prx-pack-install/`).
+5. Import this solution pack from `CloudOPS Solution Pack Proxmox_Docker.zip` (built from `CloudOPS-Prx-pack-install/`).
 6. (Optional) If you want to override the built‑in defaults for node, storage, network, or templates, create/update the corresponding Proxmox global variables as described in `SCHRITT_2_GLOBAL_VARIABLES.md`.
 
 Upgrade
@@ -46,7 +46,7 @@ Upgrade
 To upgrade from a previous version of this pack:
 
 1. **Connector**: Ensure you are using the latest `API Connector Proxmox.tgz` (version **2.0.4** or later) shipped with this repo. It includes improved inventory operations (`list_vms` / `list_containers` with config fetching and human‑friendly disk/interface summaries).
-2. **Pack import**: Import the updated `solution-pack-proxmox-api-migration.zip` into FortiSOAR. Existing data in `v_m_instances`, `network_interfaces` and `proxmox_inventory` is preserved.
+2. **Pack import**: Import the updated `CloudOPS Solution Pack Proxmox_Docker.zip` into FortiSOAR. Existing data in `v_m_instances`, `network_interfaces` and `proxmox_inventory` is preserved.
 3. **Global variables** (optional): After import, you can review the Proxmox global variables and adjust them if you want to override the defaults for node, storage, network, or templates. See `SCHRITT_2_GLOBAL_VARIABLES.md` for details.
 4. **Roles / permissions**: Make sure users who should manage VMs have access to the `VM Instances` and `Proxmox Inventory` modules and relevant playbooks.
 
