@@ -559,7 +559,7 @@
         {
             "@type": "WorkflowGroup",
             "name": "Notes",
-            "description": "This playbook add the comments to the record in fortisoar, will will auto trigger the playbook called \"> Update comments on Fortigate\"",
+            "description": "This playbook add the comments to the record in fortisoar, and will auto trigger the playbook called \"> Update comments on Fortigate\"",
             "type": "note",
             "isCollapsed": false,
             "hideInLogs": true,

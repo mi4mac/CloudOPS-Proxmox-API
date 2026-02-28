@@ -29,7 +29,7 @@ Contents
 - Optional **Docker Containers** module and views for Docker Engine containers (see “Docker inventory (optional)” below).
 - Playbooks for requesting, provisioning, destroying, and refreshing Proxmox inventory.
 - The **> Refresh Docker Inventory** playbook (optional) to sync Docker Engine containers into the Docker Containers module.
-- **Policy playbooks (FortiGate)**: Import Fortigate Policies, Review Policy, **> Update comments on Fortigate**. The **Update Comments on Policy** step must point to the correct FortiGate connector and config (connector name **Fortinet FortiGate**, version **5.4.0** recommended; params without `action` and `status`). Config UUIDs are instance-specific—set the step to your environment’s connector and configuration after import. The pack uses the 5.4.0 `update_policy` param shape; the older 5.2.0 shape had optional empty `action` and `status` keys, which are omitted in 5.4.0 for comment-only updates.
+- **Policy playbooks (FortiGate)**: Import Fortigate Policies, Review Policy, **> Update comments on Fortigate**. See **Policy playbooks (FortiGate)** below for setup and post-import config UUID replacement.
 - Optional global variables to override default node, storage, network, and template settings
 - A sample **actor** (`atlas Me`) and an **AD user enrichment** flow that demonstrate how to plug into an existing directory / user model – these must be adapted to the real users and directory integration in your environment.
 
@@ -66,6 +66,27 @@ Post-upgrade quick test
    - Configure a schedule to run the **Destroy Expired VM Instances** playbook.  
    - It finds VM Instances with `deleteAfter` in the past, status **Active**, and a non-empty `Proxmox ID`, then calls the destroy workflow for each and sends a summary email to the infrastructure team.
 
+Policy playbooks (FortiGate)
+----------------------------
+The pack includes the **00 - Policy Playbooks** collection: **Import Fortigate Policies**, **Review Policy**, and **> Update comments on Fortigate**, plus the **Policies** module and **SOC Review** dashboard.
+
+**Prerequisites**
+- FortiGate connector (**Fortinet FortiGate**) installed and at least one configuration pointing at your firewall.
+- Connector version **5.4.0** recommended (the playbooks use the 5.4.0 `update_policy` param shape; 5.2.0 had optional `action` and `status` keys, which are omitted here).
+
+**Post-import: config UUID replacement (required)**  
+The **Update Comments on Policy** step in **> Update comments on Fortigate** is stored with a placeholder config UUID (e.g. `a18df41f-7370-42b3-b2c2-c21162eadd07`). Config UUIDs are instance-specific. After importing the pack:
+
+1. Open **Playbooks** → **00 - Policy Playbooks** → **> Update comments on Fortigate**.
+2. Open the **Update Comments on Policy** step.
+3. Set **Connector** to your FortiGate connector and **Configuration** to the config that targets the firewall you want to update.
+4. Save the playbook.
+
+**Playbook roles**
+- **Import Fortigate Policies**: Fetches policies from the FortiGate and upserts them into the **Policies** module. Can be run manually or on a schedule.
+- **Review Policy**: Manual task for SOC analysts to review a policy and add comments; submits to the record and triggers **> Update comments on Fortigate** when justification is added.
+- **> Update comments on Fortigate**: Triggered when a policy’s `businessJustification` changes; pushes the comment to the FortiGate policy and marks the policy review complete (sets `reviewComplete`, `lastReviewedTime`, `nextReviewTime`, `auditStatus`).
+
 Usage
 -----
 - Use the service management playbooks to request and provision VMs/containers.
@@ -97,6 +118,7 @@ If you also want to track Docker containers in FortiSOAR:
 
 Related documentation
 ---------------------
+- `POLICY_PLAYBOOKS.md` – Policy playbooks (FortiGate): setup, config UUID replacement, and playbook roles.
 - `SCHRITT_2_GLOBAL_VARIABLES.md` – Step‑by‑step guide for the Proxmox global variables used by this pack.
 - `REFRESH_INVENTORY_PLAYBOOK.md` – Design and behaviour of the "> Refresh Proxmox Inventory" playbook.
 - `TOKEN_CAPABILITIES.md` – Overview of the Proxmox API token role and which connector operations it enables.
