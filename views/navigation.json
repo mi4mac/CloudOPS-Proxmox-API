@@ -515,6 +515,21 @@
                 "items": [
                     {
                         "editMode": false,
+                        "icon": "icon icon-single-line-item",
+                        "require": {
+                            "action": "read",
+                            "module": "policies"
+                        },
+                        "state": {
+                            "name": "main.modules.list",
+                            "parameters": {
+                                "module": "policies"
+                            }
+                        },
+                        "title": "Firewall Policies"
+                    },
+                    {
+                        "editMode": false,
                         "icon": "fa fa-rss",
                         "require": {
                             "action": "read",

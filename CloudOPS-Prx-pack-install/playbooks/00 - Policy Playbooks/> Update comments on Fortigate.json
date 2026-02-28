@@ -1,0 +1,151 @@
+{
+    "@type": "Workflow",
+    "triggerLimit": null,
+    "name": "> Update comments on Fortigate",
+    "aliasName": null,
+    "tag": null,
+    "description": null,
+    "isActive": true,
+    "debug": false,
+    "singleRecordExecution": false,
+    "remoteExecutableFlag": false,
+    "parameters": [],
+    "synchronous": false,
+    "collection": "\/api\/3\/workflow_collections\/288c0ecb-d638-4c14-a963-0308451f25d5",
+    "versions": [],
+    "triggerStep": "\/api\/3\/workflow_steps\/ab1120d3-675f-48c0-9dfb-9cbcd7834290",
+    "steps": [
+        {
+            "@type": "WorkflowStep",
+            "name": "Update Comments on Policy",
+            "description": null,
+            "arguments": {
+                "name": "Fortinet FortiGate",
+                "config": "a18df41f-7370-42b3-b2c2-c21162eadd07",
+                "params": {
+                    "name": "",
+                    "vdom": "",
+                    "comment": "{{vars.input.records[0].businessJustification}}",
+                    "dstintf": "",
+                    "srcintf": "",
+                    "policyid": "{{vars.input.records[0].policyID}}",
+                    "schedule": "",
+                    "add_dstaddr": "",
+                    "add_service": "",
+                    "add_srcaddr": "",
+                    "remove_dstaddr": "",
+                    "remove_service": "",
+                    "remove_srcaddr": "",
+                    "additional_args": ""
+                },
+                "version": "5.4.0",
+                "connector": "fortigate-firewall",
+                "operation": "update_policy",
+                "operationTitle": "Update Policy",
+                "pickFromTenant": false,
+                "step_variables": []
+            },
+            "status": null,
+            "top": "180",
+            "left": "40",
+            "stepType": "\/api\/3\/workflow_step_types\/0bfed618-0316-11e7-93ae-92361f002671",
+            "group": null,
+            "uuid": "4344d8e8-25d2-4881-8777-7eed41fa3e4c"
+        },
+        {
+            "@type": "WorkflowStep",
+            "name": "Mark Review Complete",
+            "description": null,
+            "arguments": {
+                "resource": {
+                    "auditStatus": "\/api\/3\/picklists\/05f8b475-f9d1-4297-9440-c32758f15daa",
+                    "nextReviewTime": "{{arrow.get().shift(months=+3).int_timestamp}}",
+                    "lastReviewedTime": "{{arrow.get().int_timestamp}}",
+                    "reviewComplete": true
+                },
+                "operation": "Append",
+                "collection": "{{vars.input.records[0]['@id']}}",
+                "__recommend": [],
+                "collectionType": "\/api\/3\/policies",
+                "fieldOperation": {
+                    "recordTags": "Append"
+                },
+                "step_variables": []
+            },
+            "status": null,
+            "top": "320",
+            "left": "40",
+            "stepType": "\/api\/3\/workflow_step_types\/b593663d-7d13-40ce-a3a3-96dece928722",
+            "group": null,
+            "uuid": "a61e06cf-85ca-4f17-8c42-22fe64334f5b"
+        },
+        {
+            "@type": "WorkflowStep",
+            "name": "Start",
+            "description": null,
+            "arguments": {
+                "resource": "policies",
+                "resources": [
+                    "policies"
+                ],
+                "step_variables": {
+                    "input": {
+                        "params": [],
+                        "records": [
+                            "{{vars.input.records[0]}}"
+                        ]
+                    }
+                },
+                "fieldbasedtrigger": {
+                    "sort": [],
+                    "limit": 30,
+                    "logic": "AND",
+                    "filters": [
+                        {
+                            "type": "primitive",
+                            "field": "businessJustification",
+                            "value": "",
+                            "operator": "changed",
+                            "_operator": "changed"
+                        }
+                    ]
+                }
+            },
+            "status": null,
+            "top": "40",
+            "left": "40",
+            "stepType": "\/api\/3\/workflow_step_types\/9300bf69-5063-486d-b3a6-47eb9da24872",
+            "group": null,
+            "uuid": "ab1120d3-675f-48c0-9dfb-9cbcd7834290"
+        }
+    ],
+    "routes": [
+        {
+            "@type": "WorkflowRoute",
+            "name": "Start -> Update Comments on Policy",
+            "targetStep": "\/api\/3\/workflow_steps\/4344d8e8-25d2-4881-8777-7eed41fa3e4c",
+            "sourceStep": "\/api\/3\/workflow_steps\/ab1120d3-675f-48c0-9dfb-9cbcd7834290",
+            "label": null,
+            "isExecuted": false,
+            "uuid": "d205a8d7-dba1-4af9-a481-4fbc929ca00c"
+        },
+        {
+            "@type": "WorkflowRoute",
+            "name": "Update Comments on Policy -> Mark Review Complete",
+            "targetStep": "\/api\/3\/workflow_steps\/a61e06cf-85ca-4f17-8c42-22fe64334f5b",
+            "sourceStep": "\/api\/3\/workflow_steps\/4344d8e8-25d2-4881-8777-7eed41fa3e4c",
+            "label": null,
+            "isExecuted": false,
+            "uuid": "f42ab8de-031a-413d-8681-e34046649c5e"
+        }
+    ],
+    "groups": [],
+    "priority": "\/api\/3\/picklists\/2b563c61-ae2c-41c0-a85a-c9709585e3f2",
+    "uuid": "95c8abbb-582f-4f05-b93e-cbf0a2f8b5ec",
+    "owners": [],
+    "isPrivate": false,
+    "deletedAt": null,
+    "recordTags": [
+        "On Update"
+    ]
+}

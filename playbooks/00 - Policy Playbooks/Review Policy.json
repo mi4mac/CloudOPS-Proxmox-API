@@ -1,0 +1,581 @@
+{
+    "@type": "Workflow",
+    "triggerLimit": null,
+    "name": "Review Policy",
+    "aliasName": null,
+    "tag": null,
+    "description": "",
+    "isActive": true,
+    "debug": false,
+    "singleRecordExecution": false,
+    "remoteExecutableFlag": false,
+    "parameters": [],
+    "synchronous": false,
+    "collection": "\/api\/3\/workflow_collections\/288c0ecb-d638-4c14-a963-0308451f25d5",
+    "versions": [],
+    "triggerStep": "\/api\/3\/workflow_steps\/68fb426a-91c8-427f-9935-63b8fdffae39",
+    "steps": [
+        {
+            "@type": "WorkflowStep",
+            "name": "Add justification to Policy Record",
+            "description": null,
+            "arguments": {
+                "resource": {
+                    "businessJustification": "{{vars.comments}}"
+                },
+                "operation": "Append",
+                "collection": "{{vars.input.records[0]['@id']}}",
+                "__recommend": [],
+                "collectionType": "\/api\/3\/policies",
+                "fieldOperation": {
+                    "recordTags": "Append"
+                },
+                "step_variables": []
+            },
+            "status": null,
+            "top": "700",
+            "left": "720",
+            "stepType": "\/api\/3\/workflow_step_types\/b593663d-7d13-40ce-a3a3-96dece928722",
+            "group": null,
+            "uuid": "05c3bf25-1afe-42c0-8186-515c294e0789"
+        },
+        {
+            "@type": "WorkflowStep",
+            "name": "Email if email selected",
+            "description": null,
+            "arguments": {
+                "conditions": [
+                    {
+                        "option": "Update comments on policy",
+                        "default": true,
+                        "step_iri": "\/api\/3\/workflow_steps\/05c3bf25-1afe-42c0-8186-515c294e0789",
+                        "step_name": "Mark Review Complete"
+                    },
+                    {
+                        "option": "Send Email",
+                        "step_iri": "\/api\/3\/workflow_steps\/9ec0bd75-e725-43a1-9208-a3fd46339aff",
+                        "condition": "{{ vars.steps.Ask_for_SOC_Review.input.nextSteps == \"Email NOC team for additional input\" }}",
+                        "step_name": "Ask input via email input"
+                    }
+                ]
+            },
+            "status": null,
+            "top": "435",
+            "left": "525",
+            "stepType": "\/api\/3\/workflow_step_types\/12254cf5-5db7-4b1a-8cb1-3af081924b28",
+            "group": null,
+            "uuid": "4ac01c9a-d763-4158-8a64-b3a7db454f12"
+        },
+        {
+            "@type": "WorkflowStep",
+            "name": "Start",
+            "description": null,
+            "arguments": {
+                "route": "d8ab856d-9701-4f98-9942-9cd8bfad98a0",
+                "title": "Start Policy Audit",
+                "resources": [
+                    "policies"
+                ],
+                "inputVariables": [],
+                "step_variables": {
+                    "input": {
+                        "params": [],
+                        "records": "{{vars.input.records}}"
+                    }
+                },
+                "displayConditions": {
+                    "policies": {
+                        "sort": [],
+                        "limit": 30,
+                        "logic": "AND",
+                        "filters": []
+                    }
+                },
+                "executeButtonText": "Execute",
+                "noRecordExecution": false,
+                "singleRecordExecution": true
+            },
+            "status": null,
+            "top": "30",
+            "left": "525",
+            "stepType": "\/api\/3\/workflow_step_types\/f414d039-bb0d-4e59-9c39-a8f1e880b18a",
+            "group": null,
+            "uuid": "68fb426a-91c8-427f-9935-63b8fdffae39"
+        },
+        {
+            "@type": "WorkflowStep",
+            "name": "Display NOC Response",
+            "description": null,
+            "arguments": {
+                "type": "InputBased",
+                "input": {
+                    "schema": {
+                        "title": "Response from NOC",
+                        "description": "The NOC responded with - {{vars.steps.Ask_input_via_email_input.input.comments}}\n\nUse this information to determine if the policy should be approved or denied. ",
+                        "inputVariables": [
+                            {
+                                "name": "nextSteps",
+                                "type": "array",
+                                "label": "Next Steps",
+                                "title": "Dynamic List",
+                                "usable": true,
+                                "options": [
+                                    "Approved",
+                                    "Denied"
+                                ],
+                                "tooltip": "",
+                                "dataType": "dynamicList",
+                                "formType": "dynamicList",
+                                "required": true,
+                                "_expanded": true,
+                                "mmdUpdate": true,
+                                "collection": false,
+                                "searchable": false,
+                                "templateUrl": "app\/components\/form\/fields\/dynamicList.html",
+                                "defaultValue": null,
+                                "_previousName": "",
+                                "lengthConstraint": true,
+                                "allowedGridColumn": false,
+                                "useRecordFieldDefault": false
+                            },
+                            {
+                                "name": "comments",
+                                "type": "string",
+                                "label": "Comments",
+                                "tooltip": "Provide reason for the approval\/denial",
+                                "dataType": "text",
+                                "formType": "text",
+                                "required": true,
+                                "_expanded": true,
+                                "defaultValue": null,
+                                "_previousName": "",
+                                "useRecordFieldDefault": false
+                            }
+                        ]
+                    }
+                },
+                "record": "{{ vars.input.records[0][\"@id\"] }}",
+                "resources": "policies",
+                "owner_detail": {
+                    "isAssigned": false
+                },
+                "isRecordLinked": true,
+                "step_variables": {
+                    "comments": "{{vars.result.input.comments}}"
+                },
+                "response_mapping": {
+                    "options": [
+                        {
+                            "option": "Submit",
+                            "step_iri": "\/api\/3\/workflow_steps\/05c3bf25-1afe-42c0-8186-515c294e0789"
+                        }
+                    ],
+                    "duplicateOption": false
+                },
+                "email_notification": {
+                    "enabled": false,
+                    "smtpParameters": []
+                }
+            },
+            "status": null,
+            "top": "705",
+            "left": "360",
+            "stepType": "\/api\/3\/workflow_step_types\/fc04082a-d7dc-4299-96fb-6837b1baa0fe",
+            "group": null,
+            "uuid": "9522ab57-637c-44eb-8d0f-683b0276c1d1"
+        },
+        {
+            "@type": "WorkflowStep",
+            "name": "Ask for SOC Review",
+            "description": null,
+            "arguments": {
+                "type": "InputBased",
+                "input": {
+                    "schema": {
+                        "title": "Review the Policy",
+                        "description": "As a SOC analyst, part of your role is annual Policy reviews, which includes reviewing the policies Source address, destination Address, and services, and security profiles to make sure best practices are being followed. \n\nReview the policy and submit an appropiate comment, which will automatically update the comments on the Fortigate policy. \n\nComments can include recommendations to the NOC team for changes that should be implemented to the policy.",
+                        "inputVariables": [
+                            {
+                                "name": "nextSteps",
+                                "type": "array",
+                                "label": "Next Steps",
+                                "title": "Dynamic List",
+                                "usable": true,
+                                "options": [
+                                    "Email NOC team for additional input",
+                                    "Mark as Approved",
+                                    "Mark as Denied"
+                                ],
+                                "tooltip": "",
+                                "dataType": "dynamicList",
+                                "formType": "dynamicList",
+                                "required": false,
+                                "_expanded": true,
+                                "mmdUpdate": true,
+                                "collection": false,
+                                "searchable": false,
+                                "templateUrl": "app\/components\/form\/fields\/dynamicList.html",
+                                "defaultValue": null,
+                                "_previousName": "",
+                                "lengthConstraint": true,
+                                "allowedGridColumn": false,
+                                "useRecordFieldDefault": false
+                            },
+                            {
+                                "name": "emailTo",
+                                "type": "string",
+                                "label": "Email To",
+                                "title": "Email Field",
+                                "usable": true,
+                                "tooltip": "Provide the email to be used for notifying the NOC",
+                                "dataType": "email",
+                                "formType": "email",
+                                "required": false,
+                                "_expanded": true,
+                                "mmdUpdate": true,
+                                "collection": false,
+                                "searchable": true,
+                                "templateUrl": "app\/components\/form\/fields\/email.html",
+                                "defaultValue": "socuser1@financial.local",
+                                "_previousName": "",
+                                "visibilityQuery": {
+                                    "sort": [],
+                                    "limit": 30,
+                                    "logic": "AND",
+                                    "filters": [
+                                        {
+                                            "type": "array",
+                                            "field": "nextSteps",
+                                            "value": [
+                                                "Email NOC team for additional input"
+                                            ],
+                                            "module": "nextSteps",
+                                            "display": "",
+                                            "operator": "in",
+                                            "template": "tags",
+                                            "OPERATOR_KEY": "$",
+                                            "useInOperator": true,
+                                            "previousOperator": "in",
+                                            "previousTemplate": "tags"
+                                        }
+                                    ]
+                                },
+                                "lengthConstraint": true,
+                                "allowedEncryption": true,
+                                "allowedGridColumn": true,
+                                "useRecordFieldDefault": false,
+                                "_addVisibilityConditions": true
+                            },
+                            {
+                                "name": "emailBody",
+                                "type": "string",
+                                "label": "Email Body",
+                                "title": "Rich Text (HTML)",
+                                "usable": true,
+                                "tooltip": "Default template provided. Modify as needed.",
+                                "dataType": "text",
+                                "formType": "html",
+                                "required": true,
+                                "_expanded": true,
+                                "mmdUpdate": true,
+                                "collection": false,
+                                "searchable": true,
+                                "templateUrl": "app\/components\/form\/fields\/htmlEditor.html",
+                                "defaultValue": "<p>Info Needed:&nbsp;<span style=\"color: #ba372a;\"> &lt;PROVIDE INFO NEEDED HERE&gt;<\/span><\/p>\n<p>&nbsp;<\/p>\n<p>Regards,<\/p>\n<p>&nbsp;<\/p>\n<p>SOC Team<\/p>\n<p>&nbsp;<\/p>",
+                                "_previousName": "email",
+                                "visibilityQuery": {
+                                    "sort": [],
+                                    "limit": 30,
+                                    "logic": "AND",
+                                    "filters": [
+                                        {
+                                            "type": "array",
+                                            "field": "nextSteps",
+                                            "value": [
+                                                "Email NOC team for additional input"
+                                            ],
+                                            "module": "nextSteps",
+                                            "display": "",
+                                            "operator": "in",
+                                            "template": "tags",
+                                            "OPERATOR_KEY": "$",
+                                            "useInOperator": true,
+                                            "previousOperator": "in",
+                                            "previousTemplate": "tags"
+                                        }
+                                    ]
+                                },
+                                "lengthConstraint": true,
+                                "allowedEncryption": true,
+                                "allowedGridColumn": true,
+                                "useRecordFieldDefault": false,
+                                "_addVisibilityConditions": true
+                            },
+                            {
+                                "name": "comments",
+                                "type": "string",
+                                "label": "Comments",
+                                "title": "Text Area",
+                                "usable": true,
+                                "tooltip": "Provide additional comments",
+                                "dataType": "text",
+                                "formType": "textarea",
+                                "required": true,
+                                "_expanded": true,
+                                "mmdUpdate": true,
+                                "collection": false,
+                                "searchable": true,
+                                "templateUrl": "app\/components\/form\/fields\/textarea.html",
+                                "defaultValue": null,
+                                "_previousName": "",
+                                "visibilityQuery": {
+                                    "sort": [],
+                                    "limit": 30,
+                                    "logic": "AND",
+                                    "filters": [
+                                        {
+                                            "type": "array",
+                                            "field": "nextSteps",
+                                            "value": [
+                                                "Email NOC team for additional input"
+                                            ],
+                                            "module": "nextSteps",
+                                            "display": "",
+                                            "operator": "nin",
+                                            "template": "tags",
+                                            "OPERATOR_KEY": "$",
+                                            "previousOperator": "nin",
+                                            "previousTemplate": "tags"
+                                        }
+                                    ]
+                                },
+                                "lengthConstraint": true,
+                                "allowedEncryption": true,
+                                "allowedGridColumn": true,
+                                "useRecordFieldDefault": false,
+                                "_addVisibilityConditions": true
+                            }
+                        ]
+                    }
+                },
+                "record": "{{ vars.input.records[0][\"@id\"] }}",
+                "resources": "policies",
+                "owner_detail": {
+                    "isAssigned": false,
+                    "assignedToTeam": [],
+                    "assignedToField": null,
+                    "emailRecipients": "socuser1@financial.local",
+                    "assignedToPerson": [],
+                    "assignedToRecord": false
+                },
+                "isRecordLinked": true,
+                "step_variables": {
+                    "comments": "{{vars.result.input.comments}}"
+                },
+                "response_mapping": {
+                    "options": [
+                        {
+                            "option": "Submit",
+                            "step_iri": "\/api\/3\/workflow_steps\/4ac01c9a-d763-4158-8a64-b3a7db454f12"
+                        }
+                    ],
+                    "duplicateOption": false
+                },
+                "email_notification": {
+                    "enabled": false,
+                    "smtpParameters": []
+                },
+                "unauthenticated_input": false
+            },
+            "status": null,
+            "top": "300",
+            "left": "520",
+            "stepType": "\/api\/3\/workflow_step_types\/fc04082a-d7dc-4299-96fb-6837b1baa0fe",
+            "group": null,
+            "uuid": "9cc80bd3-1d0e-4e0e-aec6-15eaf656359f"
+        },
+        {
+            "@type": "WorkflowStep",
+            "name": "Assign policy record to the user who triggered the playbook",
+            "description": null,
+            "arguments": {
+                "resource": [],
+                "operation": "Append",
+                "collection": "{{vars.input.records[0]['@id']}}",
+                "__recommend": [],
+                "collectionType": "\/api\/3\/policies",
+                "fieldOperation": {
+                    "recordTags": "Append"
+                },
+                "step_variables": []
+            },
+            "status": null,
+            "top": "165",
+            "left": "525",
+            "stepType": "\/api\/3\/workflow_step_types\/b593663d-7d13-40ce-a3a3-96dece928722",
+            "group": null,
+            "uuid": "9e208a34-76ff-41c7-9369-b5596cf246a8"
+        },
+        {
+            "@type": "WorkflowStep",
+            "name": "Ask input via email input",
+            "description": null,
+            "arguments": {
+                "type": "InputBased",
+                "input": {
+                    "schema": {
+                        "title": "Review the Policy",
+                        "description": "The SOC team has requested additional input for fortigate {{vars.input.records[0].fortiGateHostname}} policy #{{vars.input.records[0].policyID}}. Their comments are:\n{{vars.steps.Ask_for_SOC_Review.input.emailBody}}\n\nPlease provide justification for this policy in the text area below",
+                        "inputVariables": [
+                            {
+                                "name": "comments",
+                                "type": "string",
+                                "label": "Comments",
+                                "title": "Text Area",
+                                "usable": true,
+                                "tooltip": "Provide additional comments",
+                                "dataType": "text",
+                                "formType": "textarea",
+                                "required": true,
+                                "_expanded": true,
+                                "mmdUpdate": true,
+                                "collection": false,
+                                "searchable": true,
+                                "templateUrl": "app\/components\/form\/fields\/textarea.html",
+                                "defaultValue": "Justificiation: \n\nApprover:",
+                                "_previousName": "",
+                                "visibilityQuery": {
+                                    "sort": [],
+                                    "limit": 30,
+                                    "logic": "AND",
+                                    "filters": []
+                                },
+                                "lengthConstraint": true,
+                                "allowedEncryption": true,
+                                "allowedGridColumn": true,
+                                "useRecordFieldDefault": false,
+                                "_addVisibilityConditions": true
+                            }
+                        ]
+                    }
+                },
+                "record": "{{ vars.input.records[0][\"@id\"] }}",
+                "resources": "policies",
+                "owner_detail": {
+                    "isAssigned": false,
+                    "emailRecipients": "{{vars.steps.Ask_for_SOC_Review.input.emailTo}}"
+                },
+                "isRecordLinked": true,
+                "step_variables": [],
+                "response_mapping": {
+                    "options": [
+                        {
+                            "option": "Submit",
+                            "step_iri": "\/api\/3\/workflow_steps\/9522ab57-637c-44eb-8d0f-683b0276c1d1"
+                        }
+                    ],
+                    "duplicateOption": false
+                },
+                "email_notification": {
+                    "enabled": false,
+                    "smtpParameters": []
+                },
+                "unauthenticated_input": true
+            },
+            "status": null,
+            "top": "570",
+            "left": "360",
+            "stepType": "\/api\/3\/workflow_step_types\/fc04082a-d7dc-4299-96fb-6837b1baa0fe",
+            "group": null,
+            "uuid": "9ec0bd75-e725-43a1-9208-a3fd46339aff"
+        }
+    ],
+    "routes": [
+        {
+            "@type": "WorkflowRoute",
+            "name": "Email if email selected -> Copy of Ask for SOC Review",
+            "targetStep": "\/api\/3\/workflow_steps\/9ec0bd75-e725-43a1-9208-a3fd46339aff",
+            "sourceStep": "\/api\/3\/workflow_steps\/4ac01c9a-d763-4158-8a64-b3a7db454f12",
+            "label": "Send Email",
+            "isExecuted": false,
+            "uuid": "3a3b0769-1319-405a-9e92-d45c2286b117"
+        },
+        {
+            "@type": "WorkflowRoute",
+            "name": "Display NOC Response -> Mark Review Complete",
+            "targetStep": "\/api\/3\/workflow_steps\/05c3bf25-1afe-42c0-8186-515c294e0789",
+            "sourceStep": "\/api\/3\/workflow_steps\/9522ab57-637c-44eb-8d0f-683b0276c1d1",
+            "label": "Submit",
+            "isExecuted": false,
+            "uuid": "6b723bfc-ce6c-40a1-ac74-2f4b6459fb58"
+        },
+        {
+            "@type": "WorkflowRoute",
+            "name": "Start -> Assign policy record to the user who triggered the playbook",
+            "targetStep": "\/api\/3\/workflow_steps\/9e208a34-76ff-41c7-9369-b5596cf246a8",
+            "sourceStep": "\/api\/3\/workflow_steps\/68fb426a-91c8-427f-9935-63b8fdffae39",
+            "label": null,
+            "isExecuted": false,
+            "uuid": "711a0ee0-7a44-4dbe-ad29-93e930649f4f"
+        },
+        {
+            "@type": "WorkflowRoute",
+            "name": "Ask for SOC Review -> Email if email selected",
+            "targetStep": "\/api\/3\/workflow_steps\/4ac01c9a-d763-4158-8a64-b3a7db454f12",
+            "sourceStep": "\/api\/3\/workflow_steps\/9cc80bd3-1d0e-4e0e-aec6-15eaf656359f",
+            "label": "Submit",
+            "isExecuted": false,
+            "uuid": "75a07084-82c6-401b-b059-d047ce08a43b"
+        },
+        {
+            "@type": "WorkflowRoute",
+            "name": "Assign policy record to the user who triggered the playbook -> Ask for SOC Review",
+            "targetStep": "\/api\/3\/workflow_steps\/9cc80bd3-1d0e-4e0e-aec6-15eaf656359f",
+            "sourceStep": "\/api\/3\/workflow_steps\/9e208a34-76ff-41c7-9369-b5596cf246a8",
+            "label": null,
+            "isExecuted": false,
+            "uuid": "ae6702de-b6ad-4bf9-8534-d665a8e5a848"
+        },
+        {
+            "@type": "WorkflowRoute",
+            "name": "Ask input via email input -> Display NOC Response",
+            "targetStep": "\/api\/3\/workflow_steps\/9522ab57-637c-44eb-8d0f-683b0276c1d1",
+            "sourceStep": "\/api\/3\/workflow_steps\/9ec0bd75-e725-43a1-9208-a3fd46339aff",
+            "label": "Submit",
+            "isExecuted": false,
+            "uuid": "d1d78122-84b3-4c6e-9a59-0f81fb393712"
+        },
+        {
+            "@type": "WorkflowRoute",
+            "name": "Email if email selected -> Mark Review Complete",
+            "targetStep": "\/api\/3\/workflow_steps\/05c3bf25-1afe-42c0-8186-515c294e0789",
+            "sourceStep": "\/api\/3\/workflow_steps\/4ac01c9a-d763-4158-8a64-b3a7db454f12",
+            "label": "Update comments on policy",
+            "isExecuted": false,
+            "uuid": "e272cccb-fc1e-48ae-aede-1a52ff60e77c"
+        }
+    ],
+    "groups": [
+        {
+            "@type": "WorkflowGroup",
+            "name": "Notes",
+            "description": "This playbook add the comments to the record in fortisoar, will will auto trigger the playbook called \"> Update comments on Fortigate\"",
+            "type": "note",
+            "isCollapsed": false,
+            "hideInLogs": true,
+            "top": "755",
+            "left": "928",
+            "height": "119",
+            "width": "365",
+            "uuid": "75c2297c-99f6-4af4-88ba-17ac0eaaf05f"
+        }
+    ],
+    "priority": "\/api\/3\/picklists\/2b563c61-ae2c-41c0-a85a-c9709585e3f2",
+    "uuid": "33b8c01e-6fea-45fb-94dc-5044cd46aded",
+    "owners": [],
+    "isPrivate": false,
+    "deletedAt": null,
+    "recordTags": [
+        "On Create"
+    ]
+}

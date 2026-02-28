@@ -4,5 +4,9 @@
     "Destroy",
     "Enrichment",
     "Main",
-    "Utility"
+    "Utility",
+    "dataingestion",
+    "Manual Trigger",
+    "On Create",
+    "On Update"
 ]

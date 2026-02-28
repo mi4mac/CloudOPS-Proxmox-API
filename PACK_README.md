@@ -29,6 +29,7 @@ Contents
 - Optional **Docker Containers** module and views for Docker Engine containers (see “Docker inventory (optional)” below).
 - Playbooks for requesting, provisioning, destroying, and refreshing Proxmox inventory.
 - The **> Refresh Docker Inventory** playbook (optional) to sync Docker Engine containers into the Docker Containers module.
+- **Policy playbooks (FortiGate)**: Import Fortigate Policies, Review Policy, **> Update comments on Fortigate**. The **Update Comments on Policy** step must point to the correct FortiGate connector and config (connector name **Fortinet FortiGate**, version **5.4.0** recommended; params without `action` and `status`). Config UUIDs are instance-specific—set the step to your environment’s connector and configuration after import. The pack uses the 5.4.0 `update_policy` param shape; the older 5.2.0 shape had optional empty `action` and `status` keys, which are omitted in 5.4.0 for comment-only updates.
 - Optional global variables to override default node, storage, network, and template settings
 - A sample **actor** (`atlas Me`) and an **AD user enrichment** flow that demonstrate how to plug into an existing directory / user model – these must be adapted to the real users and directory integration in your environment.
 

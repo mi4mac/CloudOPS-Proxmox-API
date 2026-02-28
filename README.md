@@ -52,6 +52,12 @@ Installation (high level)
 4. **Quick test**
    - Follow `TESTING_GUIDE.md` for a small CT/VM provision + destroy smoke test.
 
+Policy playbooks (FortiGate)
+----------------------------
+The pack includes **00 - Policy Playbooks**: Import Fortigate Policies, Review Policy, and **> Update comments on Fortigate**. The **Update Comments on Policy** step in **> Update comments on Fortigate** must use the correct FortiGate connector and configuration for your environment. After import, open that playbook and set the step to your **Fortinet FortiGate** connector (connector name `Fortinet FortiGate`, connector version **5.4.0** recommended) and the appropriate config; the step uses params without `action` and `status`. Config UUIDs (e.g. `a18df41f-7370-42b3-b2c2-c21162eadd07`) are instance-specific and will differ per FortiSOAR deployment—ensure the step points to the right connector and config.
+
+**Connector API shape (5.2.0 vs 5.4.0):** The playbook is aligned to the FortiGate connector **5.4.0** `update_policy` params. The older **5.2.0** shape included optional `"action": ""` and `"status": ""` in the step params (empty strings; the step only sent comment and policy id). In 5.4.0 those keys are not used for comment-only updates and have been omitted. See `playbook-diff-exact.txt` for the full diff vs an exported collection.
+
 Optional: Docker inventory integration
 --------------------------------------
 The pack can also surface Docker containers in a dedicated **Docker Containers** module and menu entry.
