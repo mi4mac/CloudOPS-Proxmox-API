@@ -45,7 +45,8 @@
         "name": "Docker",
         "config": "''",
         "params": {
-          "all": true
+          "all": true,
+          "size": true
         },
         "connector": "docker",
         "operation": "list_containers",
@@ -76,6 +77,7 @@
           "dockerId": "{{ vars.item.Id | default('') }}",
           "name": "{{ ((vars.item.Names | default([]) | first) | default('')) | replace('/', '', 1) }}",
           "image": "{{ vars.item.Image | default('') }}",
+          "imageSizeMB": "{{ ((vars.item.SizeRootFs | default(0) | int) / 1048576) | int }}",
           "status": "{{ vars.item.State | default(vars.item.Status | default('')) }}",
           "cpuCores": "{{ 0 }}",
           "memoryMB": "{{ 0 }}",

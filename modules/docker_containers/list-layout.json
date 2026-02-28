@@ -16,7 +16,7 @@
                   "columns": [
                     "dockerId",
                     "name",
-                    "image",
+                    "image","imageSizeMB",
                     "status",
                     "node",
                     "cpuCores",

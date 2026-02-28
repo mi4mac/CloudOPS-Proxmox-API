@@ -92,6 +92,7 @@ If you also want to track Docker containers in FortiSOAR:
 3. **Refresh Docker inventory**
    - Run the **> Refresh Docker Inventory** playbook in the **00 - Service Management** collection.
    - The playbook calls the Docker `list_containers` operation and upserts one record per container into the `docker_containers` module, keyed by `dockerId`. Subsequent runs update existing records (status, image, `lastSeen`, etc.) instead of creating duplicates.
+   - **Image Size (MB) field**: The Docker Containers grid shows an `Image Size (MB)` column that is populated from Docker’s `SizeRootFs` value returned by `GET /containers/json?size=1` (total container filesystem size), so it is usually larger than the base image size reported by `docker images` or GUI tools such as Portainer.
 
 Related documentation
 ---------------------

@@ -77,3 +77,7 @@ Related documentation
 - `PROXMOX_9.1.5_SPECIFIC_NOTES.md` – Proxmox 9.1.5 specifics relevant for this integration.
 - `TESTING_GUIDE.md` – Suggested test plan before rolling out this pack.
 - `TROUBLESHOOTING_GUIDE.md` – Troubleshooting checklist for common provisioning/destroy issues.
+
+Docker Image Size (MB)
+------------------------
+- If you enable the optional Docker Containers module, the `Image Size (MB)` field is populated from Docker's `SizeRootFs` value returned by `GET /containers/json?size=1`. This is the **total container filesystem size** (image layers + writable layer), so it is usually larger than the base image size reported by `docker images` or GUI tools such as Portainer.

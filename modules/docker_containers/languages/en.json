@@ -8,6 +8,7 @@
       "DOCKERID": "dockerId",
       "NAME": "name",
       "IMAGE": "image",
+      "IMAGE_SIZE_MB": "imageSizeMB",
       "STATUS": "status",
       "NODE": "node",
       "CPU_CORES": "cpuCores",
