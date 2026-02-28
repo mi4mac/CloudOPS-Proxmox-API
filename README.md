@@ -79,6 +79,7 @@ Steps:
    - Ensure all existing Docker Container records have **unique** `dockerId` values (or clear them out if you are starting fresh).  
    - Configure `dockerId` as the unique key for the module and **Publish All Modules**.  
    - If you see an error like *“could not create unique index … duplicate records exist”*, delete the duplicates first and then publish again.
+   - Why `dockerId` (and not `name`): `dockerId` is globally unique and immutable per container, while names can be reused or collide across different Docker hosts, so using the name as the unique key can cause incorrect merges or conflicts.
 
 4. **Refresh Docker inventory**  
    - Run the **> Refresh Docker Inventory** playbook in the **00 - Service Management** collection.  

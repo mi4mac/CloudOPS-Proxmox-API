@@ -81,3 +81,7 @@ Related documentation
 Docker Image Size (MB)
 ------------------------
 - If you enable the optional Docker Containers module, the `Image Size (MB)` field is populated from Docker's `SizeRootFs` value returned by `GET /containers/json?size=1`. This is the **total container filesystem size** (image layers + writable layer), so it is usually larger than the base image size reported by `docker images` or GUI tools such as Portainer.
+
+Docker container uniqueness (dockerId)
+--------------------------------------
+- The Docker Containers module uses `dockerId` as the unique key because it is globally unique and immutable per container. Container names can change, be reused after deletion, or collide across different Docker hosts, so using the name as the unique key may lead to conflicts or incorrect merges.
