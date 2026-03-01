@@ -13,7 +13,7 @@ What’s included
   - Optional **Docker Containers** module, navigation entry, roles, and the **> Refresh Docker Inventory** playbook to sync Docker Engine containers into FortiSOAR.
   - **Policies** module, **SOC Review** dashboard, and **00 - Policy Playbooks** (Import Fortigate Policies, Review Policy with **Mark as Denied** → disable on FortiGate and **Refresh Firewall Policies**, **> Update comments on Fortigate**, **Enable Policy**); see `POLICY_PLAYBOOKS.md` and post-import config UUID steps below.
 - Prebuilt content:
-  - `CloudOPS Solution Pack Proxmox_Docker.zip` – Importable solution pack built from `CloudOPS-Prx-pack-install/` (includes the `proxmox_inventory` module, inventory views, and the optional Docker Containers module + playbook wiring).
+  - **`CloudOPS_Solution_Pack.zip`** – All-in-one importable solution pack (Proxmox + Policy playbooks + optional Docker). Built from `CloudOPS-Prx-pack-install/` via `./build-pack.sh`. This is the package tracked in the repo; do not sync `CloudOPS Solution Pack Proxmox_Docker.zip` to git.
   - `API Connector Proxmox.tgz` – Importable Proxmox connector package.
   - `docker-2.0.1.tgz` – Importable Docker connector package (from the `mi4mac/docker` connector).
 - Documentation (English):
@@ -48,7 +48,7 @@ Installation (high level)
      - Configure it to talk to your Docker Engine API endpoint (for example `http://192.168.222.223:2375`) and verify **Get Version** / **Get Info** succeed.
 
 3. **Solution pack**
-   - Import `CloudOPS Solution Pack Proxmox_Docker.zip` via FortiSOAR Content Hub / Packs.
+   - Import **`CloudOPS_Solution_Pack.zip`** (all-in-one pack) via FortiSOAR Content Hub / Packs.
    - (Optional) Adjust global variables for your environment (node, storage, templates) as described in `SCHRITT_2_GLOBAL_VARIABLES.md` if you want to override the built‑in defaults.
 
 4. **Quick test**
@@ -79,7 +79,7 @@ Steps:
    - Use the connector’s **Get Version** / **Get Info** operations to confirm connectivity.
 
 2. **Import the solution pack**  
-   - Import `CloudOPS Solution Pack Proxmox_Docker.zip` as usual.  
+   - Import **`CloudOPS_Solution_Pack.zip`** (all-in-one pack) as usual.  
    - During import you should see:
      - The **Docker Containers** module as an existing module (if you already created it via UI) or a new module.  
      - The **Service Management → Docker** navigation entry.

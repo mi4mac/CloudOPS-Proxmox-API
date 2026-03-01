@@ -1,6 +1,9 @@
 # Build / package
 *.zip
 !/solution-pack-proxmox-api-migration.zip
+!/CloudOPS_Solution_Pack.zip
+# All-in-one pack is CloudOPS_Solution_Pack.zip; do not sync alternate build name:
+CloudOPS Solution Pack Proxmox_Docker.zip
 pack_build/
 
 # Project files

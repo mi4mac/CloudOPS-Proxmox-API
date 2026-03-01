@@ -88,7 +88,7 @@ All of this happens **inside the FortiSOAR UI**, not in the Git repository.
   - Import `API Connector Proxmox.tgz` (Python connector `proxmox-api`).
 
 - **2. Import solution pack**  
-  - Import `CloudOPS Solution Pack Proxmox_Docker.zip`.  
+  - Import **`CloudOPS_Solution_Pack.zip`** (all-in-one pack).  
   - This provides modules, views and all playbooks including API‑based provision/destroy.
 
 - **3. Maintain global variables**  
