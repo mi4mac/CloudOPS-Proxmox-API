@@ -6,14 +6,13 @@ This repository contains a **FortiSOAR solution pack** and a **native Proxmox co
 What’s included
 ---------------
 - `proxmox-api/` – Python connector for the Proxmox VE API (`API Connector Proxmox.tgz` is built from this folder, current connector version **2.0.4**).
-- `CloudOPS-Prx-pack-install/` – Solution pack source with:
-  - `VM Instances`, `Network Interfaces` and `Proxmox Inventory` modules.
+- **`CloudOPS_Solution_Pack.zip`** – All-in-one importable solution pack (the only pack artifact in the repo). It includes:
+  - **VM Instances**, **Network Interfaces**, and **Proxmox Inventory** modules.
   - Playbooks for request → approve → provision → destroy → cleanup, plus **> Refresh Proxmox Inventory**.
   - UI layouts for list/detail views, including the **two‑row VM Instances list** (top: requested VMs/CTs, bottom: Proxmox inventory not tracked in `v_m_instances`).
-  - Optional **Docker Containers** module, navigation entry, roles, and the **> Refresh Docker Inventory** playbook to sync Docker Engine containers into FortiSOAR.
-  - **Policies** module, **SOC Review** dashboard, and **00 - Policy Playbooks** (Import Fortigate Policies, Review Policy with **Mark as Denied** → disable on FortiGate and **Refresh Firewall Policies**, **> Update comments on Fortigate**, **Enable Policy**); see `POLICY_PLAYBOOKS.md` and post-import config UUID steps below.
-- Prebuilt content:
-  - **`CloudOPS_Solution_Pack.zip`** – All-in-one importable solution pack (Proxmox + Policy playbooks + optional Docker). Built from `CloudOPS-Prx-pack-install/` via `./build-pack.sh`. This is the package tracked in the repo; do not sync `CloudOPS Solution Pack Proxmox_Docker.zip` to git.
+  - **Policy playbooks (FortiGate)** – **Policies** module, **SOC Review** dashboard, and **00 - Policy Playbooks**: **Import Fortigate Policies**, **Review Policy** (Mark as Approved / **Mark as Denied** → disable on FortiGate, **Refresh Firewall Policies**), **> Update comments on Fortigate**, and **Enable Policy**. See the **Policy playbooks (FortiGate)** section and `POLICY_PLAYBOOKS.md` for setup and post-import config UUID steps.
+  - **Docker inventory (optional)** – **Docker Containers** module, navigation entry, roles, and the **> Refresh Docker Inventory** playbook are also shipped in the pack; use them with the Docker connector to sync Docker Engine containers into FortiSOAR. See **Optional: Docker inventory integration** below.
+- Other prebuilt content:
   - `API Connector Proxmox.tgz` – Importable Proxmox connector package.
   - `docker-2.0.1.tgz` – Importable Docker connector package (from the `mi4mac/docker` connector).
 - Documentation (English):
@@ -56,7 +55,7 @@ Installation (high level)
 
 Policy playbooks (FortiGate)
 ----------------------------
-The pack includes **00 - Policy Playbooks**: **Import Fortigate Policies**, **Review Policy** (with Mark as Approved / Mark as Denied → disable on FortiGate, and Refresh Firewall Policies), **> Update comments on Fortigate**, and **Enable Policy**. See **POLICY_PLAYBOOKS.md** for details.
+**CloudOPS_Solution_Pack.zip** ships the full **00 - Policy Playbooks** collection: **Import Fortigate Policies**, **Review Policy** (Mark as Approved / Mark as Denied → disable on FortiGate, and Refresh Firewall Policies), **> Update comments on Fortigate**, and **Enable Policy**. The **Policies** module and **SOC Review** dashboard are included. See **POLICY_PLAYBOOKS.md** for details.
 
 **Post-import: config UUID replacement.** Several steps use a placeholder config UUID (e.g. `a18df41f-7370-42b3-b2c2-c21162eadd07`). Config UUIDs are instance-specific. After import, set **Connector** and **Configuration** to your FortiGate in: (1) **> Update comments on Fortigate** → **Update Comments on Policy**; (2) **Review Policy** → **Disable Policy on FortiGate**; (3) **Enable Policy** → **Enable Policy** step. Use connector **Fortinet FortiGate** version **5.4.0** recommended.
 
@@ -64,7 +63,7 @@ The pack includes **00 - Policy Playbooks**: **Import Fortigate Policies**, **Re
 
 Optional: Docker inventory integration
 --------------------------------------
-The pack can also surface Docker containers in a dedicated **Docker Containers** module and menu entry.
+The pack **ships** an integrated **Docker Containers** module, navigation entry, and the **> Refresh Docker Inventory** playbook. Once the Docker connector is configured, you can surface Docker Engine containers in FortiSOAR.
 
 Prerequisites:
 - A reachable Docker Engine API (for example `http://192.168.222.223:2375`).

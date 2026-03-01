@@ -29,7 +29,7 @@ Contents
 - Optional **Docker Containers** module and views for Docker Engine containers (see “Docker inventory (optional)” below).
 - Playbooks for requesting, provisioning, destroying, and refreshing Proxmox inventory.
 - The **> Refresh Docker Inventory** playbook (optional) to sync Docker Engine containers into the Docker Containers module.
-- **Policy playbooks (FortiGate)**: Import Fortigate Policies, Review Policy, **> Update comments on Fortigate**. See **Policy playbooks (FortiGate)** below for setup and post-import config UUID replacement.
+- **Policy playbooks (FortiGate)** (shipped in the pack): **Import Fortigate Policies**, **Review Policy** (with Mark as Denied → disable on FortiGate and Refresh Firewall Policies), **> Update comments on Fortigate**, and **Enable Policy**. See **Policy playbooks (FortiGate)** below for setup and post-import config UUID replacement.
 - Optional global variables to override default node, storage, network, and template settings
 - A sample **actor** (`atlas Me`) and an **AD user enrichment** flow that demonstrate how to plug into an existing directory / user model – these must be adapted to the real users and directory integration in your environment.
 
@@ -39,7 +39,7 @@ Installation
 2. Import the Docker connector package `docker-2.0.1.tgz` in FortiSOAR.
 3. Configure the `proxmox-api` connector with the correct **host**, **port**, and **API token** (these values are read from the connector configuration, not from global variables). The inventory features described below require connector version **2.0.4** or later.
 4. Configure the `docker` connector with the correct Docker Engine API endpoint (for example `http://192.168.222.223:2375`) and verify **Get Version** / **Get Info** succeed.
-5. Import this solution pack from **`CloudOPS_Solution_Pack.zip`** (all-in-one pack, built from `CloudOPS-Prx-pack-install/` via `./build-pack.sh`).
+5. Import this solution pack from **`CloudOPS_Solution_Pack.zip`** (all-in-one pack; the pack artifact is tracked in the repo).
 6. (Optional) If you want to override the built‑in defaults for node, storage, network, or templates, create/update the corresponding Proxmox global variables as described in `SCHRITT_2_GLOBAL_VARIABLES.md`.
 
 Upgrade
@@ -68,24 +68,20 @@ Post-upgrade quick test
 
 Policy playbooks (FortiGate)
 ----------------------------
-The pack includes the **00 - Policy Playbooks** collection: **Import Fortigate Policies**, **Review Policy**, and **> Update comments on Fortigate**, plus the **Policies** module and **SOC Review** dashboard.
+The pack ships the **00 - Policy Playbooks** collection: **Import Fortigate Policies**, **Review Policy** (Mark as Approved / Mark as Denied → disable on FortiGate, Refresh Firewall Policies), **> Update comments on Fortigate**, and **Enable Policy**, plus the **Policies** module and **SOC Review** dashboard.
 
 **Prerequisites**
 - FortiGate connector (**Fortinet FortiGate**) installed and at least one configuration pointing at your firewall.
 - Connector version **5.4.0** recommended (the playbooks use the 5.4.0 `update_policy` param shape; 5.2.0 had optional `action` and `status` keys, which are omitted here).
 
 **Post-import: config UUID replacement (required)**  
-The **Update Comments on Policy** step in **> Update comments on Fortigate** is stored with a placeholder config UUID (e.g. `a18df41f-7370-42b3-b2c2-c21162eadd07`). Config UUIDs are instance-specific. After importing the pack:
-
-1. Open **Playbooks** → **00 - Policy Playbooks** → **> Update comments on Fortigate**.
-2. Open the **Update Comments on Policy** step.
-3. Set **Connector** to your FortiGate connector and **Configuration** to the config that targets the firewall you want to update.
-4. Save the playbook.
+Several steps are stored with a placeholder config UUID (e.g. `a18df41f-7370-42b3-b2c2-c21162eadd07`). Config UUIDs are instance-specific. After importing the pack, set **Connector** and **Configuration** to your FortiGate in: (1) **> Update comments on Fortigate** → **Update Comments on Policy**; (2) **Review Policy** → **Disable Policy on FortiGate**; (3) **Enable Policy** → **Enable Policy** step. See **POLICY_PLAYBOOKS.md** for the full list and details.
 
 **Playbook roles**
 - **Import Fortigate Policies**: Fetches policies from the FortiGate and upserts them into the **Policies** module. Can be run manually or on a schedule.
-- **Review Policy**: Manual task for SOC analysts to review a policy and add comments; submits to the record and triggers **> Update comments on Fortigate** when justification is added.
+- **Review Policy**: Manual task for SOC analysts: **Mark as Approved**, **Mark as Denied**, or email NOC. For **Mark as Denied**, disables the policy on FortiGate and runs **Refresh Firewall Policies**; for **Mark as Approved**, adds justification and triggers **> Update comments on Fortigate**.
 - **> Update comments on Fortigate**: Triggered when a policy’s `businessJustification` changes; pushes the comment to the FortiGate policy and marks the policy review complete (sets `reviewComplete`, `lastReviewedTime`, `nextReviewTime`, `auditStatus`).
+- **Enable Policy**: Enables a disabled firewall policy on FortiGate, then runs **Refresh Firewall Policies** to re-import policies.
 
 Usage
 -----
