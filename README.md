@@ -44,7 +44,7 @@ Installation (high level)
      Import `API Connector Proxmox.tgz` into FortiSOAR and create at least one configuration (host, port, API token).
    - Docker:
      - Import `docker-2.0.1.tgz` (Docker connector) into FortiSOAR.
-     - Configure it to talk to your Docker Engine API endpoint (for example `http://192.168.222.223:2375`) and verify **Get Version** / **Get Info** succeed.
+     - Configure it to talk to your Docker Engine API endpoint (for example `http://10.0.0.100:2375`) and verify **Get Version** / **Get Info** succeed.
 
 3. **Solution pack**
    - Import **`CloudOPS_Solution_Pack.zip`** (all-in-one pack) via FortiSOAR Content Hub / Packs.
@@ -66,12 +66,12 @@ Optional: Docker inventory integration
 The pack **ships** an integrated **Docker Containers** module, navigation entry, and the **> Refresh Docker Inventory** playbook. Once the Docker connector is configured, you can surface Docker Engine containers in FortiSOAR.
 
 Prerequisites:
-- A reachable Docker Engine API (for example `http://192.168.222.223:2375`).
+- A reachable Docker Engine API (for example `http://10.0.0.100:2375`).
 - The **Docker** FortiSOAR connector installed and configured (repository: `mi4mac/docker`).
 
 Steps:
 1. **Configure the Docker connector**  
-   - Server Address: Docker host IP (for example `192.168.222.223`).  
+   - Server Address: Docker host IP (for example `10.0.0.100`).  
    - Port: Docker Engine TCP port (for example `2375`).  
    - Protocol: `HTTP` (or `HTTPS` if you have TLS configured).  
    - Verify SSL: disabled for plain HTTP, or configured with the correct CA/cert paths for HTTPS.  
