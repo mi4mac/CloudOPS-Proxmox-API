@@ -4,6 +4,8 @@
 !/CloudOPS_Solution_Pack.zip
 # All-in-one pack is CloudOPS_Solution_Pack.zip; do not sync alternate build name:
 CloudOPS Solution Pack Proxmox_Docker.zip
+# Pack source: do not sync (use CloudOPS_Solution_Pack.zip from repo)
+CloudOPS-Prx-pack-install/
 pack_build/
 
 # Project files

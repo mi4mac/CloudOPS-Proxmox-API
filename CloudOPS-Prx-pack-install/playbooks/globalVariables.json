@@ -1,1 +1,0 @@
-[{"name":"Server_fqhn","value":"fsr-stable","default_value":"master.fortisoar.in"},{"name":"infrastructure_team_email","value":"cloud-ops@fortielab.com","default_value":"cloud-ops@fortielab.com"},{"name":"proxmox_storage","value":"local-lvm","default_value":"local-lvm"},{"name":"proxmox_default_node","value":"pve","default_value":"pve"}]
