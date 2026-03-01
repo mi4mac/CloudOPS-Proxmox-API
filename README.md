@@ -11,7 +11,7 @@ What’s included
   - Playbooks for request → approve → provision → destroy → cleanup, plus **> Refresh Proxmox Inventory**.
   - UI layouts for list/detail views, including the **two‑row VM Instances list** (top: requested VMs/CTs, bottom: Proxmox inventory not tracked in `v_m_instances`).
   - Optional **Docker Containers** module, navigation entry, roles, and the **> Refresh Docker Inventory** playbook to sync Docker Engine containers into FortiSOAR.
-  - **Policies** module, **SOC Review** dashboard, and **00 - Policy Playbooks** (Import Fortigate Policies, Review Policy, **> Update comments on Fortigate**); see `POLICY_PLAYBOOKS.md` and post-import config UUID step below.
+  - **Policies** module, **SOC Review** dashboard, and **00 - Policy Playbooks** (Import Fortigate Policies, Review Policy with **Mark as Denied** → disable on FortiGate and **Refresh Firewall Policies**, **> Update comments on Fortigate**, **Enable Policy**); see `POLICY_PLAYBOOKS.md` and post-import config UUID steps below.
 - Prebuilt content:
   - `CloudOPS Solution Pack Proxmox_Docker.zip` – Importable solution pack built from `CloudOPS-Prx-pack-install/` (includes the `proxmox_inventory` module, inventory views, and the optional Docker Containers module + playbook wiring).
   - `API Connector Proxmox.tgz` – Importable Proxmox connector package.
@@ -56,11 +56,11 @@ Installation (high level)
 
 Policy playbooks (FortiGate)
 ----------------------------
-The pack includes **00 - Policy Playbooks**: Import Fortigate Policies, Review Policy, and **> Update comments on Fortigate**. See **POLICY_PLAYBOOKS.md** for details.
+The pack includes **00 - Policy Playbooks**: **Import Fortigate Policies**, **Review Policy** (with Mark as Approved / Mark as Denied → disable on FortiGate, and Refresh Firewall Policies), **> Update comments on Fortigate**, and **Enable Policy**. See **POLICY_PLAYBOOKS.md** for details.
 
-**Post-import: config UUID replacement.** The **Update Comments on Policy** step in **> Update comments on Fortigate** uses a placeholder config UUID (e.g. `a18df41f-7370-42b3-b2c2-c21162eadd07`). Config UUIDs are instance-specific. After import, open that playbook → **Update Comments on Policy** step → set **Connector** to your FortiGate connector and **Configuration** to the config that points at your firewall. Use connector name **Fortinet FortiGate** and version **5.4.0** recommended; the step uses params without `action` and `status`.
+**Post-import: config UUID replacement.** Several steps use a placeholder config UUID (e.g. `a18df41f-7370-42b3-b2c2-c21162eadd07`). Config UUIDs are instance-specific. After import, set **Connector** and **Configuration** to your FortiGate in: (1) **> Update comments on Fortigate** → **Update Comments on Policy**; (2) **Review Policy** → **Disable Policy on FortiGate**; (3) **Enable Policy** → **Enable Policy** step. Use connector **Fortinet FortiGate** version **5.4.0** recommended.
 
-**Connector API shape (5.2.0 vs 5.4.0):** The playbook is aligned to the FortiGate connector **5.4.0** `update_policy` params. The older **5.2.0** shape included optional `"action": ""` and `"status": ""` in the step params (empty strings; the step only sent comment and policy id). In 5.4.0 those keys are not used for comment-only updates and have been omitted.
+**Connector API (5.2.0 vs 5.4.0):** Comment-only steps omit `action`/`status`; **Disable Policy on FortiGate** sends `status`: `disable`; **Enable Policy** sends `status`: `Enable`. See POLICY_PLAYBOOKS.md for full details.
 
 Optional: Docker inventory integration
 --------------------------------------

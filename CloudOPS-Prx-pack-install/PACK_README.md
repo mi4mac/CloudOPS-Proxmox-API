@@ -26,7 +26,8 @@ Contents
 --------
 - Modules and views for VM instances, network interfaces, and **Proxmox inventory** (`proxmox_inventory`).
 - Playbooks for requesting, provisioning, destroying, and refreshing Proxmox inventory.
-- Optional global variables to override default node, storage, network, and template settings
+- **00 - Policy Playbooks**: Import Fortigate Policies, Review Policy (with Mark as Denied → disable on FortiGate and Refresh Firewall Policies), > Update comments on Fortigate, Enable Policy. See **POLICY_PLAYBOOKS.md** (in repo root) for setup and config UUID replacement.
+- Optional global variables to override default node, storage, network, and template settings.
 - A sample **actor** (`atlas Me`) and an **AD user enrichment** flow that demonstrate how to plug into an existing directory / user model – these must be adapted to the real users and directory integration in your environment.
 
 Installation
@@ -71,6 +72,7 @@ Usage
 
 Related documentation
 ---------------------
+- `POLICY_PLAYBOOKS.md` (repo root) – Policy playbooks (FortiGate): Import, Review with Deny/Refresh, Update comments, Enable Policy; config UUID replacement.
 - `SCHRITT_2_GLOBAL_VARIABLES.md` – Step‑by‑step guide for the Proxmox global variables used by this pack.
 - `REFRESH_INVENTORY_PLAYBOOK.md` – Design and behaviour of the "> Refresh Proxmox Inventory" playbook.
 - `TOKEN_CAPABILITIES.md` – Overview of the Proxmox API token role and which connector operations it enables.

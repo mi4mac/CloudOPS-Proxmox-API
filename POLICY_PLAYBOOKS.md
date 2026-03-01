@@ -16,31 +16,34 @@ This document describes the **00 - Policy Playbooks** collection and the **Polic
 
 ## Post-import: config UUID replacement (required)
 
-The **> Update comments on Fortigate** playbook has a step **Update Comments on Policy** that calls the FortiGate API. That step is stored with a **placeholder config UUID** (e.g. `a18df41f-7370-42b3-b2c2-c21162eadd07`). Config UUIDs are **instance-specific**—they differ on every FortiSOAR deployment. You must point the step to your own connector and config.
+Several steps call the FortiGate API and are stored with a **placeholder config UUID** (e.g. `a18df41f-7370-42b3-b2c2-c21162eadd07`). Config UUIDs are **instance-specific**—you must point each step to your own connector and config.
 
 **Steps:**
 
-1. In FortiSOAR go to **Playbooks** → **00 - Policy Playbooks** → **> Update comments on Fortigate**.
-2. Edit the playbook and open the **Update Comments on Policy** step.
-3. Set **Connector** to your FortiGate connector and **Configuration** to the config that targets the firewall you want to update (the one whose policies you import and review).
-4. Save the playbook.
+1. **> Update comments on Fortigate** – Edit the playbook, open **Update Comments on Policy**, set **Connector** and **Configuration** to your FortiGate.
+2. **Review Policy** – Edit the playbook, open **Disable Policy on FortiGate**, set the same **Connector** and **Configuration** (used when the analyst selects **Mark as Denied**).
+3. **Enable Policy** – Edit the playbook, open the **Enable Policy** step, set the same **Connector** and **Configuration**.
+4. Save each playbook.
 
-After this, when a SOC analyst completes a review and adds a justification, the **> Update comments on Fortigate** playbook will push the comment to the correct FortiGate policy.
+After this, comments and disable/enable actions will target the correct FortiGate.
 
 ## Playbooks
 
 | Playbook | Trigger | What it does |
 |----------|---------|----------------|
 | **Import Fortigate Policies** | Manual or schedule | Gets policies from the FortiGate connector and upserts them into the **Policies** module. Updates name, status, description, NAT, `reviewComplete`, etc. |
-| **Review Policy** | Manual (from Policies record) | Presents a form for the SOC analyst to add comments and next steps (e.g. Mark as Approved, Email NOC). Writes to the policy record; when **businessJustification** is set, **> Update comments on Fortigate** is triggered automatically. |
+| **Review Policy** | Manual (from Policies record) | Presents a form for the SOC analyst: **Mark as Approved**, **Mark as Denied**, or **Email NOC team for additional input**. For **Mark as Denied**, runs **Disable Policy on FortiGate** (disables the policy and sets the comment), then stores the justification; for **Mark as Approved**, writes the justification to the record (which triggers **> Update comments on Fortigate**). After updating the record, runs **Refresh Firewall Policies** (re-runs Import Fortigate Policies) to sync state from the firewall. |
 | **> Update comments on Fortigate** | Field-based: `businessJustification` changed | Sends the policy’s **businessJustification** to the FortiGate as the policy comment, then marks the policy review complete (sets `reviewComplete`, `lastReviewedTime`, `nextReviewTime`, `auditStatus`). |
+| **Enable Policy** | Manual (from Policies record) | Enables a disabled firewall policy on FortiGate (`update_policy` with `status`: **Enable**), then runs **Refresh Firewall Policies** to re-import policies from the firewall. |
+
+## Mark as Denied and Refresh
+
+- When the analyst selects **Mark as Denied**, **Review Policy** runs **Disable Policy on FortiGate** (FortiGate `update_policy` with `status`: `disable` and the analyst’s comment), then **Add justification to Policy Record**, then **Refresh Firewall Policies** (which runs the **Import Fortigate Policies** workflow to sync from the firewall).
+- The **Refresh Firewall Policies** step in both **Review Policy** and **Enable Policy** references the **Import Fortigate Policies** workflow by UUID; no config change is needed for that step.
 
 ## Connector API (5.2.0 vs 5.4.0)
 
-The **Update Comments on Policy** step uses the FortiGate connector’s **update_policy** operation with params suited to **5.4.0**:
-
-- Params include: `comment`, `policyid`, `vdom`, and the usual address/service args; they do **not** include `action` or `status`.
-- In connector **5.2.0**, the same operation could expose optional `action` and `status` (often sent empty for comment-only updates). In 5.4.0 those keys are omitted for this use case.
+The **Update Comments on Policy** step uses the FortiGate connector’s **update_policy** with params suited to **5.4.0** (comment-only; no `action` or `status`). The **Disable Policy on FortiGate** step sends `status`: `disable` and `comment`; the **Enable Policy** playbook sends `status`: `Enable`. Connector **5.4.0** is recommended for all of these.
 
 ## Related
 

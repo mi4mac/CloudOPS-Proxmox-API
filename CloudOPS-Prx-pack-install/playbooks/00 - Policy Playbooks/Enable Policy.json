@@ -1,0 +1,148 @@
+{
+  "@type": "Workflow",
+  "triggerLimit": null,
+  "name": "Enable Policy",
+  "aliasName": null,
+  "tag": null,
+  "description": null,
+  "isActive": true,
+  "debug": false,
+  "singleRecordExecution": false,
+  "remoteExecutableFlag": false,
+  "parameters": [],
+  "synchronous": false,
+  "collection": "/api/3/workflow_collections/288c0ecb-d638-4c14-a963-0308451f25d5",
+  "versions": [],
+  "triggerStep": "/api/3/workflow_steps/c3293941-1245-4380-94e8-981458184140",
+  "steps": [
+    {
+      "@type": "WorkflowStep",
+      "name": "Enable Policy",
+      "description": null,
+      "arguments": {
+        "name": "Fortinet FortiGate",
+        "config": "a18df41f-7370-42b3-b2c2-c21162eadd07",
+        "params": {
+          "name": "",
+          "vdom": "",
+          "status": "Enable",
+          "comment": "",
+          "dstintf": "",
+          "srcintf": "",
+          "policyid": "{{ vars.input.records[0].policyID }}",
+          "schedule": "",
+          "add_dstaddr": "",
+          "add_service": "",
+          "add_srcaddr": "",
+          "remove_dstaddr": "",
+          "remove_service": "",
+          "remove_srcaddr": "",
+          "additional_args": ""
+        },
+        "version": "5.4.0",
+        "connector": "fortigate-firewall",
+        "operation": "update_policy",
+        "operationTitle": "Update Policy",
+        "pickFromTenant": false,
+        "step_variables": []
+      },
+      "status": null,
+      "top": "165",
+      "left": "125",
+      "stepType": "/api/3/workflow_step_types/0bfed618-0316-11e7-93ae-92361f002671",
+      "group": null,
+      "uuid": "f517058c-f949-4513-8e07-e59e7c33eaca"
+    },
+    {
+      "@type": "WorkflowStep",
+      "name": "Refresh Firewall Policies",
+      "description": null,
+      "arguments": {
+        "arguments": [],
+        "apply_async": false,
+        "step_variables": [],
+        "pass_parent_env": false,
+        "pass_input_record": false,
+        "workflowReference": "/api/3/workflows/728a536c-1ce1-496b-aced-f59a0ebb4efb"
+      },
+      "status": null,
+      "top": "300",
+      "left": "125",
+      "stepType": "/api/3/workflow_step_types/74932bdc-b8b6-4d24-88c4-1a4dfbc524f3",
+      "group": null,
+      "uuid": "f86f3c7d-e825-4119-a230-c5ad6366a17e"
+    },
+    {
+      "@type": "WorkflowStep",
+      "name": "Start",
+      "description": null,
+      "arguments": {
+        "route": "a6300659-48e5-4bb5-abb0-ea522cf84464",
+        "resources": [
+          "policies"
+        ],
+        "__triggerLimit": true,
+        "inputVariables": [],
+        "step_variables": {
+          "input": {
+            "params": [],
+            "records": "{{vars.input.records}}"
+          }
+        },
+        "triggerOnSource": true,
+        "displayConditions": {
+          "policies": {
+            "sort": [],
+            "limit": 30,
+            "logic": "AND",
+            "filters": []
+          }
+        },
+        "executeButtonText": "Execute",
+        "noRecordExecution": false,
+        "showToasterMessage": {
+          "visible": false,
+          "messageVisible": true
+        },
+        "triggerOnReplicate": false,
+        "singleRecordExecution": true
+      },
+      "status": null,
+      "top": "30",
+      "left": "125",
+      "stepType": "/api/3/workflow_step_types/f414d039-bb0d-4e59-9c39-a8f1e880b18a",
+      "group": null,
+      "uuid": "c3293941-1245-4380-94e8-981458184140"
+    }
+  ],
+  "routes": [
+    {
+      "@type": "WorkflowRoute",
+      "name": "Enable Policy -> Refresh Firewall Policies",
+      "targetStep": "/api/3/workflow_steps/f86f3c7d-e825-4119-a230-c5ad6366a17e",
+      "sourceStep": "/api/3/workflow_steps/f517058c-f949-4513-8e07-e59e7c33eaca",
+      "label": null,
+      "isExecuted": false,
+      "group": null,
+      "uuid": "ce37c781-af59-4fa0-b1f2-d28771e4489e"
+    },
+    {
+      "@type": "WorkflowRoute",
+      "name": "Start -> Enable Policy",
+      "targetStep": "/api/3/workflow_steps/f517058c-f949-4513-8e07-e59e7c33eaca",
+      "sourceStep": "/api/3/workflow_steps/c3293941-1245-4380-94e8-981458184140",
+      "label": null,
+      "isExecuted": false,
+      "group": null,
+      "uuid": "abb711ac-d628-4fd6-9655-b3155dcc8710"
+    }
+  ],
+  "groups": [],
+  "priority": "/api/3/picklists/2b563c61-ae2c-41c0-a85a-c9709585e3f2",
+  "isEditable": true,
+  "uuid": "cabac5b8-8cf2-4946-8f45-24794f53c1be",
+  "owners": [],
+  "isPrivate": false,
+  "deletedAt": null,
+  "recordTags": []
+}
