@@ -29,7 +29,7 @@ Contents
 - Optional **Docker Containers** module and views for Docker Engine containers (see “Docker inventory (optional)” below).
 - Playbooks for requesting, provisioning, destroying, and refreshing Proxmox inventory.
 - The **> Refresh Docker Inventory** playbook (optional) to sync Docker Engine containers into the Docker Containers module.
-- **Policy playbooks (FortiGate)** (shipped in the pack): **Import Fortigate Policies**, **Review Policy** (with Mark as Denied → disable on FortiGate and Refresh Firewall Policies), **> Update comments on Fortigate**, and **Enable Policy**. See **Policy playbooks (FortiGate)** below for setup and post-import config UUID replacement.
+- **Policy playbooks (FortiGate)** (shipped in the pack): **Import Fortigate Policies**, **PB_REF_LinkPolicyToFirewallAsset_BySerial**, **Review Policy** (with Mark as Denied → disable on FortiGate and Refresh Firewall Policies), **> Update comments on Fortigate**, and **Enable Policy**. See **Policy playbooks (FortiGate)** below for setup and post-import config UUID replacement.
 - Optional global variables to override default node, storage, network, and template settings
 - A sample **actor** (`atlas Me`) and an **AD user enrichment** flow that demonstrate how to plug into an existing directory / user model – these must be adapted to the real users and directory integration in your environment.
 
@@ -68,7 +68,7 @@ Post-upgrade quick test
 
 Policy playbooks (FortiGate)
 ----------------------------
-The pack ships the **00 - Policy Playbooks** collection: **Import Fortigate Policies**, **Review Policy** (Mark as Approved / Mark as Denied → disable on FortiGate, Refresh Firewall Policies), **> Update comments on Fortigate**, and **Enable Policy**, plus the **Policies** module and **SOC Review** dashboard.
+The pack ships the **00 - Policy Playbooks** collection: **Import Fortigate Policies**, **PB_REF_LinkPolicyToFirewallAsset_BySerial**, **Review Policy** (Mark as Approved / Mark as Denied → disable on FortiGate, Refresh Firewall Policies), **> Update comments on Fortigate**, and **Enable Policy**, plus the **Policies** module and **SOC Review** dashboard.
 
 **Prerequisites**
 - FortiGate connector (**Fortinet FortiGate**) installed and at least one configuration pointing at your firewall.
@@ -79,6 +79,7 @@ Several steps are stored with a placeholder config UUID (e.g. `a18df41f-7370-42b
 
 **Playbook roles**
 - **Import Fortigate Policies**: Fetches policies from the FortiGate and upserts them into the **Policies** module. Can be run manually or on a schedule.
+- **PB_REF_LinkPolicyToFirewallAsset_BySerial**: Reference playbook called by **Import Fortigate Policies** to link policy records to firewall assets by serial (`policies.fortiGateSerial` -> `assets.serialNumber`).
 - **Review Policy**: Manual task for SOC analysts: **Mark as Approved**, **Mark as Denied**, or email NOC. For **Mark as Denied**, disables the policy on FortiGate and runs **Refresh Firewall Policies**; for **Mark as Approved**, adds justification and triggers **> Update comments on Fortigate**.
 - **> Update comments on Fortigate**: Triggered when a policy’s `businessJustification` changes; pushes the comment to the FortiGate policy and marks the policy review complete (sets `reviewComplete`, `lastReviewedTime`, `nextReviewTime`, `auditStatus`).
 - **Enable Policy**: Enables a disabled firewall policy on FortiGate, then runs **Refresh Firewall Policies** to re-import policies.

@@ -1,0 +1,209 @@
+{
+  "type": "workflow_collections",
+  "data": [
+    {
+      "uuid": "288c0ecb-d638-4c14-a963-0308451f25d5",
+      "@type": "WorkflowCollection",
+      "name": "00 - Policy Playbooks",
+      "description": null,
+      "visible": true,
+      "image": null,
+      "recordTags": [],
+      "workflows": [
+        {
+          "@type": "Workflow",
+          "triggerLimit": null,
+          "name": "PB_REF_LinkPolicyToFirewallAsset_BySerial",
+          "aliasName": null,
+          "tag": null,
+          "description": "Reference playbook to link Policy records to Asset records by serial number.",
+          "isActive": true,
+          "debug": true,
+          "singleRecordExecution": false,
+          "remoteExecutableFlag": false,
+          "parameters": [],
+          "synchronous": false,
+          "lastModifyDate": 1776772409,
+          "collection": "/api/3/workflow_collections/288c0ecb-d638-4c14-a963-0308451f25d5",
+          "versions": [],
+          "triggerStep": "/api/3/workflow_steps/93715474-16b0-473f-9771-933dab8a0626",
+          "steps": [
+            {
+              "@type": "WorkflowStep",
+              "name": "Find Matching Asset",
+              "description": null,
+              "arguments": {
+                "query": {
+                  "sort": [],
+                  "limit": 2,
+                  "logic": "AND",
+                  "filters": [
+                    {
+                      "type": "primitive",
+                      "field": "serialNumber",
+                      "value": "{{vars.fgt_serial}}",
+                      "operator": "eq",
+                      "_operator": "eq"
+                    }
+                  ],
+                  "__selectFields": [
+                    "uuid"
+                  ]
+                },
+                "module": "assets?$limit=2",
+                "checkboxFields": true,
+                "step_variables": []
+              },
+              "status": null,
+              "top": "320",
+              "left": "40",
+              "stepType": "/api/3/workflow_step_types/b593663d-7d13-40ce-a3a3-96dece928770",
+              "group": null,
+              "uuid": "7278a952-570a-4abb-8538-06a8527fe392"
+            },
+            {
+              "@type": "WorkflowStep",
+              "name": "Get Policies to Link",
+              "description": null,
+              "arguments": {
+                "query": {
+                  "sort": [],
+                  "limit": 2000,
+                  "logic": "AND",
+                  "filters": [
+                    {
+                      "type": "primitive",
+                      "field": "fortiGateSerial",
+                      "value": "{{vars.fgt_serial}}",
+                      "operator": "eq",
+                      "_operator": "eq"
+                    }
+                  ],
+                  "__selectFields": [
+                    "uuid",
+                    "fortiGateSerial",
+                    "assets"
+                  ]
+                },
+                "module": "policies?$limit=2000",
+                "checkboxFields": true,
+                "step_variables": []
+              },
+              "status": null,
+              "top": "180",
+              "left": "40",
+              "stepType": "/api/3/workflow_step_types/b593663d-7d13-40ce-a3a3-96dece928770",
+              "group": null,
+              "uuid": "fd6a1d31-2ee5-472b-a2cb-7e09a5e2f892"
+            },
+            {
+              "@type": "WorkflowStep",
+              "name": "Link Policy to Asset",
+              "description": null,
+              "arguments": {
+                "for_each": {
+                  "item": "{{vars.steps.Get_Policies_to_Link}}",
+                  "parallel": false,
+                  "condition": "{{(vars.steps.Find_Matching_Asset|length) > 0}}"
+                },
+                "resource": {
+                  "assets": [
+                    "/api/3/assets/{{vars.steps.Find_Matching_Asset[0].uuid}}"
+                  ]
+                },
+                "operation": "Append",
+                "collection": "/api/3/policies/{{fsr_loop_item.uuid}}",
+                "__recommend": [],
+                "collectionType": "/api/3/policies",
+                "fieldOperation": {
+                  "recordTags": "Append"
+                },
+                "step_variables": []
+              },
+              "status": null,
+              "top": "460",
+              "left": "40",
+              "stepType": "/api/3/workflow_step_types/b593663d-7d13-40ce-a3a3-96dece928722",
+              "group": null,
+              "uuid": "7d93fea9-9fe5-4ca7-8afc-6ad7a898c3d8"
+            },
+            {
+              "@type": "WorkflowStep",
+              "name": "Start",
+              "description": null,
+              "arguments": {
+                "route": "c55c5b45-4248-46fd-a6e9-cffb9592feab",
+                "title": "PB_REF_LinkPolicyToFirewallAsset_BySerial",
+                "resources": [
+                  "policies"
+                ],
+                "inputVariables": [],
+                "step_variables": {
+                  "input": {
+                    "params": [],
+                    "records": "{{vars.input.records}}"
+                  }
+                },
+                "executeButtonText": "Execute",
+                "noRecordExecution": true,
+                "singleRecordExecution": false
+              },
+              "status": null,
+              "top": "40",
+              "left": "40",
+              "stepType": "/api/3/workflow_step_types/f414d039-bb0d-4e59-9c39-a8f1e880b18a",
+              "group": null,
+              "uuid": "93715474-16b0-473f-9771-933dab8a0626"
+            }
+          ],
+          "routes": [
+            {
+              "@type": "WorkflowRoute",
+              "name": "Find Matching Asset -> Link Policy to Asset",
+              "targetStep": "/api/3/workflow_steps/7d93fea9-9fe5-4ca7-8afc-6ad7a898c3d8",
+              "sourceStep": "/api/3/workflow_steps/7278a952-570a-4abb-8538-06a8527fe392",
+              "label": null,
+              "isExecuted": false,
+              "group": null,
+              "uuid": "d05932e6-8b35-4849-b43c-c03deced210a"
+            },
+            {
+              "@type": "WorkflowRoute",
+              "name": "Get Policies to Link -> Find Matching Asset",
+              "targetStep": "/api/3/workflow_steps/7278a952-570a-4abb-8538-06a8527fe392",
+              "sourceStep": "/api/3/workflow_steps/fd6a1d31-2ee5-472b-a2cb-7e09a5e2f892",
+              "label": null,
+              "isExecuted": false,
+              "group": null,
+              "uuid": "abc59519-5d70-4543-8bbb-0bc79aebc7d1"
+            },
+            {
+              "@type": "WorkflowRoute",
+              "name": "Start -> Get Policies to Link",
+              "targetStep": "/api/3/workflow_steps/fd6a1d31-2ee5-472b-a2cb-7e09a5e2f892",
+              "sourceStep": "/api/3/workflow_steps/93715474-16b0-473f-9771-933dab8a0626",
+              "label": null,
+              "isExecuted": false,
+              "group": null,
+              "uuid": "07c7c686-64ba-4679-aa85-33a86c617987"
+            }
+          ],
+          "groups": [],
+          "priority": "/api/3/picklists/2b563c61-ae2c-41c0-a85a-c9709585e3f2",
+          "playbookOrigin": "/api/3/picklists/15c1e8c9-22bf-4e66-8fbb-0a502d4a4a3f",
+          "isEditable": true,
+          "uuid": "520512cc-56ee-4d78-a5a8-637f88458841",
+          "id": 1746,
+          "owners": [],
+          "isPrivate": false,
+          "deletedAt": null,
+          "importedBy": [],
+          "recordTags": [
+            "asset-linking",
+            "reference"
+          ]
+        }
+      ]
+    }
+  ]
+}

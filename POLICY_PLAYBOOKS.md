@@ -1,6 +1,6 @@
 # Policy playbooks (FortiGate)
 
-This document describes the **00 - Policy Playbooks** collection and the **Policies** module included in the CloudOPS Proxmox pack: what each playbook does, prerequisites, and **post-import configuration** (config UUID replacement).
+This document describes the **00 - Policy Playbooks** collection and the **Policies** module included in the CloudOPS Proxmox pack: what each playbook does, prerequisites, and **post-import configuration** (config UUID replacement and policy-to-asset linking).
 
 ## Contents
 
@@ -31,7 +31,8 @@ After this, comments and disable/enable actions will target the correct FortiGat
 
 | Playbook | Trigger | What it does |
 |----------|---------|----------------|
-| **Import Fortigate Policies** | Manual or schedule | Gets policies from the FortiGate connector and upserts them into the **Policies** module. Updates name, status, description, NAT, `reviewComplete`, etc. |
+| **Import Fortigate Policies** | Manual or schedule | Gets policies from the FortiGate connector and upserts them into the **Policies** module. Updates name, status, description, NAT, `reviewComplete`, `fortiGateSerial`, etc. After upsert, it calls **Link Policies to Firewall Assets by Serial**. |
+| **PB_REF_LinkPolicyToFirewallAsset_BySerial** | Referenced by `Import Fortigate Policies` | Finds the firewall Asset by `assets.serialNumber == policies.fortiGateSerial` (using the FortiGate serial from the current import run) and appends the matching Asset to each policy's `assets` relationship. |
 | **Review Policy** | Manual (from Policies record) | Presents a form for the SOC analyst: **Mark as Approved**, **Mark as Denied**, or **Email NOC team for additional input**. For **Mark as Denied**, runs **Disable Policy on FortiGate** (disables the policy and sets the comment), then stores the justification; for **Mark as Approved**, writes the justification to the record (which triggers **> Update comments on Fortigate**). After updating the record, runs **Refresh Firewall Policies** (re-runs Import Fortigate Policies) to sync state from the firewall. |
 | **> Update comments on Fortigate** | Field-based: `businessJustification` changed | Sends the policy’s **businessJustification** to the FortiGate as the policy comment, then marks the policy review complete (sets `reviewComplete`, `lastReviewedTime`, `nextReviewTime`, `auditStatus`). |
 | **Enable Policy** | Manual (from Policies record) | Enables a disabled firewall policy on FortiGate (`update_policy` with `status`: **Enable**), then runs **Refresh Firewall Policies** to re-import policies from the firewall. |
@@ -44,6 +45,18 @@ After this, comments and disable/enable actions will target the correct FortiGat
 ## Connector API (5.2.0 vs 5.4.0)
 
 The **Update Comments on Policy** step uses the FortiGate connector’s **update_policy** with params suited to **5.4.0** (comment-only; no `action` or `status`). The **Disable Policy on FortiGate** step sends `status`: `disable` and `comment`; the **Enable Policy** playbook sends `status`: `Enable`. Connector **5.4.0** is recommended for all of these.
+
+## Policy-to-Asset linking notes
+
+- `Import Fortigate Policies` now stores `fortiGateSerial` on policy upsert and immediately calls the reference playbook `PB_REF_LinkPolicyToFirewallAsset_BySerial`.
+- The reference playbook matches against **Asset field API key** `serialNumber` (label often shown as **Serial No**).
+- If no Asset is found for the serial, no relationship is written.
+- If multiple Assets match the same serial, the first returned record is used. For deterministic results, keep `serialNumber` unique for firewall assets.
+
+## Import format notes
+
+- In some FortiSOAR tenants, importing a single raw workflow JSON may show `The file type is invalid`.
+- The playbook files in this repo are stored in `workflow_collections` wrapper format for compatibility with that import path.
 
 ## Related
 

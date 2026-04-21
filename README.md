@@ -10,7 +10,7 @@ What’s included
   - **VM Instances**, **Network Interfaces**, and **Proxmox Inventory** modules.
   - Playbooks for request → approve → provision → destroy → cleanup, plus **> Refresh Proxmox Inventory**.
   - UI layouts for list/detail views, including the **two‑row VM Instances list** (top: requested VMs/CTs, bottom: Proxmox inventory not tracked in `v_m_instances`).
-  - **Policy playbooks (FortiGate)** – **Policies** module, **SOC Review** dashboard, and **00 - Policy Playbooks**: **Import Fortigate Policies**, **Review Policy** (Mark as Approved / **Mark as Denied** → disable on FortiGate, **Refresh Firewall Policies**), **> Update comments on Fortigate**, and **Enable Policy**. See the **Policy playbooks (FortiGate)** section and `POLICY_PLAYBOOKS.md` for setup and post-import config UUID steps.
+- **Policy playbooks (FortiGate)** – **Policies** module, **SOC Review** dashboard, and **00 - Policy Playbooks**: **Import Fortigate Policies**, **PB_REF_LinkPolicyToFirewallAsset_BySerial**, **Review Policy** (Mark as Approved / **Mark as Denied** → disable on FortiGate, **Refresh Firewall Policies**), **> Update comments on Fortigate**, and **Enable Policy**. See the **Policy playbooks (FortiGate)** section and `POLICY_PLAYBOOKS.md` for setup, post-import config UUID steps, and asset-linking behavior.
   - **Docker inventory (optional)** – **Docker Containers** module, navigation entry, roles, and the **> Refresh Docker Inventory** playbook are also shipped in the pack; use them with the Docker connector to sync Docker Engine containers into FortiSOAR. See **Optional: Docker inventory integration** below.
 - Other prebuilt content:
   - `API Connector Proxmox.tgz` – Importable Proxmox connector package.
@@ -55,7 +55,9 @@ Installation (high level)
 
 Policy playbooks (FortiGate)
 ----------------------------
-**CloudOPS_Solution_Pack.zip** ships the full **00 - Policy Playbooks** collection: **Import Fortigate Policies**, **Review Policy** (Mark as Approved / Mark as Denied → disable on FortiGate, and Refresh Firewall Policies), **> Update comments on Fortigate**, and **Enable Policy**. The **Policies** module and **SOC Review** dashboard are included. See **POLICY_PLAYBOOKS.md** for details.
+**CloudOPS_Solution_Pack.zip** ships the full **00 - Policy Playbooks** collection: **Import Fortigate Policies**, **PB_REF_LinkPolicyToFirewallAsset_BySerial**, **Review Policy** (Mark as Approved / Mark as Denied → disable on FortiGate, and Refresh Firewall Policies), **> Update comments on Fortigate**, and **Enable Policy**. The **Policies** module and **SOC Review** dashboard are included. See **POLICY_PLAYBOOKS.md** for details.
+
+`Import Fortigate Policies` calls `PB_REF_LinkPolicyToFirewallAsset_BySerial` to link `policies.assets` by matching `policies.fortiGateSerial` to `assets.serialNumber`.
 
 **Post-import: config UUID replacement.** Several steps use a placeholder config UUID (e.g. `a18df41f-7370-42b3-b2c2-c21162eadd07`). Config UUIDs are instance-specific. After import, set **Connector** and **Configuration** to your FortiGate in: (1) **> Update comments on Fortigate** → **Update Comments on Policy**; (2) **Review Policy** → **Disable Policy on FortiGate**; (3) **Enable Policy** → **Enable Policy** step. Use connector **Fortinet FortiGate** version **5.4.0** recommended.
 
