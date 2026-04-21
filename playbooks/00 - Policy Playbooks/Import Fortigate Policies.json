@@ -175,24 +175,20 @@
               "description": "Deletes policy records that are no longer returned by the firewall.",
               "arguments": {
                 "params": {
-                  "iri": "/api/3/policies/{{vars.item.uuid}}",
+                  "iri": "/api/3/policies/{{vars.item.deleted_policy_uuid}}",
                   "body": "",
                   "method": "DELETE"
                 },
                 "version": "3.7.0",
                 "for_each": {
-                  "item": "{{vars.steps.Get_Existing_Policies_by_Serial}}",
+                  "item": "{{vars.steps.Prepare_Stale_Policy_Delete_List}}",
                   "parallel": false,
-                  "condition": "{{vars.current_policy_ids and (vars.item.policyID not in vars.current_policy_ids)}}"
+                  "condition": ""
                 },
                 "connector": "cyops_utilities",
                 "operation": "make_cyops_request",
                 "operationTitle": "FSR: Make FortiSOAR API Call",
-                "step_variables": {
-                  "deleted_policy_uuid": "{{vars.item.uuid}}",
-                  "deleted_policy_id": "{{vars.item.policyID}}",
-                  "deleted_policy_name": "{{vars.item.name}}"
-                }
+                "step_variables": []
               },
               "status": null,
               "top": "840",
@@ -200,6 +196,27 @@
               "stepType": "/api/3/workflow_step_types/0109f35d-090b-4a2b-bd8a-94cbc3508562",
               "group": null,
               "uuid": "612dfba8-4ae6-4882-bda0-395df1f6f083"
+            },
+            {
+              "@type": "WorkflowStep",
+              "name": "Prepare Stale Policy Delete List",
+              "description": "Builds a visible list of stale policies that will be deleted.",
+              "arguments": {
+                "for_each": {
+                  "item": "{{vars.steps.Get_Existing_Policies_by_Serial}}",
+                  "parallel": false,
+                  "condition": "{{vars.current_policy_ids and (vars.item.policyID not in vars.current_policy_ids)}}"
+                },
+                "deleted_policy_uuid": "{{vars.item.uuid}}",
+                "deleted_policy_id": "{{vars.item.policyID}}",
+                "deleted_policy_name": "{{vars.item.name}}"
+              },
+              "status": null,
+              "top": "780",
+              "left": "40",
+              "stepType": "/api/3/workflow_step_types/04d0cf46-b6a8-42c4-8683-60a7eaa69e8f",
+              "group": null,
+              "uuid": "be5c3c35-f099-4316-807e-b46ee57a230b"
             },
             {
               "@type": "WorkflowStep",
@@ -253,13 +270,23 @@
             },
             {
               "@type": "WorkflowRoute",
-              "name": "Get Existing Policies by Serial -> Delete Stale Policies",
-              "targetStep": "/api/3/workflow_steps/612dfba8-4ae6-4882-bda0-395df1f6f083",
+              "name": "Get Existing Policies by Serial -> Prepare Stale Policy Delete List",
+              "targetStep": "/api/3/workflow_steps/be5c3c35-f099-4316-807e-b46ee57a230b",
               "sourceStep": "/api/3/workflow_steps/4c120ab9-ecf5-4061-94ea-bf7d8bfa1c10",
               "label": null,
               "isExecuted": false,
               "group": null,
               "uuid": "7f9a36c0-f063-4d01-9667-948d8d65f4be"
+            },
+            {
+              "@type": "WorkflowRoute",
+              "name": "Prepare Stale Policy Delete List -> Delete Stale Policies",
+              "targetStep": "/api/3/workflow_steps/612dfba8-4ae6-4882-bda0-395df1f6f083",
+              "sourceStep": "/api/3/workflow_steps/be5c3c35-f099-4316-807e-b46ee57a230b",
+              "label": null,
+              "isExecuted": false,
+              "group": null,
+              "uuid": "e25f0f59-2bd0-4700-98c0-befdb89bb165"
             },
             {
               "@type": "WorkflowRoute",
