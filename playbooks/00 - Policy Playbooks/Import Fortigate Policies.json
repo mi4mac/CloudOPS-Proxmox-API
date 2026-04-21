@@ -124,7 +124,8 @@
               "description": null,
               "arguments": {
                 "policies": "{{vars.steps.Get_Policies.data.result[0].results}}",
-                "fgt_serial": "{{vars.steps.Get_Policies.data.result[0].serial}}"
+                "fgt_serial": "{{vars.steps.Get_Policies.data.result[0].serial}}",
+                "current_policy_ids": "{{vars.steps.Get_Policies.data.result[0].results | json_query('[].policyid')}}"
               },
               "status": null,
               "top": "280",
@@ -132,6 +133,73 @@
               "stepType": "/api/3/workflow_step_types/04d0cf46-b6a8-42c4-8683-60a7eaa69e8f",
               "group": null,
               "uuid": "c2750327-0ca7-4faa-a117-93f2c53fcd68"
+            },
+            {
+              "@type": "WorkflowStep",
+              "name": "Get Existing Policies by Serial",
+              "description": "Reads existing policy records for this firewall serial to find stale records.",
+              "arguments": {
+                "query": {
+                  "sort": [],
+                  "limit": 2000,
+                  "logic": "AND",
+                  "filters": [
+                    {
+                      "type": "primitive",
+                      "field": "fortiGateSerial",
+                      "value": "{{vars.fgt_serial}}",
+                      "operator": "eq",
+                      "_operator": "eq"
+                    }
+                  ],
+                  "__selectFields": [
+                    "uuid",
+                    "policyID",
+                    "name"
+                  ]
+                },
+                "module": "policies?$limit=2000",
+                "checkboxFields": true,
+                "step_variables": []
+              },
+              "status": null,
+              "top": "700",
+              "left": "40",
+              "stepType": "/api/3/workflow_step_types/b593663d-7d13-40ce-a3a3-96dece928770",
+              "group": null,
+              "uuid": "4c120ab9-ecf5-4061-94ea-bf7d8bfa1c10"
+            },
+            {
+              "@type": "WorkflowStep",
+              "name": "Delete Stale Policies",
+              "description": "Deletes policy records that are no longer returned by the firewall.",
+              "arguments": {
+                "params": {
+                  "iri": "/api/3/policies/{{vars.item.uuid}}",
+                  "body": "",
+                  "method": "DELETE"
+                },
+                "version": "3.7.0",
+                "for_each": {
+                  "item": "{{vars.steps.Get_Existing_Policies_by_Serial}}",
+                  "parallel": false,
+                  "condition": "{{vars.current_policy_ids and (vars.item.policyID not in vars.current_policy_ids)}}"
+                },
+                "connector": "cyops_utilities",
+                "operation": "make_cyops_request",
+                "operationTitle": "FSR: Make FortiSOAR API Call",
+                "step_variables": {
+                  "deleted_policy_uuid": "{{vars.item.uuid}}",
+                  "deleted_policy_id": "{{vars.item.policyID}}",
+                  "deleted_policy_name": "{{vars.item.name}}"
+                }
+              },
+              "status": null,
+              "top": "840",
+              "left": "40",
+              "stepType": "/api/3/workflow_step_types/0109f35d-090b-4a2b-bd8a-94cbc3508562",
+              "group": null,
+              "uuid": "612dfba8-4ae6-4882-bda0-395df1f6f083"
             },
             {
               "@type": "WorkflowStep",
@@ -172,6 +240,26 @@
               "isExecuted": false,
               "group": null,
               "uuid": "6d2b1eb6-34e8-4452-9ae6-690f5f93042d"
+            },
+            {
+              "@type": "WorkflowRoute",
+              "name": "Link Policies to Firewall Assets by Serial -> Get Existing Policies by Serial",
+              "targetStep": "/api/3/workflow_steps/4c120ab9-ecf5-4061-94ea-bf7d8bfa1c10",
+              "sourceStep": "/api/3/workflow_steps/c2fa0519-9df5-40ee-9d6c-9d840841a5fa",
+              "label": null,
+              "isExecuted": false,
+              "group": null,
+              "uuid": "8f9da8af-ff91-4214-9cad-184dbca3bc9a"
+            },
+            {
+              "@type": "WorkflowRoute",
+              "name": "Get Existing Policies by Serial -> Delete Stale Policies",
+              "targetStep": "/api/3/workflow_steps/612dfba8-4ae6-4882-bda0-395df1f6f083",
+              "sourceStep": "/api/3/workflow_steps/4c120ab9-ecf5-4061-94ea-bf7d8bfa1c10",
+              "label": null,
+              "isExecuted": false,
+              "group": null,
+              "uuid": "7f9a36c0-f063-4d01-9667-948d8d65f4be"
             },
             {
               "@type": "WorkflowRoute",
