@@ -59,6 +59,8 @@ Policy playbooks (FortiGate)
 
 `Import Fortigate Policies` calls `PB_REF_LinkPolicyToFirewallAsset_BySerial` to link `policies.assets` by matching `policies.fortiGateSerial` to `assets.serialNumber`, and performs stale-policy cleanup with a visible pre-delete list in run output.
 
+Recommended scheduler defaults are documented in `POLICY_PLAYBOOKS.md` (import cadence, archive cadence, `dryRun` rollout, and retention day guidance).
+
 **Post-import: config UUID replacement.** Several steps use a placeholder config UUID (e.g. `a18df41f-7370-42b3-b2c2-c21162eadd07`). Config UUIDs are instance-specific. After import, set **Connector** and **Configuration** to your FortiGate in: (1) **> Update comments on Fortigate** → **Update Comments on Policy**; (2) **Review Policy** → **Disable Policy on FortiGate**; (3) **Enable Policy** → **Enable Policy** step. Use connector **Fortinet FortiGate** version **5.4.0** recommended.
 
 **Connector API (5.2.0 vs 5.4.0):** Comment-only steps omit `action`/`status`; **Disable Policy on FortiGate** sends `status`: `disable`; **Enable Policy** sends `status`: `Enable`. See POLICY_PLAYBOOKS.md for full details.

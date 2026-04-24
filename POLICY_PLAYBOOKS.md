@@ -60,6 +60,31 @@ The **Update Comments on Policy** step uses the FortiGate connector’s **update
 - Stale policy detection is scoped by current `fortiGateSerial` and compares existing `policyID` values against current imported policy IDs.
 - If you prefer retention over immediate delete, use the optional `Archive Deleted Firewall Policies` playbook with soft-delete fields and a retention schedule.
 
+## Recommended scheduler settings
+
+Use these defaults for stable automated operation:
+
+1. **Import Fortigate Policies**
+   - **Enabled**: Yes
+   - **Frequency**: Every `10` minutes (or `15` minutes for lower API load)
+   - **Timeout**: Default
+   - **Run mode**: Normal scheduled run
+   - **Purpose**: Keep policy inventory current and apply linking/stale detection continuously.
+
+2. **Archive Deleted Firewall Policies**
+   - **Enabled**: Yes (after initial dry-run validation)
+   - **Frequency**: Daily, off-hours (recommended `01:30` local time)
+   - **Input params (recommended)**:
+     - `retentionDays`: `30` (or `60`/`90` per policy)
+     - `dryRun`: `true` for first 3-5 runs, then `false`
+   - **Purpose**: Move long-stale deleted rules into archived state for retention governance.
+
+3. **Operational guardrails**
+   - Keep import schedule more frequent than archive schedule.
+   - Do not run archive more than once per day unless required.
+   - After changing retention days, monitor first run output (`Prepare Archive List`) before keeping changes.
+   - If firewall API instability is observed, temporarily disable archive schedule and keep import schedule enabled.
+
 ## Import format notes
 
 - In some FortiSOAR tenants, importing a single raw workflow JSON may show `The file type is invalid`.

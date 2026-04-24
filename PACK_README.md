@@ -85,6 +85,8 @@ Several steps are stored with a placeholder config UUID (e.g. `a18df41f-7370-42b
 - **> Update comments on Fortigate**: Triggered when a policy’s `businessJustification` changes; pushes the comment to the FortiGate policy and marks the policy review complete (sets `reviewComplete`, `lastReviewedTime`, `nextReviewTime`, `auditStatus`).
 - **Enable Policy**: Enables a disabled firewall policy on FortiGate, then runs **Refresh Firewall Policies** to re-import policies.
 
+Recommended scheduler settings (import cadence, daily archive window, and `dryRun` rollout) are documented in `POLICY_PLAYBOOKS.md`.
+
 Usage
 -----
 - Use the service management playbooks to request and provision VMs/containers.
