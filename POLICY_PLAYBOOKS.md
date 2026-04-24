@@ -29,14 +29,16 @@ After this, comments and disable/enable actions will target the correct FortiGat
 
 ## Playbooks
 
-| Playbook | Trigger | What it does |
-|----------|---------|----------------|
-| **Import Fortigate Policies** | Manual or schedule | Gets policies from the FortiGate connector and upserts them into the **Policies** module. Updates name, status, description, NAT, `reviewComplete`, `fortiGateSerial`, etc. After upsert, it calls **Link Policies to Firewall Assets by Serial**, computes stale policies for the current serial, and removes stale records while exposing the stale list in run output. |
-| **PB_REF_LinkPolicyToFirewallAsset_BySerial** | Referenced by `Import Fortigate Policies` | Finds the firewall Asset by `assets.serialNumber == policies.fortiGateSerial` (using the FortiGate serial from the current import run) and appends the matching Asset to each policy's `assets` relationship. |
-| **Archive Deleted Firewall Policies** | Manual or schedule | Optional lifecycle playbook for environments that use soft-delete fields (`isDeletedOnFirewall`, `deletedDetectedAt`). Supports `retentionDays` and `dryRun`, prepares a visible archive list, and marks candidates as archived (`policyStatus = Archived`, `archivedAt`). |
-| **Review Policy** | Manual (from Policies record) | Presents a form for the SOC analyst: **Mark as Approved**, **Mark as Denied**, or **Email NOC team for additional input**. For **Mark as Denied**, runs **Disable Policy on FortiGate** (disables the policy and sets the comment), then stores the justification; for **Mark as Approved**, writes the justification to the record (which triggers **> Update comments on Fortigate**). After updating the record, runs **Refresh Firewall Policies** (re-runs Import Fortigate Policies) to sync state from the firewall. |
-| **> Update comments on Fortigate** | Field-based: `businessJustification` changed | Sends the policy’s **businessJustification** to the FortiGate as the policy comment, then marks the policy review complete (sets `reviewComplete`, `lastReviewedTime`, `nextReviewTime`, `auditStatus`). |
-| **Enable Policy** | Manual (from Policies record) | Enables a disabled firewall policy on FortiGate (`update_policy` with `status`: **Enable**), then runs **Refresh Firewall Policies** to re-import policies from the firewall. |
+
+| Playbook                                      | Trigger                                      | What it does                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
+| --------------------------------------------- | -------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Import Fortigate Policies**                 | Manual or schedule                           | Gets policies from the FortiGate connector and upserts them into the **Policies** module. Updates name, status, description, NAT, `reviewComplete`, `fortiGateSerial`, etc. After upsert, it calls **Link Policies to Firewall Assets by Serial**, computes stale policies for the current serial, and removes stale records while exposing the stale list in run output.                                                                                                                                                   |
+| **PB_REF_LinkPolicyToFirewallAsset_BySerial** | Referenced by `Import Fortigate Policies`    | Finds the firewall Asset by `assets.serialNumber == policies.fortiGateSerial` (using the FortiGate serial from the current import run) and appends the matching Asset to each policy's `assets` relationship.                                                                                                                                                                                                                                                                                                               |
+| **Archive Deleted Firewall Policies**         | Manual or schedule                           | Optional lifecycle playbook for environments that use soft-delete fields (`isDeletedOnFirewall`, `deletedDetectedAt`). Supports `retentionDays` and `dryRun`, prepares a visible archive list, and marks candidates as archived (`policyStatus = Archived`, `archivedAt`).                                                                                                                                                                                                                                                  |
+| **Review Policy**                             | Manual (from Policies record)                | Presents a form for the SOC analyst: **Mark as Approved**, **Mark as Denied**, or **Email NOC team for additional input**. For **Mark as Denied**, runs **Disable Policy on FortiGate** (disables the policy and sets the comment), then stores the justification; for **Mark as Approved**, writes the justification to the record (which triggers **> Update comments on Fortigate**). After updating the record, runs **Refresh Firewall Policies** (re-runs Import Fortigate Policies) to sync state from the firewall. |
+| **> Update comments on Fortigate**            | Field-based: `businessJustification` changed | Sends the policy’s **businessJustification** to the FortiGate as the policy comment, then marks the policy review complete (sets `reviewComplete`, `lastReviewedTime`, `nextReviewTime`, `auditStatus`).                                                                                                                                                                                                                                                                                                                    |
+| **Enable Policy**                             | Manual (from Policies record)                | Enables a disabled firewall policy on FortiGate (`update_policy` with `status`: **Enable**), then runs **Refresh Firewall Policies** to re-import policies from the firewall.                                                                                                                                                                                                                                                                                                                                               |
+
 
 ## Mark as Denied and Refresh
 
@@ -65,25 +67,47 @@ The **Update Comments on Policy** step uses the FortiGate connector’s **update
 Use these defaults for stable automated operation:
 
 1. **Import Fortigate Policies**
-   - **Enabled**: Yes
-   - **Frequency**: Every `10` minutes (or `15` minutes for lower API load)
-   - **Timeout**: Default
-   - **Run mode**: Normal scheduled run
-   - **Purpose**: Keep policy inventory current and apply linking/stale detection continuously.
-
+  - **Enabled**: Yes
+  - **Frequency**: Every `10` minutes (or `15` minutes for lower API load)
+  - **Timeout**: Default
+  - **Run mode**: Normal scheduled run
+  - **Purpose**: Keep policy inventory current and apply linking/stale detection continuously.
 2. **Archive Deleted Firewall Policies**
-   - **Enabled**: Yes (after initial dry-run validation)
-   - **Frequency**: Daily, off-hours (recommended `01:30` local time)
-   - **Input params (recommended)**:
-     - `retentionDays`: `30` (or `60`/`90` per policy)
-     - `dryRun`: `true` for first 3-5 runs, then `false`
-   - **Purpose**: Move long-stale deleted rules into archived state for retention governance.
-
+  - **Enabled**: Yes (after initial dry-run validation)
+  - **Frequency**: Daily, off-hours (recommended `01:30` local time)
+  - **Input params (recommended)**:
+    - `retentionDays`: `30` (or `60`/`90` per policy)
+    - `dryRun`: `true` for first 3-5 runs, then `false`
+  - **Purpose**: Move long-stale deleted rules into archived state for retention governance.
 3. **Operational guardrails**
-   - Keep import schedule more frequent than archive schedule.
-   - Do not run archive more than once per day unless required.
-   - After changing retention days, monitor first run output (`Prepare Archive List`) before keeping changes.
-   - If firewall API instability is observed, temporarily disable archive schedule and keep import schedule enabled.
+  - Keep import schedule more frequent than archive schedule.
+  - Do not run archive more than once per day unless required.
+  - After changing retention days, monitor first run output (`Prepare Archive List`) before keeping changes.
+  - If firewall API instability is observed, temporarily disable archive schedule and keep import schedule enabled.
+
+## Global variable mode (recommended for scheduler runs)
+
+Some FortiSOAR scheduler UIs do not expose playbook input params. In that case, configure retention via global variables:
+
+- `policyArchiveDryRun` -> `true` or `false`
+- `policyArchiveRetentionDays` -> `30`, `60`, or `90`
+
+In playbook step **Set Retention Config**, use:
+
+- `dry_run`
+  - `{{globalVars.policyArchiveDryRun | default(true)}}`
+- `retention_days`
+  - `{{(globalVars.policyArchiveRetentionDays | default(30)) | int}}`
+- `cutoff_ts`
+  - `{{arrow.get().shift(days=-((globalVars.policyArchiveRetentionDays | default(30)) | int)).int_timestamp}}`
+
+### Common error and fix
+
+If you see:
+
+- `bad operand type for unary -: 'str'`
+
+then `policyArchiveRetentionDays` is stored as a string (for example `"60"`). Use the `| int` cast exactly as shown above in both `retention_days` and `cutoff_ts`.
 
 ## Import format notes
 

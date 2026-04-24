@@ -20,13 +20,13 @@ This powers the **two‑row `VM Instances` list view**:
 3. **Get VM Instances** – Load all `v_m_instances` records from FortiSOAR.
 4. **Build Sync Report** – Build Proxmox IDs and `vm_records`.
 5. **Compute Orphaned and Not Tracked** – Calculate:
-   - **Orphaned:** Records with a `proxmoxId` that no longer exist on Proxmox.
-   - **Not Tracked:** Proxmox VM/CT IDs that do not have a corresponding `v_m_instances` record.
+  - **Orphaned:** Records with a `proxmoxId` that no longer exist on Proxmox.
+  - **Not Tracked:** Proxmox VM/CT IDs that do not have a corresponding `v_m_instances` record.
 6. **Sync Proxmox VMs** – For each VM from Proxmox, **upsert** a record in `proxmox_inventory` via `/api/3/upsert/proxmox_inventory`:
-   - Keyed by `proxmoxId`.
-   - Stores name, node, type, status, CPU cores, memory (MB), disk (GB), last‑seen timestamp.
-   - Stores human‑friendly **Disks** and **Interfaces** summaries based on Proxmox config.
-   - Sets `tracked = true` if there is a matching `v_m_instances.proxmoxId`, otherwise `false`.
+  - Keyed by `proxmoxId`.
+  - Stores name, node, type, status, CPU cores, memory (MB), disk (GB), last‑seen timestamp.
+  - Stores human‑friendly **Disks** and **Interfaces** summaries based on Proxmox config.
+  - Sets `tracked = true` if there is a matching `v_m_instances.proxmoxId`, otherwise `false`.
 7. **Sync Proxmox Containers** – Same as step 6, but for LXC containers.
 8. **Set Sync Report** – Create an HTML report.
 9. **Get Sync Log Record** – Look up a record with the name `Inventory-Sync-Log`.

@@ -60,9 +60,9 @@
               "name": "Set Retention Config",
               "description": null,
               "arguments": {
-                "retention_days": "{{vars.input.params.retentionDays or 30}}",
-                "dry_run": "{{vars.input.params.dryRun if vars.input.params.dryRun is not none else true}}",
-                "cutoff_ts": "{{arrow.get().shift(days=-(vars.input.params.retentionDays or 30)).int_timestamp}}"
+                "retention_days": "{{globalVars.policyArchiveRetentionDays | default(30) | int}}",
+                "dry_run": "{{(globalVars.policyArchiveDryRun | default('true') | string | lower) in ['true','1','yes']}}",
+                "cutoff_ts": "{{arrow.get().shift(days=-(globalVars.policyArchiveRetentionDays | default(30) | int)).int_timestamp}}"
               },
               "status": null,
               "top": "180",
