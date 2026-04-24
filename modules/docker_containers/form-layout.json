@@ -1,1 +1,17 @@
-{"@context":"/api/3/contexts/SystemViewTemplate","@type":"SystemViewTemplate","type":"form","config":{"rows":[]},"module":"docker_containers","filters":[],"isDefault":true,"visible":true,"viewOptions":"form","name":"Base Template","system":false,"uuid":"modules-docker_containers-form","newUuid":"677deb6d-9d25-4799-8e69-2cb55a986b34"}
+{
+    "@context": "\/api\/3\/contexts\/SystemViewTemplate",
+    "@type": "SystemViewTemplate",
+    "type": "form",
+    "config": {
+        "rows": []
+    },
+    "module": "docker_containers",
+    "filters": [],
+    "isDefault": true,
+    "visible": true,
+    "viewOptions": "form",
+    "name": "Base Template",
+    "system": false,
+    "uuid": "modules-docker_containers-form",
+    "newUuid": "677deb6d-9d25-4799-8e69-2cb55a986b34"
+}

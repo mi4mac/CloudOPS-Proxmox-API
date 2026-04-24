@@ -669,6 +669,46 @@
             "canDelete": false,
             "fieldPermissions": [],
             "module": "workspaces"
+        },
+        {
+            "@type": "ModulePermission",
+            "canCreate": true,
+            "canExecute": false,
+            "canRead": true,
+            "canUpdate": true,
+            "canDelete": false,
+            "fieldPermissions": [],
+            "module": "asset_change_activities"
+        },
+        {
+            "@type": "ModulePermission",
+            "canCreate": false,
+            "canExecute": false,
+            "canRead": true,
+            "canUpdate": false,
+            "canDelete": false,
+            "fieldPermissions": [],
+            "module": "asset_resources"
+        },
+        {
+            "@type": "ModulePermission",
+            "canCreate": true,
+            "canExecute": false,
+            "canRead": true,
+            "canUpdate": true,
+            "canDelete": false,
+            "fieldPermissions": [],
+            "module": "outbreak_alerts"
+        },
+        {
+            "@type": "ModulePermission",
+            "canCreate": true,
+            "canExecute": false,
+            "canRead": true,
+            "canUpdate": true,
+            "canDelete": false,
+            "fieldPermissions": [],
+            "module": "threat_hunt_rules"
         }
     ],
     "uuid": "7b56d139-7ee6-455e-8658-35727e202b8a"

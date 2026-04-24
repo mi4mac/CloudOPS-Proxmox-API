@@ -195,6 +195,21 @@
                             "name": "main.schedules"
                         },
                         "title": "Schedules"
+                    },
+                    {
+                        "editMode": false,
+                        "icon": "fa fa-clock-o",
+                        "require": {
+                            "action": "read",
+                            "module": "sla_template"
+                        },
+                        "state": {
+                            "name": "main.modules.list",
+                            "parameters": {
+                                "module": "sla_template"
+                            }
+                        },
+                        "title": "SLA Templates"
                     }
                 ],
                 "mergeType": "merge",
@@ -263,10 +278,108 @@
                             }
                         },
                         "title": "Assets"
+                    },
+                    {
+                        "editMode": false,
+                        "icon": "icon icon-insert-edit-image",
+                        "require": {
+                            "action": "read",
+                            "module": "asset_resources"
+                        },
+                        "state": {
+                            "name": "main.modules.list",
+                            "parameters": {
+                                "module": "asset_resources"
+                            }
+                        },
+                        "title": "Asset Resources"
+                    },
+                    {
+                        "editMode": false,
+                        "icon": "icon icon-change-severity",
+                        "require": {
+                            "action": "read",
+                            "module": "asset_change_activities"
+                        },
+                        "state": {
+                            "name": "main.modules.list",
+                            "parameters": {
+                                "module": "asset_change_activities"
+                            }
+                        },
+                        "title": "Asset Change Activities"
                     }
                 ],
                 "mergeType": "merge",
                 "title": "Resources"
+            },
+            {
+                "editMode": false,
+                "icon": "icon icon-user_assignments",
+                "items": [
+                    {
+                        "editMode": false,
+                        "icon": "icon icon-single-line-item",
+                        "require": {
+                            "action": "read",
+                            "module": "policies"
+                        },
+                        "state": {
+                            "name": "main.modules.list",
+                            "parameters": {
+                                "module": "policies"
+                            }
+                        },
+                        "title": "Firewall Policies"
+                    },
+                    {
+                        "editMode": false,
+                        "icon": "fa fa-rss",
+                        "require": {
+                            "action": "read",
+                            "module": "network_interfaces"
+                        },
+                        "state": {
+                            "name": "main.modules.list",
+                            "parameters": {
+                                "module": "network_interfaces"
+                            }
+                        },
+                        "title": "Network Interfaces"
+                    },
+                    {
+                        "editMode": false,
+                        "icon": "fa fa-laptop",
+                        "require": {
+                            "action": "read",
+                            "module": "v_m_instances"
+                        },
+                        "state": {
+                            "name": "main.modules.list",
+                            "parameters": {
+                                "module": "v_m_instances"
+                            }
+                        },
+                        "title": "VM Instances"
+                    },
+                    {
+                        "editMode": false,
+                        "icon": "fa fa-cube",
+                        "require": {
+                            "action": "read",
+                            "module": "docker_containers"
+                        },
+                        "state": {
+                            "name": "main.modules.list",
+                            "parameters": {
+                                "module": "docker_containers"
+                            }
+                        },
+                        "title": "Docker"
+                    }
+                ],
+                "mergeType": "merge",
+                "title": "Service Management"
             },
             {
                 "editMode": false,
@@ -311,50 +424,37 @@
             },
             {
                 "editMode": false,
-                "icon": "icon icon-help",
-                "mergeType": "merge",
-                "openInNewTab": true,
-                "state": {
-                    "name": "main.pages",
-                    "parameters": {
-                        "module": "help"
+                "icon": "icon icon-outbreak",
+                "items": [
+                    {
+                        "editMode": false,
+                        "icon": "icon icon-dashboard",
+                        "state": {
+                            "name": "main.section_dashboard",
+                            "parameters": {
+                                "module": "5ef85009-6f6b-419b-843c-b8a216f82f8f"
+                            }
+                        },
+                        "title": "Dashboard"
+                    },
+                    {
+                        "editMode": false,
+                        "icon": "icon icon-vulnerability",
+                        "require": {
+                            "action": "read",
+                            "module": "outbreak_alerts"
+                        },
+                        "state": {
+                            "name": "main.modules.list",
+                            "parameters": {
+                                "module": "outbreak_alerts"
+                            }
+                        },
+                        "title": "Outbreak Alerts"
                     }
-                },
-                "title": "Help",
-                "url": "https:\/\/docs.fortinet.com\/product\/fortisoar"
-            },
-            {
-                "editMode": false,
-                "icon": "icon icon-users",
+                ],
                 "mergeType": "merge",
-                "openInNewTab": true,
-                "state": {
-                    "name": "main.pages",
-                    "parameters": {
-                        "module": "user-community"
-                    }
-                },
-                "title": "User Community",
-                "url": "https:\/\/fortisoar.fortinet.com"
-            },
-            {
-                "editMode": false,
-                "icon": "fa fa-play",
-                "isEnabled": false,
-                "mergeType": "merge",
-                "open": false,
-                "openStatus": false,
-                "require": {
-                    "action": "read",
-                    "module": "scenario"
-                },
-                "state": {
-                    "name": "main.modules.list",
-                    "parameters": {
-                        "module": "scenario"
-                    }
-                },
-                "title": "Simulations"
+                "title": "Outbreak Management"
             },
             {
                 "editMode": false,
@@ -495,6 +595,25 @@
             },
             {
                 "editMode": false,
+                "icon": "fa fa-play",
+                "isEnabled": false,
+                "mergeType": "merge",
+                "open": false,
+                "openStatus": false,
+                "require": {
+                    "action": "read",
+                    "module": "scenario"
+                },
+                "state": {
+                    "name": "main.modules.list",
+                    "parameters": {
+                        "module": "scenario"
+                    }
+                },
+                "title": "Simulations"
+            },
+            {
+                "editMode": false,
                 "icon": "fa fa-question-circle",
                 "mergeType": "merge",
                 "require": {
@@ -511,71 +630,31 @@
             },
             {
                 "editMode": false,
-                "icon": "icon icon-user_assignments",
-                "items": [
-                    {
-                        "editMode": false,
-                        "icon": "icon icon-single-line-item",
-                        "require": {
-                            "action": "read",
-                            "module": "policies"
-                        },
-                        "state": {
-                            "name": "main.modules.list",
-                            "parameters": {
-                                "module": "policies"
-                            }
-                        },
-                        "title": "Firewall Policies"
-                    },
-                    {
-                        "editMode": false,
-                        "icon": "fa fa-rss",
-                        "require": {
-                            "action": "read",
-                            "module": "network_interfaces"
-                        },
-                        "state": {
-                            "name": "main.modules.list",
-                            "parameters": {
-                                "module": "network_interfaces"
-                            }
-                        },
-                        "title": "Network Interfaces"
-                    },
-                    {
-                        "editMode": false,
-                        "icon": "fa fa-laptop",
-                        "require": {
-                            "action": "read",
-                            "module": "v_m_instances"
-                        },
-                        "state": {
-                            "name": "main.modules.list",
-                            "parameters": {
-                                "module": "v_m_instances"
-                            }
-                        },
-                        "title": "VM Instances"
-                    },
-                    {
-                        "editMode": false,
-                        "icon": "fa fa-cube",
-                        "require": {
-                            "action": "read",
-                            "module": "docker_containers"
-                        },
-                        "state": {
-                            "name": "main.modules.list",
-                            "parameters": {
-                                "module": "docker_containers"
-                            }
-                        },
-                        "title": "Docker"
-                    }
-                ],
+                "icon": "icon icon-help",
                 "mergeType": "merge",
-                "title": "Service Management"
+                "openInNewTab": true,
+                "state": {
+                    "name": "main.pages",
+                    "parameters": {
+                        "module": "help"
+                    }
+                },
+                "title": "Help",
+                "url": "https:\/\/docs.fortinet.com\/product\/fortisoar"
+            },
+            {
+                "editMode": false,
+                "icon": "icon icon-users",
+                "mergeType": "merge",
+                "openInNewTab": true,
+                "state": {
+                    "name": "main.pages",
+                    "parameters": {
+                        "module": "user-community"
+                    }
+                },
+                "title": "User Community",
+                "url": "https:\/\/fortisoar.fortinet.com"
             }
         ]
     },

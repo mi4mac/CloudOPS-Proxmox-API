@@ -3,10 +3,13 @@
     "Create",
     "Destroy",
     "Enrichment",
+    "Inventory",
     "Main",
-    "Utility",
-    "dataingestion",
     "Manual Trigger",
-    "On Create",
-    "On Update"
+    "Utility",
+    "asset-linking",
+    "dataingestion",
+    "maintenance",
+    "policy-archive",
+    "reference"
 ]

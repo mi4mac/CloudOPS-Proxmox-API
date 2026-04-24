@@ -1,82 +1,42 @@
 {
     "fsrMinCompatibility": "7.2.0",
-    "version": "2.2.0",
-    "date": "2026-02-25T12:00:00+00:00",
-    "exported_from": "fsr-stable",
+    "date": "2026-04-24T12:51:11+00:00",
+    "exported_from": "fsr",
     "exported_by": "CS Admin",
     "contents": {
-        "connectors": [
-            {
-                "name": "HTTP",
-                "apiName": "http"
-            },
-            {
-                "name": "API Connector Proxmox",
-                "apiName": "proxmox-api"
-            }
-        ],
         "picklistNames": [
-            {
-                "name": "VM Status"
-            },
-            {
-                "name": "VM Type"
-            },
             {
                 "name": "Audit Status"
             },
             {
                 "name": "Fortigate Action"
+            },
+            {
+                "name": "VM Status"
+            },
+            {
+                "name": "VM Type"
             }
         ],
         "modules": {
-            "network_interfaces": {
-                "name": "Network Interfaces",
-                "apiName": "network_interfaces"
+            "docker_containers": {
+                "name": "Docker Containers",
+                "apiName": "docker_containers"
             },
-            "v_m_instances": {
-                "name": "VM Instances",
-                "apiName": "v_m_instances"
+            "": {
+                "name": "Policies",
+                "apiName": "policies"
             },
             "proxmox_inventory": {
                 "name": "Proxmox Inventory",
                 "apiName": "proxmox_inventory"
             },
-            "docker_containers": {
-                "name": "Docker Containers",
-                "apiName": "docker_containers"
-            },
-            "policies": {
-                "name": "Policies",
-                "apiName": "policies"
+            "v_m_instances": {
+                "name": "VM Instances",
+                "apiName": "v_m_instances"
             }
         },
         "viewTemplates": {
-            "network_interfaces": {
-                "name": "Network Interfaces",
-                "apiName": "network_interfaces",
-                "views": [
-                    "list",
-                    "form",
-                    "detail"
-                ]
-            },
-            "v_m_instances": {
-                "name": "VM Instances",
-                "apiName": "v_m_instances",
-                "views": [
-                    "detail",
-                    "list",
-                    "form"
-                ]
-            },
-            "proxmox_inventory": {
-                "name": "Proxmox Inventory",
-                "apiName": "proxmox_inventory",
-                "views": [
-                    "list"
-                ]
-            },
             "docker_containers": {
                 "name": "Docker Containers",
                 "apiName": "docker_containers",
@@ -90,8 +50,25 @@
                 "name": "Policies",
                 "apiName": "policies",
                 "views": [
+                    "form",
                     "list",
+                    "detail"
+                ]
+            },
+            "proxmox_inventory": {
+                "name": "Proxmox Inventory",
+                "apiName": "proxmox_inventory",
+                "views": [
                     "detail",
+                    "list"
+                ]
+            },
+            "v_m_instances": {
+                "name": "VM Instances",
+                "apiName": "v_m_instances",
+                "views": [
+                    "detail",
+                    "list",
                     "form"
                 ]
             }
@@ -103,16 +80,17 @@
                 "Incident Response",
                 "Automation",
                 "Resources",
+                "Service Management",
                 "Reports",
                 "Widget Library",
                 "Content Hub",
-                "Help",
-                "User Community",
-                "Simulations",
+                "Outbreak Management",
                 "Vulnerability Management",
                 "Threat Intel Management",
+                "Simulations",
                 "Knowledge Base",
-                "Service Management"
+                "Help",
+                "User Community"
             ]
         },
         "roles": [
@@ -123,41 +101,16 @@
                 "name": "SOC Analyst"
             }
         ],
-        "actors": [
-            {
-                "name": "atlas Me"
-            }
-        ],
         "globalVariables": [
             {
                 "name": "Server_fqhn",
-                "value": "fsr-stable",
+                "value": "192.168.222.218",
                 "default_value": "master.fortisoar.in"
             },
             {
-                "name": "infrastructure_team_email",
-                "value": "cloud-ops@fortielab.com",
-                "default_value": "cloud-ops@fortielab.com"
-            },
-            {
-                "name": "proxmox_api_host",
-                "value": "192.168.222.222",
-                "default_value": "192.168.222.222"
-            },
-            {
-                "name": "proxmox_api_port",
-                "value": "8006",
-                "default_value": "8006"
-            },
-            {
-                "name": "proxmox_api_token",
-                "value": "user@pve!token-id=<YOUR_PROXMOX_API_TOKEN_UUID>",
-                "default_value": "user@pve!token-id=<YOUR_PROXMOX_API_TOKEN_UUID>"
-            },
-            {
-                "name": "proxmox_node_name",
-                "value": "pve",
-                "default_value": "pve"
+                "name": "policyArchiveRetentionDays",
+                "value": "30",
+                "default_value": "30"
             },
             {
                 "name": "proxmox_storage",
@@ -168,26 +121,6 @@
                 "name": "proxmox_default_node",
                 "value": "pve",
                 "default_value": "pve"
-            },
-            {
-                "name": "proxmox_bridge",
-                "value": "vmbr0",
-                "default_value": "vmbr0"
-            },
-            {
-                "name": "proxmox_vlan_tag",
-                "value": "255",
-                "default_value": "255"
-            },
-            {
-                "name": "proxmox_gateway",
-                "value": "10.255.255.1",
-                "default_value": "10.255.255.1"
-            },
-            {
-                "name": "proxmox_template_rocky9_vm",
-                "value": "9000",
-                "default_value": "9000"
             },
             {
                 "name": "proxmox_template_ubuntu2204_ct",
@@ -203,19 +136,58 @@
                 "name": "proxmox_template_rockylinux9_ct",
                 "value": "local:vztmpl/rockylinux-9-default_20240912_amd64.tar.xz",
                 "default_value": "local:vztmpl/rockylinux-9-default_20240912_amd64.tar.xz"
-            }
-        ],
-        "dashboards": [
+            },
             {
-                "name": "SOC Review"
+                "name": "proxmox_gateway",
+                "value": "10.255.255.1",
+                "default_value": "10.255.255.1"
+            },
+            {
+                "name": "proxmox_vlan_tag",
+                "value": "255",
+                "default_value": "255"
+            },
+            {
+                "name": "proxmox_bridge",
+                "value": "vmbr0",
+                "default_value": "vmbr0"
+            },
+            {
+                "name": "proxmox_node_name",
+                "value": "pve",
+                "default_value": "pve"
+            },
+            {
+                "name": "policyArchiveDryRun",
+                "value": "false",
+                "default_value": "false"
+            },
+            {
+                "name": "infrastructure_team_email",
+                "value": "forti.home@gmail.com",
+                "default_value": "forti.home@gmail.com"
             }
         ],
         "playbooks": [
             {
                 "name": "00 - Service Management"
+            }
+        ],
+        "connectors": [
+            {
+                "name": "API Connector Proxmox",
+                "apiName": "proxmox-api",
+                "version": "2.0.4"
             },
             {
-                "name": "00 - Policy Playbooks"
+                "name": "Docker",
+                "apiName": "docker",
+                "version": "2.0.1"
+            },
+            {
+                "name": "Fortinet FortiGate",
+                "apiName": "fortigate-firewall",
+                "version": "5.4.0"
             }
         ]
     }

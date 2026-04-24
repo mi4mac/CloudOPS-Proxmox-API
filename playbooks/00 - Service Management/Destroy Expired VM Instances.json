@@ -7,14 +7,14 @@
     "tag": null,
     "description": "Iterate over existing VM instances and destroy expired ones",
     "isActive": true,
-    "debug": true,
+    "debug": false,
     "singleRecordExecution": false,
     "remoteExecutableFlag": false,
     "parameters": [],
     "synchronous": false,
-    "collection": "\/api\/3\/workflow_collections\/f1c80355-697f-4a71-971b-0988c871491d",
+    "collection": "\/api\/3\/workflow_collections\/04ee731b-278b-455b-a6c9-4744038c42e7",
     "versions": [],
-    "triggerStep": "\/api\/3\/workflow_steps\/d3d828b4-8f7c-4dd6-afc9-07badd74ab02",
+    "triggerStep": "\/api\/3\/workflow_steps\/85ae597d-0bb6-463c-bbcb-bce72a66fdd5",
     "steps": [
         {
             "@type": "WorkflowStep",
@@ -33,14 +33,14 @@
                 "step_variables": [],
                 "pass_parent_env": false,
                 "pass_input_record": false,
-                "workflowReference": "\/api\/3\/workflows\/41ea49b2-01a1-47c0-a66b-29e1f844135d"
+                "workflowReference": "\/api\/3\/workflows\/0efc2f76-af97-4577-b7ae-7f954a3f963b"
             },
             "status": null,
             "top": "300",
             "left": "125",
             "stepType": "\/api\/3\/workflow_step_types\/74932bdc-b8b6-4d24-88c4-1a4dfbc524f3",
             "group": null,
-            "uuid": "4dde4033-6465-473f-9d5e-68426c44c94b"
+            "uuid": "5f39dbc7-44d9-4678-9942-17d56e7b9cd4"
         },
         {
             "@type": "WorkflowStep",
@@ -105,14 +105,42 @@
             "left": "125",
             "stepType": "\/api\/3\/workflow_step_types\/b593663d-7d13-40ce-a3a3-96dece928770",
             "group": null,
-            "uuid": "ce582c6e-4a10-4700-b4b1-01f4bdbd212a"
+            "uuid": "fc62f880-223c-4d9c-9712-cca7bae0a5ec"
+        },
+        {
+            "@type": "WorkflowStep",
+            "name": "Notify Destroyed Expired",
+            "description": "Send summary email for automatically destroyed expired VM instances.",
+            "arguments": {
+                "config": "247a6087-d893-4cbd-b84a-29c18e7b0fc1",
+                "params": {
+                    "body": "<p>Automatic cleanup destroyed the following expired VM Instances:<\/p>\n<ul>\n{%- set recs = (vars.steps.Find_Expired_VM_Instances.data.data | default([])) -%}\n{%- for rec in recs -%}\n<li>{{ rec.name }} ({{ rec.vMType.itemValue | default('') }})<\/li>\n{%- endfor -%}\n{%- if recs | length == 0 -%}\n<li>No expired VM Instances were found.<\/li>\n{%- endif -%}\n<\/ul>",
+                    "subject": "Proxmox: Destroyed expired VM Instances",
+                    "iri_list": "",
+                    "cc_recipients": "{{globalVars.infrastructure_team_email}}",
+                    "to_recipients": "{{globalVars.infrastructure_team_email}}",
+                    "bcc_recipients": ""
+                },
+                "version": "2.6.0",
+                "from_str": "admin@example.com",
+                "connector": "smtp",
+                "operation": "send_email",
+                "operationTitle": "Send Email",
+                "step_variables": []
+            },
+            "status": null,
+            "top": "435",
+            "left": "125",
+            "stepType": "\/api\/3\/workflow_step_types\/4c0019b2-055c-44d0-968c-678a0c2d762e",
+            "group": null,
+            "uuid": "4f2311dd-ba5c-4c4c-9af3-aefcdd2ee63e"
         },
         {
             "@type": "WorkflowStep",
             "name": "Start",
             "description": null,
             "arguments": {
-                "route": "512ae991-500c-4cbb-b76d-24965fc1ae9d",
+                "route": "fe34c86e-c2d1-4c11-9e39-33f38995aba2",
                 "resources": [
                     "v_m_instances"
                 ],
@@ -147,78 +175,111 @@
             "left": "125",
             "stepType": "\/api\/3\/workflow_step_types\/f414d039-bb0d-4e59-9c39-a8f1e880b18a",
             "group": null,
-            "uuid": "d3d828b4-8f7c-4dd6-afc9-07badd74ab02"
-        },
-        {
-            "@type": "WorkflowStep",
-            "name": "Notify Destroyed Expired",
-            "description": "Send summary email for automatically destroyed expired VM instances.",
-            "arguments": {
-                "config": "88c3d39c-2fa9-4731-b00d-29815008f17c",
-                "params": {
-                    "body": "<p>Automatic cleanup destroyed the following expired VM Instances:<\/p>\n<ul>\n{%- set recs = (vars.steps.Find_Expired_VM_Instances.data.data | default([])) -%}\n{%- for rec in recs -%}\n<li>{{ rec.name }} ({{ rec.vMType.itemValue | default('') }})<\/li>\n{%- endfor -%}\n{%- if recs | length == 0 -%}\n<li>No expired VM Instances were found.<\/li>\n{%- endif -%}\n<\/ul>",
-                    "subject": "Proxmox: Destroyed expired VM Instances",
-                    "iri_list": "",
-                    "cc_recipients": "{{globalVars.infrastructure_team_email}}",
-                    "to_recipients": "{{globalVars.infrastructure_team_email}}",
-                    "bcc_recipients": ""
-                },
-                "version": "2.6.0",
-                "from_str": "admin@example.com",
-                "connector": "smtp",
-                "operation": "send_email",
-                "operationTitle": "Send Email",
-                "step_variables": []
-            },
-            "status": null,
-            "top": "375",
-            "left": "125",
-            "stepType": "\/api\/3\/workflow_step_types\/4c0019b2-055c-44d0-968c-678a0c2d762e",
-            "group": null,
-            "uuid": "f2a2b3c4-d5e6-7890-abcd-aaaabbbbcccc"
+            "uuid": "85ae597d-0bb6-463c-bbcb-bce72a66fdd5"
         }
     ],
     "routes": [
         {
             "@type": "WorkflowRoute",
-            "name": "Find Expired VM Instances -> Destroy VM Instance",
-            "targetStep": "\/api\/3\/workflow_steps\/4dde4033-6465-473f-9d5e-68426c44c94b",
-            "sourceStep": "\/api\/3\/workflow_steps\/ce582c6e-4a10-4700-b4b1-01f4bdbd212a",
+            "name": "Destroy VM Instance -> Notify Destroyed Expired",
+            "targetStep": "\/api\/3\/workflow_steps\/4f2311dd-ba5c-4c4c-9af3-aefcdd2ee63e",
+            "sourceStep": "\/api\/3\/workflow_steps\/5f39dbc7-44d9-4678-9942-17d56e7b9cd4",
             "label": null,
             "isExecuted": false,
             "group": null,
-            "uuid": "a4e726d9-624d-44f5-994e-d700a1d92125"
+            "uuid": "3fee18cd-661b-47d6-bd66-7966e8dccefa"
+        },
+        {
+            "@type": "WorkflowRoute",
+            "name": "Find Expired VM Instances -> Destroy VM Instance",
+            "targetStep": "\/api\/3\/workflow_steps\/5f39dbc7-44d9-4678-9942-17d56e7b9cd4",
+            "sourceStep": "\/api\/3\/workflow_steps\/fc62f880-223c-4d9c-9712-cca7bae0a5ec",
+            "label": null,
+            "isExecuted": false,
+            "group": null,
+            "uuid": "e2fa2425-4ad2-486d-b804-fba38b895200"
         },
         {
             "@type": "WorkflowRoute",
             "name": "Start -> Find Expired VM Instances",
-            "targetStep": "\/api\/3\/workflow_steps\/ce582c6e-4a10-4700-b4b1-01f4bdbd212a",
-            "sourceStep": "\/api\/3\/workflow_steps\/d3d828b4-8f7c-4dd6-afc9-07badd74ab02",
+            "targetStep": "\/api\/3\/workflow_steps\/fc62f880-223c-4d9c-9712-cca7bae0a5ec",
+            "sourceStep": "\/api\/3\/workflow_steps\/85ae597d-0bb6-463c-bbcb-bce72a66fdd5",
             "label": null,
             "isExecuted": false,
             "group": null,
-            "uuid": "7eeec51a-2bd4-402a-a066-a1607135f8f3"
-        },
-        {
-            "@type": "WorkflowRoute",
-            "name": "Destroy VM Instance -> Notify Destroyed Expired",
-            "targetStep": "\/api\/3\/workflow_steps\/f2a2b3c4-d5e6-7890-abcd-aaaabbbbcccc",
-            "sourceStep": "\/api\/3\/workflow_steps\/4dde4033-6465-473f-9d5e-68426c44c94b",
-            "label": null,
-            "isExecuted": false,
-            "group": null,
-            "uuid": "b2a2b3c4-d5e6-7890-abcd-ddddeeeeffff"
+            "uuid": "38caa03f-2d0d-4daa-bac6-12b98cfd34d5"
         }
     ],
     "groups": [],
     "priority": "\/api\/3\/picklists\/2b563c61-ae2c-41c0-a85a-c9709585e3f2",
     "playbookOrigin": "\/api\/3\/picklists\/15c1e8c9-22bf-4e66-8fbb-0a502d4a4a3f",
     "isEditable": true,
-    "uuid": "fbb03694-a60e-4492-9a3f-8bab0f5b01be",
+    "uuid": "02c65239-4d22-4275-b175-fd54d87ce8ac",
     "owners": [],
     "isPrivate": false,
     "deletedAt": null,
     "recordTags": [
         "Destroy"
+    ],
+    "schedules": [
+        {
+            "crontab": {
+                "id": 29,
+                "minute": "1",
+                "hour": "8",
+                "day_of_week": "*",
+                "day_of_month": "*",
+                "month_of_year": "*",
+                "timezone": "UTC"
+            },
+            "interval": null,
+            "name": "Destroy VM Instances Mail",
+            "task": "workflow.tasks.periodic_task",
+            "args": "[]",
+            "kwargs": {
+                "wf_iri": "\/api\/3\/workflows\/02c65239-4d22-4275-b175-fd54d87ce8ac",
+                "priority": {
+                    "@id": "\/api\/3\/picklists\/2b563c61-ae2c-41c0-a85a-c9709585e3f2",
+                    "@type": "Picklist",
+                    "itemValue": "Medium",
+                    "orderIndex": 1,
+                    "color": null,
+                    "icon": null,
+                    "listName": "\/api\/3\/picklist_names\/e104ef72-11b4-4d0c-be0e-e1cf3b87b5f2",
+                    "uuid": "2b563c61-ae2c-41c0-a85a-c9709585e3f2",
+                    "id": 111,
+                    "importedBy": []
+                },
+                "exit_if_running": false,
+                "createUser": "\/api\/3\/people\/3451141c-bac6-467c-8d72-85e0fab569ce",
+                "name": "Destroy VM Instances",
+                "description": "Destroy VM Instances",
+                "auth": {
+                    "auth_method": "CS HMAC"
+                },
+                "referenceid": null,
+                "schedule_entry_name": "Destroy VM Instances Mail",
+                "schedule_id": "620a1f60-7475-4a59-bf42-3fde83a89faa",
+                "start_time": null,
+                "expires": null,
+                "timezone": "UTC"
+            },
+            "queue": null,
+            "exchange": null,
+            "routing_key": null,
+            "headers": "{}",
+            "priority": 3,
+            "expires": null,
+            "expire_seconds": null,
+            "one_off": false,
+            "start_time": null,
+            "enabled": true,
+            "last_run_at": "2026-04-24T08:01:00.013670Z",
+            "total_run_count": 4,
+            "date_changed": "2026-04-24T08:03:05.046717Z",
+            "description": "Destroy VM Instances",
+            "solar": null,
+            "clocked": null
+        }
     ]
 }

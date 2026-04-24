@@ -7,6 +7,326 @@
     "modulePermissions": [
         {
             "@type": "ModulePermission",
+            "canCreate": false,
+            "canExecute": false,
+            "canRead": true,
+            "canUpdate": false,
+            "canDelete": false,
+            "fieldPermissions": [],
+            "module": "application"
+        },
+        {
+            "@type": "ModulePermission",
+            "canCreate": true,
+            "canExecute": true,
+            "canRead": true,
+            "canUpdate": true,
+            "canDelete": true,
+            "fieldPermissions": [],
+            "module": "workflows"
+        },
+        {
+            "@type": "ModulePermission",
+            "canCreate": true,
+            "canExecute": false,
+            "canRead": true,
+            "canUpdate": true,
+            "canDelete": true,
+            "fieldPermissions": [],
+            "module": "files"
+        },
+        {
+            "@type": "ModulePermission",
+            "canCreate": true,
+            "canExecute": false,
+            "canRead": true,
+            "canUpdate": true,
+            "canDelete": false,
+            "fieldPermissions": [],
+            "module": "activities"
+        },
+        {
+            "@type": "ModulePermission",
+            "canCreate": true,
+            "canExecute": false,
+            "canRead": true,
+            "canUpdate": true,
+            "canDelete": true,
+            "fieldPermissions": [],
+            "module": "reporting"
+        },
+        {
+            "@type": "ModulePermission",
+            "canCreate": true,
+            "canExecute": false,
+            "canRead": true,
+            "canUpdate": true,
+            "canDelete": true,
+            "fieldPermissions": [],
+            "module": "appliances"
+        },
+        {
+            "@type": "ModulePermission",
+            "canCreate": true,
+            "canExecute": false,
+            "canRead": true,
+            "canUpdate": true,
+            "canDelete": true,
+            "fieldPermissions": [],
+            "module": "attachments"
+        },
+        {
+            "@type": "ModulePermission",
+            "canCreate": true,
+            "canExecute": false,
+            "canRead": true,
+            "canUpdate": true,
+            "canDelete": true,
+            "fieldPermissions": [],
+            "module": "comments"
+        },
+        {
+            "@type": "ModulePermission",
+            "canCreate": true,
+            "canExecute": false,
+            "canRead": true,
+            "canUpdate": true,
+            "canDelete": true,
+            "fieldPermissions": [],
+            "module": "companies"
+        },
+        {
+            "@type": "ModulePermission",
+            "canCreate": true,
+            "canExecute": false,
+            "canRead": true,
+            "canUpdate": true,
+            "canDelete": true,
+            "fieldPermissions": [],
+            "module": "people"
+        },
+        {
+            "@type": "ModulePermission",
+            "canCreate": true,
+            "canExecute": false,
+            "canRead": true,
+            "canUpdate": true,
+            "canDelete": true,
+            "fieldPermissions": [],
+            "module": "fsr_queues"
+        },
+        {
+            "@type": "ModulePermission",
+            "canCreate": true,
+            "canExecute": false,
+            "canRead": true,
+            "canUpdate": true,
+            "canDelete": true,
+            "fieldPermissions": [],
+            "module": "shifts"
+        },
+        {
+            "@type": "ModulePermission",
+            "canCreate": true,
+            "canExecute": false,
+            "canRead": true,
+            "canUpdate": true,
+            "canDelete": true,
+            "fieldPermissions": [],
+            "module": "tasks"
+        },
+        {
+            "@type": "ModulePermission",
+            "canCreate": true,
+            "canExecute": false,
+            "canRead": true,
+            "canUpdate": true,
+            "canDelete": true,
+            "fieldPermissions": [],
+            "module": "tenants"
+        },
+        {
+            "@type": "ModulePermission",
+            "canCreate": true,
+            "canExecute": false,
+            "canRead": true,
+            "canUpdate": true,
+            "canDelete": true,
+            "fieldPermissions": [],
+            "module": "routers"
+        },
+        {
+            "@type": "ModulePermission",
+            "canCreate": true,
+            "canExecute": false,
+            "canRead": true,
+            "canUpdate": true,
+            "canDelete": true,
+            "fieldPermissions": [],
+            "module": "email_templates"
+        },
+        {
+            "@type": "ModulePermission",
+            "canCreate": true,
+            "canExecute": false,
+            "canRead": true,
+            "canUpdate": true,
+            "canDelete": true,
+            "fieldPermissions": [],
+            "module": "schedules"
+        },
+        {
+            "@type": "ModulePermission",
+            "canCreate": true,
+            "canExecute": false,
+            "canRead": true,
+            "canUpdate": true,
+            "canDelete": true,
+            "fieldPermissions": [],
+            "module": "approvals"
+        },
+        {
+            "@type": "ModulePermission",
+            "canCreate": true,
+            "canExecute": false,
+            "canRead": true,
+            "canUpdate": true,
+            "canDelete": true,
+            "fieldPermissions": [],
+            "module": "saved_reports"
+        },
+        {
+            "@type": "ModulePermission",
+            "canCreate": true,
+            "canExecute": false,
+            "canRead": true,
+            "canUpdate": true,
+            "canDelete": true,
+            "fieldPermissions": [],
+            "module": "dashboard"
+        },
+        {
+            "@type": "ModulePermission",
+            "canCreate": false,
+            "canExecute": false,
+            "canRead": true,
+            "canUpdate": false,
+            "canDelete": false,
+            "fieldPermissions": [],
+            "module": "security"
+        },
+        {
+            "@type": "ModulePermission",
+            "canCreate": true,
+            "canExecute": false,
+            "canRead": true,
+            "canUpdate": true,
+            "canDelete": true,
+            "fieldPermissions": [],
+            "module": "agents"
+        },
+        {
+            "@type": "ModulePermission",
+            "canCreate": true,
+            "canExecute": false,
+            "canRead": true,
+            "canUpdate": true,
+            "canDelete": true,
+            "fieldPermissions": [],
+            "module": "data_archival"
+        },
+        {
+            "@type": "ModulePermission",
+            "canCreate": true,
+            "canExecute": false,
+            "canRead": true,
+            "canUpdate": true,
+            "canDelete": true,
+            "fieldPermissions": [],
+            "module": "rules"
+        },
+        {
+            "@type": "ModulePermission",
+            "canCreate": true,
+            "canExecute": true,
+            "canRead": true,
+            "canUpdate": true,
+            "canDelete": true,
+            "fieldPermissions": [],
+            "module": "solutionpacks"
+        },
+        {
+            "@type": "ModulePermission",
+            "canCreate": true,
+            "canExecute": true,
+            "canRead": true,
+            "canUpdate": true,
+            "canDelete": true,
+            "fieldPermissions": [],
+            "module": "alerts"
+        },
+        {
+            "@type": "ModulePermission",
+            "canCreate": true,
+            "canExecute": true,
+            "canRead": true,
+            "canUpdate": true,
+            "canDelete": true,
+            "fieldPermissions": [],
+            "module": "announcements"
+        },
+        {
+            "@type": "ModulePermission",
+            "canCreate": true,
+            "canExecute": true,
+            "canRead": true,
+            "canUpdate": true,
+            "canDelete": true,
+            "fieldPermissions": [],
+            "module": "assets"
+        },
+        {
+            "@type": "ModulePermission",
+            "canCreate": true,
+            "canExecute": true,
+            "canRead": true,
+            "canUpdate": true,
+            "canDelete": true,
+            "fieldPermissions": [],
+            "module": "campaigns"
+        },
+        {
+            "@type": "ModulePermission",
+            "canCreate": true,
+            "canExecute": true,
+            "canRead": true,
+            "canUpdate": true,
+            "canDelete": true,
+            "fieldPermissions": [],
+            "module": "communication"
+        },
+        {
+            "@type": "ModulePermission",
+            "canCreate": true,
+            "canExecute": true,
+            "canRead": true,
+            "canUpdate": true,
+            "canDelete": true,
+            "fieldPermissions": [],
+            "module": "events"
+        },
+        {
+            "@type": "ModulePermission",
+            "canCreate": true,
+            "canExecute": true,
+            "canRead": true,
+            "canUpdate": true,
+            "canDelete": true,
+            "fieldPermissions": [],
+            "module": "incidents"
+        },
+        {
+            "@type": "ModulePermission",
             "canCreate": true,
             "canExecute": true,
             "canRead": true,
@@ -24,6 +344,66 @@
             "canDelete": true,
             "fieldPermissions": [],
             "module": "warrooms"
+        },
+        {
+            "@type": "ModulePermission",
+            "canCreate": true,
+            "canExecute": true,
+            "canRead": true,
+            "canUpdate": true,
+            "canDelete": true,
+            "fieldPermissions": [],
+            "module": "policies"
+        },
+        {
+            "@type": "ModulePermission",
+            "canCreate": true,
+            "canExecute": true,
+            "canRead": true,
+            "canUpdate": true,
+            "canDelete": true,
+            "fieldPermissions": [],
+            "module": "asset_change_activities"
+        },
+        {
+            "@type": "ModulePermission",
+            "canCreate": true,
+            "canExecute": true,
+            "canRead": true,
+            "canUpdate": true,
+            "canDelete": true,
+            "fieldPermissions": [],
+            "module": "asset_resources"
+        },
+        {
+            "@type": "ModulePermission",
+            "canCreate": true,
+            "canExecute": true,
+            "canRead": true,
+            "canUpdate": true,
+            "canDelete": true,
+            "fieldPermissions": [],
+            "module": "sla_template"
+        },
+        {
+            "@type": "ModulePermission",
+            "canCreate": true,
+            "canExecute": true,
+            "canRead": true,
+            "canUpdate": true,
+            "canDelete": true,
+            "fieldPermissions": [],
+            "module": "threat_hunt_rules"
+        },
+        {
+            "@type": "ModulePermission",
+            "canCreate": true,
+            "canExecute": true,
+            "canRead": true,
+            "canUpdate": true,
+            "canDelete": true,
+            "fieldPermissions": [],
+            "module": "outbreak_alerts"
         },
         {
             "@type": "ModulePermission",
@@ -64,76 +444,6 @@
             "canDelete": false,
             "fieldPermissions": [],
             "module": "contentHub"
-        },
-        {
-            "@type": "ModulePermission",
-            "canCreate": true,
-            "canExecute": true,
-            "canRead": true,
-            "canUpdate": true,
-            "canDelete": true,
-            "fieldPermissions": [],
-            "module": "network_interfaces"
-        },
-        {
-            "@type": "ModulePermission",
-            "canCreate": false,
-            "canExecute": false,
-            "canRead": false,
-            "canUpdate": false,
-            "canDelete": false,
-            "fieldPermissions": [],
-            "module": "sla_template"
-        },
-        {
-            "@type": "ModulePermission",
-            "canCreate": true,
-            "canExecute": true,
-            "canRead": true,
-            "canUpdate": true,
-            "canDelete": true,
-            "fieldPermissions": [],
-            "module": "v_m_instances"
-        },
-        {
-            "@type": "ModulePermission",
-            "canCreate": true,
-            "canExecute": true,
-            "canRead": true,
-            "canUpdate": true,
-            "canDelete": true,
-            "fieldPermissions": [],
-            "module": "proxmox_inventory"
-        },
-        {
-            "@type": "ModulePermission",
-            "canCreate": true,
-            "canExecute": true,
-            "canRead": true,
-            "canUpdate": true,
-            "canDelete": true,
-            "fieldPermissions": [],
-            "module": "docker_containers"
-        },
-        {
-            "@type": "ModulePermission",
-            "canCreate": true,
-            "canExecute": true,
-            "canRead": true,
-            "canUpdate": true,
-            "canDelete": true,
-            "fieldPermissions": [],
-            "module": "policies"
-        },
-        {
-            "@type": "ModulePermission",
-            "canCreate": true,
-            "canExecute": true,
-            "canRead": true,
-            "canUpdate": true,
-            "canDelete": true,
-            "fieldPermissions": [],
-            "module": "knowledge_base"
         },
         {
             "@type": "ModulePermission",
@@ -287,13 +597,13 @@
         },
         {
             "@type": "ModulePermission",
-            "canCreate": false,
-            "canExecute": false,
+            "canCreate": true,
+            "canExecute": true,
             "canRead": true,
-            "canUpdate": false,
-            "canDelete": false,
+            "canUpdate": true,
+            "canDelete": true,
             "fieldPermissions": [],
-            "module": "application"
+            "module": "cis_benchmark"
         },
         {
             "@type": "ModulePermission",
@@ -303,117 +613,97 @@
             "canUpdate": true,
             "canDelete": true,
             "fieldPermissions": [],
-            "module": "workflows"
+            "module": "cis_benchmark_rule"
         },
         {
             "@type": "ModulePermission",
             "canCreate": true,
-            "canExecute": false,
+            "canExecute": true,
             "canRead": true,
             "canUpdate": true,
             "canDelete": true,
             "fieldPermissions": [],
-            "module": "files"
+            "module": "compliance_assessment_run"
         },
         {
             "@type": "ModulePermission",
             "canCreate": true,
-            "canExecute": false,
-            "canRead": true,
-            "canUpdate": true,
-            "canDelete": false,
-            "fieldPermissions": [],
-            "module": "activities"
-        },
-        {
-            "@type": "ModulePermission",
-            "canCreate": true,
-            "canExecute": false,
+            "canExecute": true,
             "canRead": true,
             "canUpdate": true,
             "canDelete": true,
             "fieldPermissions": [],
-            "module": "reporting"
+            "module": "compliance_requirement"
         },
         {
             "@type": "ModulePermission",
             "canCreate": true,
-            "canExecute": false,
+            "canExecute": true,
             "canRead": true,
             "canUpdate": true,
             "canDelete": true,
             "fieldPermissions": [],
-            "module": "appliances"
+            "module": "compliance_finding"
         },
         {
             "@type": "ModulePermission",
             "canCreate": true,
-            "canExecute": false,
+            "canExecute": true,
             "canRead": true,
             "canUpdate": true,
             "canDelete": true,
             "fieldPermissions": [],
-            "module": "attachments"
+            "module": "compliance_report"
         },
         {
             "@type": "ModulePermission",
             "canCreate": true,
-            "canExecute": false,
+            "canExecute": true,
             "canRead": true,
             "canUpdate": true,
             "canDelete": true,
             "fieldPermissions": [],
-            "module": "comments"
+            "module": "configuration"
         },
         {
             "@type": "ModulePermission",
             "canCreate": true,
-            "canExecute": false,
+            "canExecute": true,
             "canRead": true,
             "canUpdate": true,
             "canDelete": true,
             "fieldPermissions": [],
-            "module": "companies"
+            "module": "network_interfaces"
         },
         {
             "@type": "ModulePermission",
             "canCreate": true,
-            "canExecute": false,
+            "canExecute": true,
             "canRead": true,
             "canUpdate": true,
             "canDelete": true,
             "fieldPermissions": [],
-            "module": "people"
+            "module": "v_m_instances"
         },
         {
             "@type": "ModulePermission",
             "canCreate": true,
-            "canExecute": false,
+            "canExecute": true,
             "canRead": true,
             "canUpdate": true,
             "canDelete": true,
             "fieldPermissions": [],
-            "module": "fsr_queues"
+            "module": "proxmox_inventory"
         },
         {
             "@type": "ModulePermission",
             "canCreate": true,
-            "canExecute": false,
+            "canExecute": true,
             "canRead": true,
             "canUpdate": true,
             "canDelete": true,
             "fieldPermissions": [],
-            "module": "shifts"
-        },
-        {
-            "@type": "ModulePermission",
-            "canCreate": true,
-            "canExecute": false,
-            "canRead": true,
-            "canUpdate": true,
-            "canDelete": true,
-            "fieldPermissions": [],
-            "module": "tasks"
+            "module": "docker_containers"
         },
         {
             "@type": "ModulePermission",
@@ -428,202 +718,12 @@
         {
             "@type": "ModulePermission",
             "canCreate": true,
-            "canExecute": false,
-            "canRead": true,
-            "canUpdate": true,
-            "canDelete": true,
-            "fieldPermissions": [],
-            "module": "tenants"
-        },
-        {
-            "@type": "ModulePermission",
-            "canCreate": true,
-            "canExecute": false,
-            "canRead": true,
-            "canUpdate": true,
-            "canDelete": true,
-            "fieldPermissions": [],
-            "module": "routers"
-        },
-        {
-            "@type": "ModulePermission",
-            "canCreate": true,
-            "canExecute": false,
-            "canRead": true,
-            "canUpdate": true,
-            "canDelete": true,
-            "fieldPermissions": [],
-            "module": "email_templates"
-        },
-        {
-            "@type": "ModulePermission",
-            "canCreate": true,
-            "canExecute": false,
-            "canRead": true,
-            "canUpdate": true,
-            "canDelete": true,
-            "fieldPermissions": [],
-            "module": "schedules"
-        },
-        {
-            "@type": "ModulePermission",
-            "canCreate": true,
-            "canExecute": false,
-            "canRead": true,
-            "canUpdate": true,
-            "canDelete": true,
-            "fieldPermissions": [],
-            "module": "approvals"
-        },
-        {
-            "@type": "ModulePermission",
-            "canCreate": true,
-            "canExecute": false,
-            "canRead": true,
-            "canUpdate": true,
-            "canDelete": true,
-            "fieldPermissions": [],
-            "module": "saved_reports"
-        },
-        {
-            "@type": "ModulePermission",
-            "canCreate": true,
-            "canExecute": false,
-            "canRead": true,
-            "canUpdate": true,
-            "canDelete": true,
-            "fieldPermissions": [],
-            "module": "dashboard"
-        },
-        {
-            "@type": "ModulePermission",
-            "canCreate": false,
-            "canExecute": false,
-            "canRead": true,
-            "canUpdate": false,
-            "canDelete": false,
-            "fieldPermissions": [],
-            "module": "security"
-        },
-        {
-            "@type": "ModulePermission",
-            "canCreate": true,
-            "canExecute": false,
-            "canRead": true,
-            "canUpdate": true,
-            "canDelete": true,
-            "fieldPermissions": [],
-            "module": "agents"
-        },
-        {
-            "@type": "ModulePermission",
-            "canCreate": true,
             "canExecute": true,
             "canRead": true,
             "canUpdate": true,
             "canDelete": true,
             "fieldPermissions": [],
             "module": "widgets"
-        },
-        {
-            "@type": "ModulePermission",
-            "canCreate": true,
-            "canExecute": false,
-            "canRead": true,
-            "canUpdate": true,
-            "canDelete": true,
-            "fieldPermissions": [],
-            "module": "data_archival"
-        },
-        {
-            "@type": "ModulePermission",
-            "canCreate": true,
-            "canExecute": false,
-            "canRead": true,
-            "canUpdate": true,
-            "canDelete": true,
-            "fieldPermissions": [],
-            "module": "rules"
-        },
-        {
-            "@type": "ModulePermission",
-            "canCreate": true,
-            "canExecute": true,
-            "canRead": true,
-            "canUpdate": true,
-            "canDelete": true,
-            "fieldPermissions": [],
-            "module": "solutionpacks"
-        },
-        {
-            "@type": "ModulePermission",
-            "canCreate": true,
-            "canExecute": true,
-            "canRead": true,
-            "canUpdate": true,
-            "canDelete": true,
-            "fieldPermissions": [],
-            "module": "alerts"
-        },
-        {
-            "@type": "ModulePermission",
-            "canCreate": true,
-            "canExecute": true,
-            "canRead": true,
-            "canUpdate": true,
-            "canDelete": true,
-            "fieldPermissions": [],
-            "module": "announcements"
-        },
-        {
-            "@type": "ModulePermission",
-            "canCreate": true,
-            "canExecute": true,
-            "canRead": true,
-            "canUpdate": true,
-            "canDelete": true,
-            "fieldPermissions": [],
-            "module": "assets"
-        },
-        {
-            "@type": "ModulePermission",
-            "canCreate": true,
-            "canExecute": true,
-            "canRead": true,
-            "canUpdate": true,
-            "canDelete": true,
-            "fieldPermissions": [],
-            "module": "campaigns"
-        },
-        {
-            "@type": "ModulePermission",
-            "canCreate": true,
-            "canExecute": true,
-            "canRead": true,
-            "canUpdate": true,
-            "canDelete": true,
-            "fieldPermissions": [],
-            "module": "communication"
-        },
-        {
-            "@type": "ModulePermission",
-            "canCreate": true,
-            "canExecute": true,
-            "canRead": true,
-            "canUpdate": true,
-            "canDelete": true,
-            "fieldPermissions": [],
-            "module": "events"
-        },
-        {
-            "@type": "ModulePermission",
-            "canCreate": true,
-            "canExecute": true,
-            "canRead": true,
-            "canUpdate": true,
-            "canDelete": true,
-            "fieldPermissions": [],
-            "module": "incidents"
         }
     ],
     "uuid": "21d7a7c6-9d68-438f-b732-e8950c5f745b"

@@ -7,17 +7,45 @@
     "tag": null,
     "description": "Destroy individual VM defined with params",
     "isActive": true,
-    "debug": true,
+    "debug": false,
     "singleRecordExecution": false,
     "remoteExecutableFlag": false,
     "parameters": [
         "vm_instance"
     ],
     "synchronous": false,
-    "collection": "\/api\/3\/workflow_collections\/f1c80355-697f-4a71-971b-0988c871491d",
+    "collection": "\/api\/3\/workflow_collections\/04ee731b-278b-455b-a6c9-4744038c42e7",
     "versions": [],
-    "triggerStep": "\/api\/3\/workflow_steps\/34dd9835-35b3-4559-8ec6-562bcc1b4394",
+    "triggerStep": "\/api\/3\/workflow_steps\/2c5605e1-3a5c-4462-b0e9-1da896b13e1a",
     "steps": [
+        {
+            "@type": "WorkflowStep",
+            "name": "Check Delete After Date",
+            "description": null,
+            "arguments": {
+                "delete_after_reached": "{%- if vars.delete_after -%}{%- set delete_after_ts = vars.delete_after | int -%}{%- set now_ts = arrow.now().int_timestamp -%}{%- if delete_after_ts <= now_ts -%}true{%- else -%}false{%- endif -%}{%- else -%}false{%- endif -%}"
+            },
+            "status": null,
+            "top": "1110",
+            "left": "475",
+            "stepType": "\/api\/3\/workflow_step_types\/04d0cf46-b6a8-42c4-8683-60a7eaa69e8f",
+            "group": null,
+            "uuid": "4074e305-2d5e-40a3-8cc6-c6533e40c010"
+        },
+        {
+            "@type": "WorkflowStep",
+            "name": "Check Proxmox ID Exists",
+            "description": null,
+            "arguments": {
+                "has_proxmox_id": "{%- set id = (vars.proxmox_id | string) -%}{%- if id and (id | regex_search('^[0-9]+$')) -%}true{%- else -%}false{%- endif -%}"
+            },
+            "status": null,
+            "top": "300",
+            "left": "650",
+            "stepType": "\/api\/3\/workflow_step_types\/04d0cf46-b6a8-42c4-8683-60a7eaa69e8f",
+            "group": null,
+            "uuid": "91de1876-f36b-4d67-b7d5-afeef4caffeb"
+        },
         {
             "@type": "WorkflowStep",
             "name": "Configuration",
@@ -30,52 +58,151 @@
             },
             "status": null,
             "top": "165",
-            "left": "300",
+            "left": "650",
             "stepType": "\/api\/3\/workflow_step_types\/04d0cf46-b6a8-42c4-8683-60a7eaa69e8f",
             "group": null,
-            "uuid": "7a6b6d01-6cc7-4eea-8e6a-95cc69a12893"
+            "uuid": "919b4b34-1cb3-42b2-9088-0466154b7d34"
         },
         {
             "@type": "WorkflowStep",
-            "name": "Check Proxmox ID Exists",
-            "description": null,
-            "arguments": {
-                "has_proxmox_id": "{%- set id = (vars.proxmox_id | string) -%}{%- if id and (id | regex_search('^[0-9]+$')) -%}true{%- else -%}false{%- endif -%}"
-            },
-            "status": null,
-            "top": "240",
-            "left": "300",
-            "stepType": "\/api\/3\/workflow_step_types\/04d0cf46-b6a8-42c4-8683-60a7eaa69e8f",
-            "group": null,
-            "uuid": "f1e2d3c4-b5a6-7890-1234-567890abcdef"
-        },
-        {
-            "@type": "WorkflowStep",
-            "name": "Proxmox ID Valid",
+            "name": "Delete After Date Reached",
             "description": null,
             "arguments": {
                 "conditions": [
                     {
                         "option": "yes",
-                        "step_iri": "\/api\/3\/workflow_steps\/a1b2c3d4-e5f6-7890-abcd-ef1234567892",
-                        "condition": "{{ vars.has_proxmox_id == 'true' }}",
-                        "step_name": "Check Delete After Date"
+                        "step_iri": "\/api\/3\/workflow_steps\/54cc7819-eb92-4543-90ed-138f5482b521",
+                        "condition": "{{ (vars.delete_after_reached | string | lower) == 'true' }}",
+                        "step_name": "Set Deprovisioning CMD"
                     },
                     {
                         "option": "no",
                         "default": true,
-                        "step_iri": "\/api\/3\/workflow_steps\/e1e1e1e1-1111-4111-8111-111111111111",
-                        "step_name": "List VMs Lookup"
+                        "step_iri": "\/api\/3\/workflow_steps\/85d75692-70e7-42c2-8549-6bad4ad77df4",
+                        "step_name": "Manual Approval Required"
                     }
                 ],
                 "step_variables": []
             },
             "status": null,
-            "top": "315",
+            "top": "1245",
+            "left": "475",
+            "stepType": "\/api\/3\/workflow_step_types\/12254cf5-5db7-4b1a-8cb1-3af081924b28",
+            "group": null,
+            "uuid": "892f518b-094f-47d8-a855-2a15759323b0"
+        },
+        {
+            "@type": "WorkflowStep",
+            "name": "Destroy Container (API)",
+            "description": null,
+            "arguments": {
+                "name": "API Connector Proxmox",
+                "config": "''",
+                "params": {
+                    "node": "{{ globalVars.proxmox_default_node | default('pve') }}",
+                    "vmid": "{{ vars.proxmox_id | int }}",
+                    "force": true
+                },
+                "version": "2.0.0",
+                "connector": "proxmox-api",
+                "operation": "destroy_container",
+                "operationTitle": "Destroy Container",
+                "pickFromTenant": false,
+                "step_variables": {
+                    "cmd_result": "successfully destroyed"
+                }
+            },
+            "status": null,
+            "top": "2055",
+            "left": "125",
+            "stepType": "\/api\/3\/workflow_step_types\/0bfed618-0316-11e7-93ae-92361f002671",
+            "group": null,
+            "uuid": "c27466fc-195b-4cb9-8b45-f18156b11d21"
+        },
+        {
+            "@type": "WorkflowStep",
+            "name": "Destroyed Successfully",
+            "description": null,
+            "arguments": {
+                "conditions": [
+                    {
+                        "option": "yes",
+                        "step_iri": "\/api\/3\/workflow_steps\/006f81c1-6f22-46a5-9636-339728af758c",
+                        "condition": "{{ \"successfully destroyed\" in vars.cmd_result }}",
+                        "step_name": "Update Successfully Destroyed VM"
+                    },
+                    {
+                        "option": "no",
+                        "default": true,
+                        "step_iri": "\/api\/3\/workflow_steps\/8c930f49-ed80-499e-9b90-f262ae28221d",
+                        "step_name": "Set Destroy Failure Result"
+                    }
+                ],
+                "step_variables": []
+            },
+            "status": null,
+            "top": "2325",
             "left": "300",
             "stepType": "\/api\/3\/workflow_step_types\/12254cf5-5db7-4b1a-8cb1-3af081924b28",
             "group": null,
-            "uuid": "g1h2i3j4-k5l6-7890-abcd-ef1234567891"
+            "uuid": "f1f65526-b193-415e-8614-a0382b9f36b4"
+        },
+        {
+            "@type": "WorkflowStep",
+            "name": "Destroy via API Type",
+            "description": null,
+            "arguments": {
+                "conditions": [
+                    {
+                        "option": "VM",
+                        "step_iri": "\/api\/3\/workflow_steps\/06d9e7f8-0d27-4e40-b5b4-462f9058b626",
+                        "condition": "{{ ((vars.vm_type | default('')) | lower) != 'lxc' and 'ct' not in ((vars.vm_type | default('')) | lower) }}",
+                        "step_name": "Stop VM (API)"
+                    },
+                    {
+                        "option": "Container",
+                        "default": true,
+                        "step_iri": "\/api\/3\/workflow_steps\/86f8a1fc-001c-4463-bf0f-32c63f780f43",
+                        "condition": "{{ ((vars.vm_type | default('')) | lower) == 'lxc' or 'ct' in ((vars.vm_type | default('')) | lower) }}",
+                        "step_name": "Stop Container (API)"
+                    }
+                ],
+                "step_variables": []
+            },
+            "status": null,
+            "top": "1650",
+            "left": "300",
+            "stepType": "\/api\/3\/workflow_step_types\/12254cf5-5db7-4b1a-8cb1-3af081924b28",
+            "group": null,
+            "uuid": "96131589-efc9-4dcc-805f-a4c475f0b12e"
+        },
+        {
+            "@type": "WorkflowStep",
+            "name": "Destroy VM (API)",
+            "description": null,
+            "arguments": {
+                "name": "API Connector Proxmox",
+                "config": "''",
+                "params": {
+                    "node": "{{ globalVars.proxmox_default_node | default('pve') }}",
+                    "vmid": "{{ vars.proxmox_id | int }}",
+                    "purge": true
+                },
+                "version": "2.0.0",
+                "connector": "proxmox-api",
+                "operation": "destroy_vm",
+                "operationTitle": "Destroy VM",
+                "pickFromTenant": false,
+                "step_variables": {
+                    "cmd_result": "successfully destroyed"
+                }
+            },
+            "status": null,
+            "top": "2055",
+            "left": "475",
+            "stepType": "\/api\/3\/workflow_step_types\/0bfed618-0316-11e7-93ae-92361f002671",
+            "group": null,
+            "uuid": "67861796-f6c0-41fb-8c1e-b627fae9e21e"
         },
         {
             "@type": "WorkflowStep",
@@ -96,33 +223,25 @@
                 "step_variables": []
             },
             "status": null,
-            "top": "390",
-            "left": "475",
+            "top": "1110",
+            "left": "825",
             "stepType": "\/api\/3\/workflow_step_types\/b593663d-7d13-40ce-a3a3-96dece928722",
             "group": null,
-            "uuid": "x1y2z3w4-v5u6-7890-abcd-ef1234567899"
+            "uuid": "88ac88b4-1591-4322-bd0a-8eaf780841c9"
         },
         {
             "@type": "WorkflowStep",
-            "name": "List VMs Lookup",
-            "description": "Fetch VMs from Proxmox to resolve VMID by name when record has no Proxmox ID.",
+            "name": "Get CMD Result",
+            "description": "Set cmd_result from destroy step outcome; only 'successfully destroyed' if destroy API actually succeeded.",
             "arguments": {
-                "name": "API Connector Proxmox",
-                "config": "''",
-                "params": {},
-                "version": "2.0.0",
-                "connector": "proxmox-api",
-                "operation": "list_vms",
-                "operationTitle": "List VMs",
-                "pickFromTenant": false,
-                "step_variables": []
+                "cmd_result": "{%- if vars.steps.get('Destroy Container (API)') and not (vars.steps['Destroy Container (API)'].get('Error message') or vars.steps['Destroy Container (API)'].get('error')) -%}successfully destroyed{%- elif vars.steps.get('Destroy VM (API)') and not (vars.steps['Destroy VM (API)'].get('Error message') or vars.steps['Destroy VM (API)'].get('error')) -%}successfully destroyed{%- else -%}{{ vars.cmd_result | default('destroy failed') }}{% endif %}"
             },
             "status": null,
-            "top": "390",
-            "left": "125",
-            "stepType": "\/api\/3\/workflow_step_types\/0bfed618-0316-11e7-93ae-92361f002671",
+            "top": "2190",
+            "left": "300",
+            "stepType": "\/api\/3\/workflow_step_types\/04d0cf46-b6a8-42c4-8683-60a7eaa69e8f",
             "group": null,
-            "uuid": "e1e1e1e1-1111-4111-8111-111111111111"
+            "uuid": "70cbc9f2-3f12-4d49-b74f-b1328f18e930"
         },
         {
             "@type": "WorkflowStep",
@@ -131,7 +250,7 @@
             "arguments": {
                 "name": "API Connector Proxmox",
                 "config": "''",
-                "params": {},
+                "params": [],
                 "version": "2.0.0",
                 "connector": "proxmox-api",
                 "operation": "list_containers",
@@ -140,97 +259,33 @@
                 "step_variables": []
             },
             "status": null,
-            "top": "390",
-            "left": "225",
+            "top": "705",
+            "left": "815",
             "stepType": "\/api\/3\/workflow_step_types\/0bfed618-0316-11e7-93ae-92361f002671",
             "group": null,
-            "uuid": "e2e2e2e2-2222-4222-8222-222222222222"
+            "uuid": "b0ce0846-3882-4470-95e3-410122af694f"
         },
         {
             "@type": "WorkflowStep",
-            "name": "Resolve VMID by Name",
-            "description": null,
+            "name": "List VMs Lookup",
+            "description": "Fetch VMs from Proxmox to resolve VMID by name when record has no Proxmox ID.",
             "arguments": {
-                "proxmox_id": "{%- set vms = vars.steps.List_VMs_Lookup.data.data | default([]) -%}{%- set containers = vars.steps.List_Containers_Lookup.data.data | default([]) -%}{%- set vm_match = vms | selectattr('name', 'equalto', vars.vm_name) | list -%}{%- set ct_match = containers | selectattr('name', 'equalto', vars.vm_name) | list -%}{%- if vm_match | length > 0 -%}{{ vm_match[0].vmid | string }}{%- elif ct_match | length > 0 -%}{{ ct_match[0].vmid | string }}{%- else -%}{%- endif -%}",
-                "vm_type": "{%- set vms = vars.steps.List_VMs_Lookup.data.data | default([]) -%}{%- set containers = vars.steps.List_Containers_Lookup.data.data | default([]) -%}{%- set vm_match = vms | selectattr('name', 'equalto', vars.vm_name) | list -%}{%- set ct_match = containers | selectattr('name', 'equalto', vars.vm_name) | list -%}{%- if vm_match | length > 0 -%}qemu{%- elif ct_match | length > 0 -%}lxc{%- else -%}{{ vars.vm_type | default('qemu') }}{%- endif -%}",
-                "has_proxmox_id": "{%- set vms = vars.steps.List_VMs_Lookup.data.data | default([]) -%}{%- set containers = vars.steps.List_Containers_Lookup.data.data | default([]) -%}{%- set vm_match = vms | selectattr('name', 'equalto', vars.vm_name) | list -%}{%- set ct_match = containers | selectattr('name', 'equalto', vars.vm_name) | list -%}{%- if (vm_match | length > 0) or (ct_match | length > 0) -%}true{%- else -%}false{%- endif -%}"
-            },
-            "status": null,
-            "top": "390",
-            "left": "325",
-            "stepType": "\/api\/3\/workflow_step_types\/04d0cf46-b6a8-42c4-8683-60a7eaa69e8f",
-            "group": null,
-            "uuid": "e3e3e3e3-3333-4333-8333-333333333333"
-        },
-        {
-            "@type": "WorkflowStep",
-            "name": "VMID Resolved?",
-            "description": null,
-            "arguments": {
-                "conditions": [
-                    {
-                        "option": "yes",
-                        "step_iri": "\/api\/3\/workflow_steps\/a1b2c3d4-e5f6-7890-abcd-ef1234567892",
-                        "condition": "{{ (vars.proxmox_id and (vars.proxmox_id | string | regex_search('^[0-9]+$'))) and true or false }}",
-                        "step_name": "Check Delete After Date"
-                    },
-                    {
-                        "option": "no",
-                        "default": true,
-                        "step_iri": "\/api\/3\/workflow_steps\/x1y2z3w4-v5u6-7890-abcd-ef1234567899",
-                        "step_name": "Error No Proxmox ID"
-                    }
-                ],
+                "name": "API Connector Proxmox",
+                "config": "''",
+                "params": [],
+                "version": "2.0.0",
+                "connector": "proxmox-api",
+                "operation": "list_vms",
+                "operationTitle": "List VMs",
+                "pickFromTenant": false,
                 "step_variables": []
             },
             "status": null,
-            "top": "390",
-            "left": "425",
-            "stepType": "\/api\/3\/workflow_step_types\/12254cf5-5db7-4b1a-8cb1-3af081924b28",
+            "top": "570",
+            "left": "815",
+            "stepType": "\/api\/3\/workflow_step_types\/0bfed618-0316-11e7-93ae-92361f002671",
             "group": null,
-            "uuid": "e4e4e4e4-4444-4444-8444-444444444444"
-        },
-        {
-            "@type": "WorkflowStep",
-            "name": "Check Delete After Date",
-            "description": null,
-            "arguments": {
-                "delete_after_reached": "{%- if vars.delete_after -%}{%- set delete_after_ts = vars.delete_after | int -%}{%- set now_ts = arrow.now().int_timestamp -%}{%- if delete_after_ts <= now_ts -%}true{%- else -%}false{%- endif -%}{%- else -%}false{%- endif -%}"
-            },
-            "status": null,
-            "top": "390",
-            "left": "300",
-            "stepType": "\/api\/3\/workflow_step_types\/04d0cf46-b6a8-42c4-8683-60a7eaa69e8f",
-            "group": null,
-            "uuid": "a1b2c3d4-e5f6-7890-abcd-ef1234567892"
-        },
-        {
-            "@type": "WorkflowStep",
-            "name": "Delete After Date Reached",
-            "description": null,
-            "arguments": {
-                "conditions": [
-                    {
-                        "option": "yes",
-                        "step_iri": "\/api\/3\/workflow_steps\/b693f962-ca51-47dc-8b21-fd58e6a25ef7",
-                        "condition": "{{ (vars.delete_after_reached | string | lower) == 'true' }}",
-                        "step_name": "Set Deprovisioning CMD"
-                    },
-                    {
-                        "option": "no",
-                        "default": true,
-                        "step_iri": "\/api\/3\/workflow_steps\/m1n2o3p4-q5r6-7890-abcd-ef1234567893",
-                        "step_name": "Manual Approval Required"
-                    }
-                ],
-                "step_variables": []
-            },
-            "status": null,
-            "top": "465",
-            "left": "300",
-            "stepType": "\/api\/3\/workflow_step_types\/12254cf5-5db7-4b1a-8cb1-3af081924b28",
-            "group": null,
-            "uuid": "h1i2j3k4-l5m6-7890-abcd-ef1234567893"
+            "uuid": "0ba7776b-2012-4f2a-a7ed-f2c2ff953a98"
         },
         {
             "@type": "WorkflowStep",
@@ -241,7 +296,7 @@
                 "input": {
                     "schema": {
                         "title": "Manual VM Destruction Approval",
-                        "description": "VM Instance '{{vars.vm_name}}' does not have a deleteAfter date or the date has not been reached yet.\n\n⚠️ WARNING: This will permanently destroy the VM\/Container.\n\nProxmox ID: {{vars.proxmox_id}}\nVM Type: {{vars.vm_type}}\n\nPlease confirm that you want to proceed with the destruction.",
+                        "description": "VM Instance '{{vars.vm_name}}' does not have a deleteAfter date or the date has not been reached yet.\n\n\u26a0\ufe0f WARNING: This will permanently destroy the VM\/Container.\n\nProxmox ID: {{vars.proxmox_id}}\nVM Type: {{vars.vm_type}}\n\nPlease confirm that you want to proceed with the destruction.",
                         "inputVariables": [
                             {
                                 "name": "confirmDestroy",
@@ -271,7 +326,7 @@
                     "days": 0,
                     "hours": 0,
                     "minutes": 10,
-                    "step_iri": "\/api\/3\/workflow_steps\/s1t2u3v4-w5x6-7890-abcd-ef1234567894"
+                    "step_iri": "\/api\/3\/workflow_steps\/2a6ad46e-5853-42cf-87a0-395ee9ed2d9a"
                 },
                 "agent_id": null,
                 "resources": "v_m_instances",
@@ -286,11 +341,11 @@
                     "options": [
                         {
                             "option": "OK",
-                            "step_iri": "\/api\/3\/workflow_steps\/b693f962-ca51-47dc-8b21-fd58e6a25ef7"
+                            "step_iri": "\/api\/3\/workflow_steps\/54cc7819-eb92-4543-90ed-138f5482b521"
                         },
                         {
                             "option": "Cancel",
-                            "step_iri": "\/api\/3\/workflow_steps\/s1t2u3v4-w5x6-7890-abcd-ef1234567894"
+                            "step_iri": "\/api\/3\/workflow_steps\/2a6ad46e-5853-42cf-87a0-395ee9ed2d9a"
                         }
                     ],
                     "duplicateOption": false,
@@ -308,58 +363,70 @@
                 "internal_email_subject": "Manual VM Destruction Approval Required"
             },
             "status": null,
-            "top": "540",
-            "left": "300",
+            "top": "1380",
+            "left": "640",
             "stepType": "\/api\/3\/workflow_step_types\/fc04082a-d7dc-4299-96fb-6837b1baa0fe",
             "group": null,
-            "uuid": "m1n2o3p4-q5r6-7890-abcd-ef1234567893"
+            "uuid": "85d75692-70e7-42c2-8549-6bad4ad77df4"
         },
         {
             "@type": "WorkflowStep",
-            "name": "Stop Cancelled",
-            "description": null,
-            "arguments": {
-                "params": [],
-                "version": "3.6.0",
-                "connector": "cyops_utilities",
-                "operation": "no_op",
-                "operationTitle": "Utils: No Operation",
-                "step_variables": []
-            },
-            "status": null,
-            "top": "615",
-            "left": "475",
-            "stepType": "\/api\/3\/workflow_step_types\/0109f35d-090b-4a2b-bd8a-94cbc3508562",
-            "group": null,
-            "uuid": "s1t2u3v4-w5x6-7890-abcd-ef1234567894"
-        },
-        {
-            "@type": "WorkflowStep",
-            "name": "Destroyed Successfully",
+            "name": "Proxmox ID Valid",
             "description": null,
             "arguments": {
                 "conditions": [
                     {
                         "option": "yes",
-                        "step_iri": "\/api\/3\/workflow_steps\/ed1621c8-a7c0-40ed-b814-7359d087d75c",
-                        "condition": "{{ \"successfully destroyed\" in vars.cmd_result }}",
-                        "step_name": "Update Successfully Destroyed VM"
+                        "step_iri": "\/api\/3\/workflow_steps\/4074e305-2d5e-40a3-8cc6-c6533e40c010",
+                        "condition": "{{ vars.has_proxmox_id == 'true' }}",
+                        "step_name": "Check Delete After Date"
                     },
                     {
                         "option": "no",
                         "default": true,
-                        "step_iri": "\/api\/3\/workflow_steps\/d-set-failure-result-1111-2222-3333-444444444440",
-                        "step_name": "Set Destroy Failure Result"
+                        "step_iri": "\/api\/3\/workflow_steps\/0ba7776b-2012-4f2a-a7ed-f2c2ff953a98",
+                        "step_name": "List VMs Lookup"
                     }
                 ],
                 "step_variables": []
             },
             "status": null,
-            "top": "705",
-            "left": "300",
+            "top": "435",
+            "left": "650",
             "stepType": "\/api\/3\/workflow_step_types\/12254cf5-5db7-4b1a-8cb1-3af081924b28",
             "group": null,
-            "uuid": "b96b9f82-95f5-4fda-8734-303c480208c2"
+            "uuid": "d85ee703-30c9-4e76-8acc-2480e451f916"
+        },
+        {
+            "@type": "WorkflowStep",
+            "name": "Resolve VMID by Name",
+            "description": null,
+            "arguments": {
+                "vm_type": "{%- set vms = vars.steps.List_VMs_Lookup.data.data | default([]) -%}{%- set containers = vars.steps.List_Containers_Lookup.data.data | default([]) -%}{%- set vm_match = vms | selectattr('name', 'equalto', vars.vm_name) | list -%}{%- set ct_match = containers | selectattr('name', 'equalto', vars.vm_name) | list -%}{%- if vm_match | length > 0 -%}qemu{%- elif ct_match | length > 0 -%}lxc{%- else -%}{{ vars.vm_type | default('qemu') }}{%- endif -%}",
+                "proxmox_id": "{%- set vms = vars.steps.List_VMs_Lookup.data.data | default([]) -%}{%- set containers = vars.steps.List_Containers_Lookup.data.data | default([]) -%}{%- set vm_match = vms | selectattr('name', 'equalto', vars.vm_name) | list -%}{%- set ct_match = containers | selectattr('name', 'equalto', vars.vm_name) | list -%}{%- if vm_match | length > 0 -%}{{ vm_match[0].vmid | string }}{%- elif ct_match | length > 0 -%}{{ ct_match[0].vmid | string }}{%- else -%}{%- endif -%}",
+                "has_proxmox_id": "{%- set vms = vars.steps.List_VMs_Lookup.data.data | default([]) -%}{%- set containers = vars.steps.List_Containers_Lookup.data.data | default([]) -%}{%- set vm_match = vms | selectattr('name', 'equalto', vars.vm_name) | list -%}{%- set ct_match = containers | selectattr('name', 'equalto', vars.vm_name) | list -%}{%- if (vm_match | length > 0) or (ct_match | length > 0) -%}true{%- else -%}false{%- endif -%}"
+            },
+            "status": null,
+            "top": "840",
+            "left": "815",
+            "stepType": "\/api\/3\/workflow_step_types\/04d0cf46-b6a8-42c4-8683-60a7eaa69e8f",
+            "group": null,
+            "uuid": "09681994-58fd-4608-98e2-bdd86804795c"
+        },
+        {
+            "@type": "WorkflowStep",
+            "name": "Set Deprovisioning CMD",
+            "description": null,
+            "arguments": {
+                "approval_reason": "{{vars.steps.Manual_Approval_Required.input.destructionReason or 'Automatic destruction after deleteAfter date'}}",
+                "deprovision_cmd": "Destroy via Proxmox API (stop then delete)"
+            },
+            "status": null,
+            "top": "1515",
+            "left": "300",
+            "stepType": "\/api\/3\/workflow_step_types\/04d0cf46-b6a8-42c4-8683-60a7eaa69e8f",
+            "group": null,
+            "uuid": "54cc7819-eb92-4543-90ed-138f5482b521"
         },
         {
             "@type": "WorkflowStep",
@@ -369,244 +436,18 @@
                 "cmd_result": "{{ vars.steps['Stop VM (API)']['Error message'] | default(vars.steps['Stop VM (API)'].error | default(vars.steps['Destroy VM (API)']['Error message'] | default(vars.steps['Destroy VM (API)'].error | default(vars.steps['Stop Container (API)']['Error message'] | default(vars.steps['Stop Container (API)'].error | default(vars.steps['Destroy Container (API)']['Error message'] | default(vars.steps['Destroy Container (API)'].error | default(vars.cmd_result | default('Destroy failed')))))))) }}"
             },
             "status": null,
-            "top": "740",
-            "left": "300",
+            "top": "2460",
+            "left": "125",
             "stepType": "\/api\/3\/workflow_step_types\/04d0cf46-b6a8-42c4-8683-60a7eaa69e8f",
             "group": null,
-            "uuid": "d-set-failure-result-1111-2222-3333-444444444440"
-        },
-        {
-            "@type": "WorkflowStep",
-            "name": "Get CMD Result",
-            "description": "Set cmd_result from destroy step outcome; only 'successfully destroyed' if destroy API actually succeeded.",
-            "arguments": {
-                "cmd_result": "{%- if vars.steps.get('Destroy Container (API)') and not (vars.steps['Destroy Container (API)'].get('Error message') or vars.steps['Destroy Container (API)'].get('error')) -%}successfully destroyed{%- elif vars.steps.get('Destroy VM (API)') and not (vars.steps['Destroy VM (API)'].get('Error message') or vars.steps['Destroy VM (API)'].get('error')) -%}successfully destroyed{%- else -%}{{ vars.cmd_result | default('destroy failed') }}{% endif %}"
-            },
-            "status": null,
-            "top": "570",
-            "left": "300",
-            "stepType": "\/api\/3\/workflow_step_types\/04d0cf46-b6a8-42c4-8683-60a7eaa69e8f",
-            "group": null,
-            "uuid": "1a54dff3-8a28-4c74-af50-f1ff99b8f3c6"
-        },
-        {
-            "@type": "WorkflowStep",
-            "name": "Set Deprovisioning CMD",
-            "description": null,
-            "arguments": {
-                "deprovision_cmd": "Destroy via Proxmox API (stop then delete)",
-                "approval_reason": "{{vars.steps.Manual_Approval_Required.input.destructionReason or 'Automatic destruction after deleteAfter date'}}"
-            },
-            "status": null,
-            "top": "615",
-            "left": "300",
-            "stepType": "\/api\/3\/workflow_step_types\/04d0cf46-b6a8-42c4-8683-60a7eaa69e8f",
-            "group": null,
-            "uuid": "b693f962-ca51-47dc-8b21-fd58e6a25ef7"
-        },
-        {
-            "@type": "WorkflowStep",
-            "name": "Destroy via API Type",
-            "description": null,
-            "arguments": {
-                "conditions": [
-                    {
-                        "option": "VM",
-                        "step_iri": "\/api\/3\/workflow_steps\/a8a8a8a8-2222-4222-8222-888888888801",
-                        "condition": "{{ ((vars.vm_type | default('')) | lower) != 'lxc' and 'ct' not in ((vars.vm_type | default('')) | lower) }}",
-                        "step_name": "Stop VM (API)"
-                    },
-                    {
-                        "option": "Container",
-                        "default": true,
-                        "step_iri": "\/api\/3\/workflow_steps\/a9a9a9a9-3333-4333-8333-999999999902",
-                        "condition": "{{ ((vars.vm_type | default('')) | lower) == 'lxc' or 'ct' in ((vars.vm_type | default('')) | lower) }}",
-                        "step_name": "Stop Container (API)"
-                    }
-                ],
-                "step_variables": []
-            },
-            "status": null,
-            "top": "650",
-            "left": "300",
-            "stepType": "\/api\/3\/workflow_step_types\/12254cf5-5db7-4b1a-8cb1-3af081924b28",
-            "group": null,
-            "uuid": "f7f7f7f7-1111-4111-8111-777777777777"
-        },
-        {
-            "@type": "WorkflowStep",
-            "name": "Stop VM (API)",
-            "description": "Stop the VM before destroy so Proxmox accepts delete.",
-            "arguments": {
-                "name": "API Connector Proxmox",
-                "config": "''",
-                "params": {
-                    "node": "{{ globalVars.proxmox_default_node | default('pve') }}",
-                    "vmid": "{{ vars.proxmox_id | int }}"
-                },
-                "version": "2.0.0",
-                "connector": "proxmox-api",
-                "operation": "stop_vm",
-                "operationTitle": "Stop VM",
-                "pickFromTenant": false,
-                "step_variables": []
-            },
-            "status": null,
-            "top": "685",
-            "left": "100",
-            "stepType": "\/api\/3\/workflow_step_types\/0bfed618-0316-11e7-93ae-92361f002671",
-            "group": null,
-            "uuid": "a8a8a8a8-2222-4222-8222-888888888801"
-        },
-        {
-            "@type": "WorkflowStep",
-            "name": "Stop Container (API)",
-            "description": "Stop the container before destroy so Proxmox accepts delete.",
-            "arguments": {
-                "name": "API Connector Proxmox",
-                "config": "''",
-                "params": {
-                    "node": "{{ globalVars.proxmox_default_node | default('pve') }}",
-                    "vmid": "{{ vars.proxmox_id | int }}"
-                },
-                "version": "2.0.0",
-                "connector": "proxmox-api",
-                "operation": "stop_container",
-                "operationTitle": "Stop Container",
-                "pickFromTenant": false,
-                "step_variables": []
-            },
-            "status": null,
-            "top": "685",
-            "left": "400",
-            "stepType": "\/api\/3\/workflow_step_types\/0bfed618-0316-11e7-93ae-92361f002671",
-            "group": null,
-            "uuid": "a9a9a9a9-3333-4333-8333-999999999902"
-        },
-        {
-            "@type": "WorkflowStep",
-            "name": "Wait 15 seconds VM",
-            "description": null,
-            "arguments": {
-                "rule": {
-                    "actions": [
-                        {
-                            "type": "resume_playbook",
-                            "enabled": true,
-                            "channel_uuid": "e2ce87c2-c55a-11ec-9d64-0242ac120002"
-                        }
-                    ],
-                    "is_active": true,
-                    "event_source": "crudhub"
-                },
-                "type": "TimeBased",
-                "delay": {
-                    "days": 0,
-                    "hours": 0,
-                    "minutes": 0,
-                    "seconds": 15
-                }
-            },
-            "status": null,
-            "top": "700",
-            "left": "100",
-            "stepType": "\/api\/3\/workflow_step_types\/6832e556-b9c7-497a-babe-feda3bd27dbf",
-            "group": null,
-            "uuid": "w1w1w1w1-1111-4111-8111-w1w1w1w1w1w1"
-        },
-        {
-            "@type": "WorkflowStep",
-            "name": "Wait 15 seconds CT",
-            "description": null,
-            "arguments": {
-                "rule": {
-                    "actions": [
-                        {
-                            "type": "resume_playbook",
-                            "enabled": true,
-                            "channel_uuid": "e2ce87c2-c55a-11ec-9d64-0242ac120002"
-                        }
-                    ],
-                    "is_active": true,
-                    "event_source": "crudhub"
-                },
-                "type": "TimeBased",
-                "delay": {
-                    "days": 0,
-                    "hours": 0,
-                    "minutes": 0,
-                    "seconds": 15
-                }
-            },
-            "status": null,
-            "top": "700",
-            "left": "400",
-            "stepType": "\/api\/3\/workflow_step_types\/6832e556-b9c7-497a-babe-feda3bd27dbf",
-            "group": null,
-            "uuid": "w2w2w2w2-2222-4222-8222-w2w2w2w2w2w2"
-        },
-        {
-            "@type": "WorkflowStep",
-            "name": "Destroy VM (API)",
-            "description": null,
-            "arguments": {
-                "name": "API Connector Proxmox",
-                "config": "''",
-                "params": {
-                    "node": "{{ globalVars.proxmox_default_node | default('pve') }}",
-                    "vmid": "{{ vars.proxmox_id | int }}",
-                    "purge": true
-                },
-                "version": "2.0.0",
-                "connector": "proxmox-api",
-                "operation": "destroy_vm",
-                "operationTitle": "Destroy VM",
-                "pickFromTenant": false,
-                "step_variables": {
-                    "cmd_result": "successfully destroyed"
-                }
-            },
-            "status": null,
-            "top": "715",
-            "left": "150",
-            "stepType": "\/api\/3\/workflow_step_types\/0bfed618-0316-11e7-93ae-92361f002671",
-            "group": null,
-            "uuid": "f8f8f8f8-2222-4222-8222-888888888888"
-        },
-        {
-            "@type": "WorkflowStep",
-            "name": "Destroy Container (API)",
-            "description": null,
-            "arguments": {
-                "name": "API Connector Proxmox",
-                "config": "''",
-                "params": {
-                    "node": "{{ globalVars.proxmox_default_node | default('pve') }}",
-                    "vmid": "{{ vars.proxmox_id | int }}",
-                    "force": true
-                },
-                "version": "2.0.0",
-                "connector": "proxmox-api",
-                "operation": "destroy_container",
-                "operationTitle": "Destroy Container",
-                "pickFromTenant": false,
-                "step_variables": {
-                    "cmd_result": "successfully destroyed"
-                }
-            },
-            "status": null,
-            "top": "715",
-            "left": "450",
-            "stepType": "\/api\/3\/workflow_step_types\/0bfed618-0316-11e7-93ae-92361f002671",
-            "group": null,
-            "uuid": "f9f9f9f9-3333-4333-8333-999999999999"
+            "uuid": "8c930f49-ed80-499e-9b90-f262ae28221d"
         },
         {
             "@type": "WorkflowStep",
             "name": "Start",
             "description": null,
             "arguments": {
-                "route": "0dd31438-c83b-4948-b7ef-1b8b23ad1452",
+                "route": "9c015a63-bcab-462f-bb2d-18baa897593a",
                 "resources": [
                     "v_m_instances"
                 ],
@@ -639,10 +480,79 @@
             },
             "status": null,
             "top": "30",
-            "left": "300",
+            "left": "650",
             "stepType": "\/api\/3\/workflow_step_types\/f414d039-bb0d-4e59-9c39-a8f1e880b18a",
             "group": null,
-            "uuid": "34dd9835-35b3-4559-8ec6-562bcc1b4394"
+            "uuid": "2c5605e1-3a5c-4462-b0e9-1da896b13e1a"
+        },
+        {
+            "@type": "WorkflowStep",
+            "name": "Stop Cancelled",
+            "description": null,
+            "arguments": {
+                "params": [],
+                "version": "3.6.0",
+                "connector": "cyops_utilities",
+                "operation": "no_op",
+                "operationTitle": "Utils: No Operation",
+                "step_variables": []
+            },
+            "status": null,
+            "top": "1515",
+            "left": "650",
+            "stepType": "\/api\/3\/workflow_step_types\/0109f35d-090b-4a2b-bd8a-94cbc3508562",
+            "group": null,
+            "uuid": "2a6ad46e-5853-42cf-87a0-395ee9ed2d9a"
+        },
+        {
+            "@type": "WorkflowStep",
+            "name": "Stop Container (API)",
+            "description": "Stop the container before destroy so Proxmox accepts delete.",
+            "arguments": {
+                "name": "API Connector Proxmox",
+                "config": "''",
+                "params": {
+                    "node": "{{ globalVars.proxmox_default_node | default('pve') }}",
+                    "vmid": "{{ vars.proxmox_id | int }}"
+                },
+                "version": "2.0.0",
+                "connector": "proxmox-api",
+                "operation": "stop_container",
+                "operationTitle": "Stop Container",
+                "pickFromTenant": false,
+                "step_variables": []
+            },
+            "status": null,
+            "top": "1785",
+            "left": "125",
+            "stepType": "\/api\/3\/workflow_step_types\/0bfed618-0316-11e7-93ae-92361f002671",
+            "group": null,
+            "uuid": "86f8a1fc-001c-4463-bf0f-32c63f780f43"
+        },
+        {
+            "@type": "WorkflowStep",
+            "name": "Stop VM (API)",
+            "description": "Stop the VM before destroy so Proxmox accepts delete.",
+            "arguments": {
+                "name": "API Connector Proxmox",
+                "config": "''",
+                "params": {
+                    "node": "{{ globalVars.proxmox_default_node | default('pve') }}",
+                    "vmid": "{{ vars.proxmox_id | int }}"
+                },
+                "version": "2.0.0",
+                "connector": "proxmox-api",
+                "operation": "stop_vm",
+                "operationTitle": "Stop VM",
+                "pickFromTenant": false,
+                "step_variables": []
+            },
+            "status": null,
+            "top": "1785",
+            "left": "475",
+            "stepType": "\/api\/3\/workflow_step_types\/0bfed618-0316-11e7-93ae-92361f002671",
+            "group": null,
+            "uuid": "06d9e7f8-0d27-4e40-b5b4-462f9058b626"
         },
         {
             "@type": "WorkflowStep",
@@ -663,11 +573,11 @@
                 "step_variables": []
             },
             "status": null,
-            "top": "840",
-            "left": "475",
+            "top": "2595",
+            "left": "125",
             "stepType": "\/api\/3\/workflow_step_types\/b593663d-7d13-40ce-a3a3-96dece928722",
             "group": null,
-            "uuid": "bd4d8207-cbed-43b0-b22a-99ce1eb49871"
+            "uuid": "e8bfc9ed-c935-4d9e-a230-5822beb15a64"
         },
         {
             "@type": "WorkflowStep",
@@ -688,300 +598,390 @@
                 "step_variables": []
             },
             "status": null,
-            "top": "840",
-            "left": "125",
+            "top": "2460",
+            "left": "475",
             "stepType": "\/api\/3\/workflow_step_types\/b593663d-7d13-40ce-a3a3-96dece928722",
             "group": null,
-            "uuid": "ed1621c8-a7c0-40ed-b814-7359d087d75c"
+            "uuid": "006f81c1-6f22-46a5-9636-339728af758c"
+        },
+        {
+            "@type": "WorkflowStep",
+            "name": "VMID Resolved?",
+            "description": null,
+            "arguments": {
+                "conditions": [
+                    {
+                        "option": "yes",
+                        "step_iri": "\/api\/3\/workflow_steps\/4074e305-2d5e-40a3-8cc6-c6533e40c010",
+                        "condition": "{{ (vars.proxmox_id and (vars.proxmox_id | string | regex_search('^[0-9]+$'))) and true or false }}",
+                        "step_name": "Check Delete After Date"
+                    },
+                    {
+                        "option": "no",
+                        "default": true,
+                        "step_iri": "\/api\/3\/workflow_steps\/88ac88b4-1591-4322-bd0a-8eaf780841c9",
+                        "step_name": "Error No Proxmox ID"
+                    }
+                ],
+                "step_variables": []
+            },
+            "status": null,
+            "top": "975",
+            "left": "815",
+            "stepType": "\/api\/3\/workflow_step_types\/12254cf5-5db7-4b1a-8cb1-3af081924b28",
+            "group": null,
+            "uuid": "a05b1f25-441e-40bb-bcec-77b57f284139"
+        },
+        {
+            "@type": "WorkflowStep",
+            "name": "Wait 15 seconds CT",
+            "description": null,
+            "arguments": {
+                "rule": {
+                    "actions": [
+                        {
+                            "type": "resume_playbook",
+                            "enabled": true,
+                            "channel_uuid": "e2ce87c2-c55a-11ec-9d64-0242ac120002"
+                        }
+                    ],
+                    "is_active": true,
+                    "event_source": "crudhub"
+                },
+                "type": "TimeBased",
+                "delay": {
+                    "days": 0,
+                    "hours": 0,
+                    "minutes": 0,
+                    "seconds": 15
+                }
+            },
+            "status": null,
+            "top": "1920",
+            "left": "125",
+            "stepType": "\/api\/3\/workflow_step_types\/6832e556-b9c7-497a-babe-feda3bd27dbf",
+            "group": null,
+            "uuid": "02c71205-47aa-4ba7-9fee-ce039fc9a68c"
+        },
+        {
+            "@type": "WorkflowStep",
+            "name": "Wait 15 seconds VM",
+            "description": null,
+            "arguments": {
+                "rule": {
+                    "actions": [
+                        {
+                            "type": "resume_playbook",
+                            "enabled": true,
+                            "channel_uuid": "e2ce87c2-c55a-11ec-9d64-0242ac120002"
+                        }
+                    ],
+                    "is_active": true,
+                    "event_source": "crudhub"
+                },
+                "type": "TimeBased",
+                "delay": {
+                    "days": 0,
+                    "hours": 0,
+                    "minutes": 0,
+                    "seconds": 15
+                }
+            },
+            "status": null,
+            "top": "1920",
+            "left": "475",
+            "stepType": "\/api\/3\/workflow_step_types\/6832e556-b9c7-497a-babe-feda3bd27dbf",
+            "group": null,
+            "uuid": "ab9e87f2-a6d4-42ef-aff2-f0847e58f880"
         }
     ],
     "routes": [
         {
             "@type": "WorkflowRoute",
-            "name": "Configuration -> Check Proxmox ID Exists",
-            "targetStep": "\/api\/3\/workflow_steps\/f1e2d3c4-b5a6-7890-1234-567890abcdef",
-            "sourceStep": "\/api\/3\/workflow_steps\/7a6b6d01-6cc7-4eea-8e6a-95cc69a12893",
+            "name": "Check Delete After Date -> Delete After Date Reached",
+            "targetStep": "\/api\/3\/workflow_steps\/892f518b-094f-47d8-a855-2a15759323b0",
+            "sourceStep": "\/api\/3\/workflow_steps\/4074e305-2d5e-40a3-8cc6-c6533e40c010",
             "label": null,
             "isExecuted": false,
             "group": null,
-            "uuid": "87c3a4c1-42bd-463c-be29-7c42e12a230e"
+            "uuid": "8f2ed75e-ef25-4ee5-b4d3-06413af77b41"
         },
         {
             "@type": "WorkflowRoute",
             "name": "Check Proxmox ID Exists -> Proxmox ID Valid",
-            "targetStep": "\/api\/3\/workflow_steps\/g1h2i3j4-k5l6-7890-abcd-ef1234567891",
-            "sourceStep": "\/api\/3\/workflow_steps\/f1e2d3c4-b5a6-7890-1234-567890abcdef",
+            "targetStep": "\/api\/3\/workflow_steps\/d85ee703-30c9-4e76-8acc-2480e451f916",
+            "sourceStep": "\/api\/3\/workflow_steps\/91de1876-f36b-4d67-b7d5-afeef4caffeb",
             "label": null,
             "isExecuted": false,
             "group": null,
-            "uuid": "r1s2t3u4-v5w6-7890-abcd-ef1234567895"
+            "uuid": "f06abd89-42f6-4a29-a4a2-06d27f859368"
         },
         {
             "@type": "WorkflowRoute",
-            "name": "Proxmox ID Valid -> List VMs Lookup",
-            "targetStep": "\/api\/3\/workflow_steps\/e1e1e1e1-1111-4111-8111-111111111111",
-            "sourceStep": "\/api\/3\/workflow_steps\/g1h2i3j4-k5l6-7890-abcd-ef1234567891",
-            "label": "no",
-            "isExecuted": false,
-            "group": null,
-            "uuid": "t1u2v3w4-x5y6-7890-abcd-ef1234567896"
-        },
-        {
-            "@type": "WorkflowRoute",
-            "name": "Proxmox ID Valid -> Check Delete After Date",
-            "targetStep": "\/api\/3\/workflow_steps\/a1b2c3d4-e5f6-7890-abcd-ef1234567892",
-            "sourceStep": "\/api\/3\/workflow_steps\/g1h2i3j4-k5l6-7890-abcd-ef1234567891",
-            "label": "yes",
-            "isExecuted": false,
-            "group": null,
-            "uuid": "u1v2w3x4-y5z6-7890-abcd-ef1234567897"
-        },
-        {
-            "@type": "WorkflowRoute",
-            "name": "Check Delete After Date -> Delete After Date Reached",
-            "targetStep": "\/api\/3\/workflow_steps\/h1i2j3k4-l5m6-7890-abcd-ef1234567893",
-            "sourceStep": "\/api\/3\/workflow_steps\/a1b2c3d4-e5f6-7890-abcd-ef1234567892",
+            "name": "Configuration -> Check Proxmox ID Exists",
+            "targetStep": "\/api\/3\/workflow_steps\/91de1876-f36b-4d67-b7d5-afeef4caffeb",
+            "sourceStep": "\/api\/3\/workflow_steps\/919b4b34-1cb3-42b2-9088-0466154b7d34",
             "label": null,
             "isExecuted": false,
             "group": null,
-            "uuid": "v1w2x3y4-z5a6-7890-abcd-ef1234567898"
-        },
-        {
-            "@type": "WorkflowRoute",
-            "name": "Delete After Date Reached -> Set Deprovisioning CMD",
-            "targetStep": "\/api\/3\/workflow_steps\/b693f962-ca51-47dc-8b21-fd58e6a25ef7",
-            "sourceStep": "\/api\/3\/workflow_steps\/h1i2j3k4-l5m6-7890-abcd-ef1234567893",
-            "label": "yes",
-            "isExecuted": false,
-            "group": null,
-            "uuid": "w1x2y3z4-a5b6-7890-abcd-ef1234567899"
+            "uuid": "9c3ccc05-b9c9-40c4-af8d-eae5ae0bbc06"
         },
         {
             "@type": "WorkflowRoute",
             "name": "Delete After Date Reached -> Manual Approval Required",
-            "targetStep": "\/api\/3\/workflow_steps\/m1n2o3p4-q5r6-7890-abcd-ef1234567893",
-            "sourceStep": "\/api\/3\/workflow_steps\/h1i2j3k4-l5m6-7890-abcd-ef1234567893",
+            "targetStep": "\/api\/3\/workflow_steps\/85d75692-70e7-42c2-8549-6bad4ad77df4",
+            "sourceStep": "\/api\/3\/workflow_steps\/892f518b-094f-47d8-a855-2a15759323b0",
             "label": "no",
             "isExecuted": false,
             "group": null,
-            "uuid": "x1y2z3a4-b5c6-7890-abcd-ef1234567900"
+            "uuid": "912264c8-62c8-41f2-bb5b-1c643aa1600c"
         },
         {
             "@type": "WorkflowRoute",
-            "name": "Manual Approval Required -> Set Deprovisioning CMD",
-            "targetStep": "\/api\/3\/workflow_steps\/b693f962-ca51-47dc-8b21-fd58e6a25ef7",
-            "sourceStep": "\/api\/3\/workflow_steps\/m1n2o3p4-q5r6-7890-abcd-ef1234567893",
-            "label": "OK",
-            "isExecuted": false,
-            "group": null,
-            "uuid": "y1z2a3b4-c5d6-7890-abcd-ef1234567901"
-        },
-        {
-            "@type": "WorkflowRoute",
-            "name": "Manual Approval Required -> Stop Cancelled",
-            "targetStep": "\/api\/3\/workflow_steps\/s1t2u3v4-w5x6-7890-abcd-ef1234567894",
-            "sourceStep": "\/api\/3\/workflow_steps\/m1n2o3p4-q5r6-7890-abcd-ef1234567893",
-            "label": "Cancel",
-            "isExecuted": false,
-            "group": null,
-            "uuid": "z1a2b3c4-d5e6-7890-abcd-ef1234567902"
-        },
-        {
-            "@type": "WorkflowRoute",
-            "name": "Destroyed Successfully -> Set Destroy Failure Result",
-            "targetStep": "\/api\/3\/workflow_steps\/d-set-failure-result-1111-2222-3333-444444444440",
-            "sourceStep": "\/api\/3\/workflow_steps\/b96b9f82-95f5-4fda-8734-303c480208c2",
-            "label": "no",
-            "isExecuted": false,
-            "group": null,
-            "uuid": "b0843a14-5445-47b0-b153-335cbb1c08b1"
-        },
-        {
-            "@type": "WorkflowRoute",
-            "name": "Set Destroy Failure Result -> Update Failed Destroyed VM",
-            "targetStep": "\/api\/3\/workflow_steps\/bd4d8207-cbed-43b0-b22a-99ce1eb49871",
-            "sourceStep": "\/api\/3\/workflow_steps\/d-set-failure-result-1111-2222-3333-444444444440",
-            "label": null,
-            "isExecuted": false,
-            "group": null,
-            "uuid": "r-destroy-failure-to-update"
-        },
-        {
-            "@type": "WorkflowRoute",
-            "name": "Destroyed Successfully -> Update Destroyed VM Instance",
-            "targetStep": "\/api\/3\/workflow_steps\/ed1621c8-a7c0-40ed-b814-7359d087d75c",
-            "sourceStep": "\/api\/3\/workflow_steps\/b96b9f82-95f5-4fda-8734-303c480208c2",
+            "name": "Delete After Date Reached -> Set Deprovisioning CMD",
+            "targetStep": "\/api\/3\/workflow_steps\/54cc7819-eb92-4543-90ed-138f5482b521",
+            "sourceStep": "\/api\/3\/workflow_steps\/892f518b-094f-47d8-a855-2a15759323b0",
             "label": "yes",
             "isExecuted": false,
             "group": null,
-            "uuid": "b6b842b6-de6c-4568-af48-6586089dc36a"
-        },
-        {
-            "@type": "WorkflowRoute",
-            "name": "Get CMD Result -> Destroyed Successfully",
-            "targetStep": "\/api\/3\/workflow_steps\/b96b9f82-95f5-4fda-8734-303c480208c2",
-            "sourceStep": "\/api\/3\/workflow_steps\/1a54dff3-8a28-4c74-af50-f1ff99b8f3c6",
-            "label": null,
-            "isExecuted": false,
-            "group": null,
-            "uuid": "fe91c313-eda2-480f-968a-6a579179d491"
-        },
-        {
-            "@type": "WorkflowRoute",
-            "name": "Set Deprovisioning CMD -> Destroy via API Type",
-            "targetStep": "\/api\/3\/workflow_steps\/f7f7f7f7-1111-4111-8111-777777777777",
-            "sourceStep": "\/api\/3\/workflow_steps\/b693f962-ca51-47dc-8b21-fd58e6a25ef7",
-            "label": null,
-            "isExecuted": false,
-            "group": null,
-            "uuid": "4539c6c5-714c-4984-8a67-36e4ec7c4816"
-        },
-        {
-            "@type": "WorkflowRoute",
-            "name": "Destroy via API Type -> Stop VM (API)",
-            "targetStep": "\/api\/3\/workflow_steps\/a8a8a8a8-2222-4222-8222-888888888801",
-            "sourceStep": "\/api\/3\/workflow_steps\/f7f7f7f7-1111-4111-8111-777777777777",
-            "label": "VM",
-            "isExecuted": false,
-            "group": null,
-            "uuid": "e6e6e6e6-6666-4666-8666-666666666661"
-        },
-        {
-            "@type": "WorkflowRoute",
-            "name": "Destroy via API Type -> Stop Container (API)",
-            "targetStep": "\/api\/3\/workflow_steps\/a9a9a9a9-3333-4333-8333-999999999902",
-            "sourceStep": "\/api\/3\/workflow_steps\/f7f7f7f7-1111-4111-8111-777777777777",
-            "label": "Container",
-            "isExecuted": false,
-            "group": null,
-            "uuid": "e6e6e6e6-6666-4666-8666-666666666662"
-        },
-        {
-            "@type": "WorkflowRoute",
-            "name": "Stop VM (API) -> Wait 15 seconds VM",
-            "targetStep": "\/api\/3\/workflow_steps\/w1w1w1w1-1111-4111-8111-w1w1w1w1w1w1",
-            "sourceStep": "\/api\/3\/workflow_steps\/a8a8a8a8-2222-4222-8222-888888888801",
-            "label": null,
-            "isExecuted": false,
-            "group": null,
-            "uuid": "e6e6e6e6-6666-4666-8666-666666666665"
-        },
-        {
-            "@type": "WorkflowRoute",
-            "name": "Wait 15 seconds VM -> Destroy VM (API)",
-            "targetStep": "\/api\/3\/workflow_steps\/f8f8f8f8-2222-4222-8222-888888888888",
-            "sourceStep": "\/api\/3\/workflow_steps\/w1w1w1w1-1111-4111-8111-w1w1w1w1w1w1",
-            "label": null,
-            "isExecuted": false,
-            "group": null,
-            "uuid": "e6e6e6e6-6666-4666-8666-666666666667"
-        },
-        {
-            "@type": "WorkflowRoute",
-            "name": "Stop Container (API) -> Wait 15 seconds CT",
-            "targetStep": "\/api\/3\/workflow_steps\/w2w2w2w2-2222-4222-8222-w2w2w2w2w2w2",
-            "sourceStep": "\/api\/3\/workflow_steps\/a9a9a9a9-3333-4333-8333-999999999902",
-            "label": null,
-            "isExecuted": false,
-            "group": null,
-            "uuid": "e6e6e6e6-6666-4666-8666-666666666666"
-        },
-        {
-            "@type": "WorkflowRoute",
-            "name": "Wait 15 seconds CT -> Destroy Container (API)",
-            "targetStep": "\/api\/3\/workflow_steps\/f9f9f9f9-3333-4333-8333-999999999999",
-            "sourceStep": "\/api\/3\/workflow_steps\/w2w2w2w2-2222-4222-8222-w2w2w2w2w2w2",
-            "label": null,
-            "isExecuted": false,
-            "group": null,
-            "uuid": "e6e6e6e6-6666-4666-8666-666666666668"
-        },
-        {
-            "@type": "WorkflowRoute",
-            "name": "Destroy VM (API) -> Get CMD Result",
-            "targetStep": "\/api\/3\/workflow_steps\/1a54dff3-8a28-4c74-af50-f1ff99b8f3c6",
-            "sourceStep": "\/api\/3\/workflow_steps\/f8f8f8f8-2222-4222-8222-888888888888",
-            "label": null,
-            "isExecuted": false,
-            "group": null,
-            "uuid": "e6e6e6e6-6666-4666-8666-666666666663"
+            "uuid": "36ffc804-7931-4135-9b15-cbbe8f12a4c0"
         },
         {
             "@type": "WorkflowRoute",
             "name": "Destroy Container (API) -> Get CMD Result",
-            "targetStep": "\/api\/3\/workflow_steps\/1a54dff3-8a28-4c74-af50-f1ff99b8f3c6",
-            "sourceStep": "\/api\/3\/workflow_steps\/f9f9f9f9-3333-4333-8333-999999999999",
+            "targetStep": "\/api\/3\/workflow_steps\/70cbc9f2-3f12-4d49-b74f-b1328f18e930",
+            "sourceStep": "\/api\/3\/workflow_steps\/c27466fc-195b-4cb9-8b45-f18156b11d21",
             "label": null,
             "isExecuted": false,
             "group": null,
-            "uuid": "e6e6e6e6-6666-4666-8666-666666666664"
+            "uuid": "6b8fa7cb-5112-4159-9bdd-c53b13382f60"
         },
         {
             "@type": "WorkflowRoute",
-            "name": "List VMs Lookup -> List Containers Lookup",
-            "targetStep": "\/api\/3\/workflow_steps\/e2e2e2e2-2222-4222-8222-222222222222",
-            "sourceStep": "\/api\/3\/workflow_steps\/e1e1e1e1-1111-4111-8111-111111111111",
+            "name": "Destroyed Successfully -> Set Destroy Failure Result",
+            "targetStep": "\/api\/3\/workflow_steps\/8c930f49-ed80-499e-9b90-f262ae28221d",
+            "sourceStep": "\/api\/3\/workflow_steps\/f1f65526-b193-415e-8614-a0382b9f36b4",
+            "label": "no",
+            "isExecuted": false,
+            "group": null,
+            "uuid": "e321b432-1e83-4d62-aedb-06d83fe72616"
+        },
+        {
+            "@type": "WorkflowRoute",
+            "name": "Destroyed Successfully -> Update Destroyed VM Instance",
+            "targetStep": "\/api\/3\/workflow_steps\/006f81c1-6f22-46a5-9636-339728af758c",
+            "sourceStep": "\/api\/3\/workflow_steps\/f1f65526-b193-415e-8614-a0382b9f36b4",
+            "label": "yes",
+            "isExecuted": false,
+            "group": null,
+            "uuid": "c4a539ab-eabf-4cea-905d-ebc8f0b28b77"
+        },
+        {
+            "@type": "WorkflowRoute",
+            "name": "Destroy via API Type -> Stop Container (API)",
+            "targetStep": "\/api\/3\/workflow_steps\/86f8a1fc-001c-4463-bf0f-32c63f780f43",
+            "sourceStep": "\/api\/3\/workflow_steps\/96131589-efc9-4dcc-805f-a4c475f0b12e",
+            "label": "Container",
+            "isExecuted": false,
+            "group": null,
+            "uuid": "c5b29691-da06-4ccf-8613-1da1328a96f7"
+        },
+        {
+            "@type": "WorkflowRoute",
+            "name": "Destroy via API Type -> Stop VM (API)",
+            "targetStep": "\/api\/3\/workflow_steps\/06d9e7f8-0d27-4e40-b5b4-462f9058b626",
+            "sourceStep": "\/api\/3\/workflow_steps\/96131589-efc9-4dcc-805f-a4c475f0b12e",
+            "label": "VM",
+            "isExecuted": false,
+            "group": null,
+            "uuid": "39c65849-6756-4185-a7eb-a5873257ac78"
+        },
+        {
+            "@type": "WorkflowRoute",
+            "name": "Destroy VM (API) -> Get CMD Result",
+            "targetStep": "\/api\/3\/workflow_steps\/70cbc9f2-3f12-4d49-b74f-b1328f18e930",
+            "sourceStep": "\/api\/3\/workflow_steps\/67861796-f6c0-41fb-8c1e-b627fae9e21e",
             "label": null,
             "isExecuted": false,
             "group": null,
-            "uuid": "e5e5e5e5-5555-4555-8555-555555555551"
+            "uuid": "54185516-95d1-44e9-9b3d-f5c3c92d9ced"
+        },
+        {
+            "@type": "WorkflowRoute",
+            "name": "Get CMD Result -> Destroyed Successfully",
+            "targetStep": "\/api\/3\/workflow_steps\/f1f65526-b193-415e-8614-a0382b9f36b4",
+            "sourceStep": "\/api\/3\/workflow_steps\/70cbc9f2-3f12-4d49-b74f-b1328f18e930",
+            "label": null,
+            "isExecuted": false,
+            "group": null,
+            "uuid": "499643e9-14fe-43ae-a46f-a97ab7625030"
         },
         {
             "@type": "WorkflowRoute",
             "name": "List Containers Lookup -> Resolve VMID by Name",
-            "targetStep": "\/api\/3\/workflow_steps\/e3e3e3e3-3333-4333-8333-333333333333",
-            "sourceStep": "\/api\/3\/workflow_steps\/e2e2e2e2-2222-4222-8222-222222222222",
+            "targetStep": "\/api\/3\/workflow_steps\/09681994-58fd-4608-98e2-bdd86804795c",
+            "sourceStep": "\/api\/3\/workflow_steps\/b0ce0846-3882-4470-95e3-410122af694f",
             "label": null,
             "isExecuted": false,
             "group": null,
-            "uuid": "e5e5e5e5-5555-4555-8555-555555555552"
+            "uuid": "9fee9b05-93f0-4f9f-8b67-d313dd95f3e4"
+        },
+        {
+            "@type": "WorkflowRoute",
+            "name": "List VMs Lookup -> List Containers Lookup",
+            "targetStep": "\/api\/3\/workflow_steps\/b0ce0846-3882-4470-95e3-410122af694f",
+            "sourceStep": "\/api\/3\/workflow_steps\/0ba7776b-2012-4f2a-a7ed-f2c2ff953a98",
+            "label": null,
+            "isExecuted": false,
+            "group": null,
+            "uuid": "f3d0cf5e-febd-4979-923f-e3a4470cf64e"
+        },
+        {
+            "@type": "WorkflowRoute",
+            "name": "Manual Approval Required -> Set Deprovisioning CMD",
+            "targetStep": "\/api\/3\/workflow_steps\/54cc7819-eb92-4543-90ed-138f5482b521",
+            "sourceStep": "\/api\/3\/workflow_steps\/85d75692-70e7-42c2-8549-6bad4ad77df4",
+            "label": "OK",
+            "isExecuted": false,
+            "group": null,
+            "uuid": "4d520161-7fc4-46d2-8e2d-d925a04957a3"
+        },
+        {
+            "@type": "WorkflowRoute",
+            "name": "Manual Approval Required -> Stop Cancelled",
+            "targetStep": "\/api\/3\/workflow_steps\/2a6ad46e-5853-42cf-87a0-395ee9ed2d9a",
+            "sourceStep": "\/api\/3\/workflow_steps\/85d75692-70e7-42c2-8549-6bad4ad77df4",
+            "label": "Cancel",
+            "isExecuted": false,
+            "group": null,
+            "uuid": "5849172a-813b-47c0-acdd-c95df545201b"
+        },
+        {
+            "@type": "WorkflowRoute",
+            "name": "Proxmox ID Valid -> Check Delete After Date",
+            "targetStep": "\/api\/3\/workflow_steps\/4074e305-2d5e-40a3-8cc6-c6533e40c010",
+            "sourceStep": "\/api\/3\/workflow_steps\/d85ee703-30c9-4e76-8acc-2480e451f916",
+            "label": "yes",
+            "isExecuted": false,
+            "group": null,
+            "uuid": "9c046e80-2549-4ad2-909d-8dcab02d76d0"
+        },
+        {
+            "@type": "WorkflowRoute",
+            "name": "Proxmox ID Valid -> List VMs Lookup",
+            "targetStep": "\/api\/3\/workflow_steps\/0ba7776b-2012-4f2a-a7ed-f2c2ff953a98",
+            "sourceStep": "\/api\/3\/workflow_steps\/d85ee703-30c9-4e76-8acc-2480e451f916",
+            "label": "no",
+            "isExecuted": false,
+            "group": null,
+            "uuid": "77ce90ca-6728-4f33-afad-de943afa924c"
         },
         {
             "@type": "WorkflowRoute",
             "name": "Resolve VMID by Name -> VMID Resolved?",
-            "targetStep": "\/api\/3\/workflow_steps\/e4e4e4e4-4444-4444-8444-444444444444",
-            "sourceStep": "\/api\/3\/workflow_steps\/e3e3e3e3-3333-4333-8333-333333333333",
+            "targetStep": "\/api\/3\/workflow_steps\/a05b1f25-441e-40bb-bcec-77b57f284139",
+            "sourceStep": "\/api\/3\/workflow_steps\/09681994-58fd-4608-98e2-bdd86804795c",
             "label": null,
             "isExecuted": false,
             "group": null,
-            "uuid": "e5e5e5e5-5555-4555-8555-555555555553"
+            "uuid": "a8433cec-150d-4a2e-a717-6f730c417bdf"
         },
         {
             "@type": "WorkflowRoute",
-            "name": "VMID Resolved? -> Check Delete After Date",
-            "targetStep": "\/api\/3\/workflow_steps\/a1b2c3d4-e5f6-7890-abcd-ef1234567892",
-            "sourceStep": "\/api\/3\/workflow_steps\/e4e4e4e4-4444-4444-8444-444444444444",
-            "label": "yes",
+            "name": "Set Deprovisioning CMD -> Destroy via API Type",
+            "targetStep": "\/api\/3\/workflow_steps\/96131589-efc9-4dcc-805f-a4c475f0b12e",
+            "sourceStep": "\/api\/3\/workflow_steps\/54cc7819-eb92-4543-90ed-138f5482b521",
+            "label": null,
             "isExecuted": false,
             "group": null,
-            "uuid": "e5e5e5e5-5555-4555-8555-555555555554"
+            "uuid": "d61cb83f-9002-4095-82f8-d4573e3677e3"
         },
         {
             "@type": "WorkflowRoute",
-            "name": "VMID Resolved? -> Error No Proxmox ID",
-            "targetStep": "\/api\/3\/workflow_steps\/x1y2z3w4-v5u6-7890-abcd-ef1234567899",
-            "sourceStep": "\/api\/3\/workflow_steps\/e4e4e4e4-4444-4444-8444-444444444444",
-            "label": "no",
+            "name": "Set Destroy Failure Result -> Update Failed Destroyed VM",
+            "targetStep": "\/api\/3\/workflow_steps\/e8bfc9ed-c935-4d9e-a230-5822beb15a64",
+            "sourceStep": "\/api\/3\/workflow_steps\/8c930f49-ed80-499e-9b90-f262ae28221d",
+            "label": null,
             "isExecuted": false,
             "group": null,
-            "uuid": "e5e5e5e5-5555-4555-8555-555555555555"
+            "uuid": "997d7678-81b6-45e4-b5bc-11a99a515d95"
         },
         {
             "@type": "WorkflowRoute",
             "name": "Start -> Configuration",
-            "targetStep": "\/api\/3\/workflow_steps\/7a6b6d01-6cc7-4eea-8e6a-95cc69a12893",
-            "sourceStep": "\/api\/3\/workflow_steps\/34dd9835-35b3-4559-8ec6-562bcc1b4394",
+            "targetStep": "\/api\/3\/workflow_steps\/919b4b34-1cb3-42b2-9088-0466154b7d34",
+            "sourceStep": "\/api\/3\/workflow_steps\/2c5605e1-3a5c-4462-b0e9-1da896b13e1a",
             "label": null,
             "isExecuted": false,
             "group": null,
-            "uuid": "255f9760-b486-412c-b8ca-4a107639b587"
+            "uuid": "bb074fd2-05e8-493b-be6d-46a2f4d0bdef"
+        },
+        {
+            "@type": "WorkflowRoute",
+            "name": "Stop Container (API) -> Wait 15 seconds CT",
+            "targetStep": "\/api\/3\/workflow_steps\/02c71205-47aa-4ba7-9fee-ce039fc9a68c",
+            "sourceStep": "\/api\/3\/workflow_steps\/86f8a1fc-001c-4463-bf0f-32c63f780f43",
+            "label": null,
+            "isExecuted": false,
+            "group": null,
+            "uuid": "8055af8d-e01a-430e-87dd-75345b423258"
+        },
+        {
+            "@type": "WorkflowRoute",
+            "name": "Stop VM (API) -> Wait 15 seconds VM",
+            "targetStep": "\/api\/3\/workflow_steps\/ab9e87f2-a6d4-42ef-aff2-f0847e58f880",
+            "sourceStep": "\/api\/3\/workflow_steps\/06d9e7f8-0d27-4e40-b5b4-462f9058b626",
+            "label": null,
+            "isExecuted": false,
+            "group": null,
+            "uuid": "f744e597-ed49-4228-b843-0a5dd2b28805"
+        },
+        {
+            "@type": "WorkflowRoute",
+            "name": "VMID Resolved? -> Check Delete After Date",
+            "targetStep": "\/api\/3\/workflow_steps\/4074e305-2d5e-40a3-8cc6-c6533e40c010",
+            "sourceStep": "\/api\/3\/workflow_steps\/a05b1f25-441e-40bb-bcec-77b57f284139",
+            "label": "yes",
+            "isExecuted": false,
+            "group": null,
+            "uuid": "3e6dfc07-86a0-44ce-874f-dcaa0439c55d"
+        },
+        {
+            "@type": "WorkflowRoute",
+            "name": "VMID Resolved? -> Error No Proxmox ID",
+            "targetStep": "\/api\/3\/workflow_steps\/88ac88b4-1591-4322-bd0a-8eaf780841c9",
+            "sourceStep": "\/api\/3\/workflow_steps\/a05b1f25-441e-40bb-bcec-77b57f284139",
+            "label": "no",
+            "isExecuted": false,
+            "group": null,
+            "uuid": "edd7b3bb-b8a1-4f80-9aec-8bb67ceca374"
+        },
+        {
+            "@type": "WorkflowRoute",
+            "name": "Wait 15 seconds CT -> Destroy Container (API)",
+            "targetStep": "\/api\/3\/workflow_steps\/c27466fc-195b-4cb9-8b45-f18156b11d21",
+            "sourceStep": "\/api\/3\/workflow_steps\/02c71205-47aa-4ba7-9fee-ce039fc9a68c",
+            "label": null,
+            "isExecuted": false,
+            "group": null,
+            "uuid": "e6bf4bb1-fa4b-444a-a67f-736cb42578dc"
+        },
+        {
+            "@type": "WorkflowRoute",
+            "name": "Wait 15 seconds VM -> Destroy VM (API)",
+            "targetStep": "\/api\/3\/workflow_steps\/67861796-f6c0-41fb-8c1e-b627fae9e21e",
+            "sourceStep": "\/api\/3\/workflow_steps\/ab9e87f2-a6d4-42ef-aff2-f0847e58f880",
+            "label": null,
+            "isExecuted": false,
+            "group": null,
+            "uuid": "a30c90c1-4684-4345-af4a-151c343997f3"
         }
     ],
     "groups": [],
     "priority": "\/api\/3\/picklists\/2b563c61-ae2c-41c0-a85a-c9709585e3f2",
     "playbookOrigin": "\/api\/3\/picklists\/15c1e8c9-22bf-4e66-8fbb-0a502d4a4a3f",
     "isEditable": true,
-    "uuid": "41ea49b2-01a1-47c0-a66b-29e1f844135d",
+    "uuid": "0efc2f76-af97-4577-b7ae-7f954a3f963b",
     "owners": [],
     "isPrivate": false,
     "deletedAt": null,

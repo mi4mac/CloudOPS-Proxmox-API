@@ -1,28 +1,172 @@
 {
-    "@context": "/api/3/contexts/Workflow",
+    "@context": "\/api\/3\/contexts\/Workflow",
     "@type": "Workflow",
     "triggerLimit": null,
     "name": "> Refresh Status from Proxmox",
     "aliasName": null,
     "tag": null,
-    "description": "Sync VM Instance status from Proxmox (running/stopped). Use when the record shows Failed but the instance is actually up.",
+    "description": "Sync VM Instance status from Proxmox (running\/stopped). Use when the record shows Failed but the instance is actually up.",
     "isActive": true,
-    "debug": true,
+    "debug": false,
     "singleRecordExecution": false,
     "remoteExecutableFlag": false,
-    "parameters": ["vm_instance"],
+    "parameters": [
+        "vm_instance"
+    ],
     "synchronous": false,
-    "collection": "/api/3/workflow_collections/f1c80355-697f-4a71-971b-0988c871491d",
+    "collection": "\/api\/3\/workflow_collections\/04ee731b-278b-455b-a6c9-4744038c42e7",
     "versions": [],
-    "triggerStep": "/api/3/workflow_steps/f1a2b3c4-d5e6-7890-abcd-100000000001",
+    "triggerStep": "\/api\/3\/workflow_steps\/351bdcfa-b4d1-44f6-9717-256f6ba61498",
     "steps": [
+        {
+            "@type": "WorkflowStep",
+            "name": "Configuration",
+            "description": null,
+            "arguments": {
+                "node": "{{ globalVars.proxmox_default_node | default('pve') }}",
+                "vmid": "{{ vars.input.records[0].proxmoxId or '' }}",
+                "vm_type": "{{ (vars.input.records[0].vMType.itemValue or '') | lower }}",
+                "has_proxmox_id": "{%- set id = (vars.input.records[0].proxmoxId | string) -%}{%- if id and (id | regex_search('^[0-9]+$')) -%}true{%- else -%}false{%- endif -%}"
+            },
+            "status": null,
+            "top": "165",
+            "left": "475",
+            "stepType": "\/api\/3\/workflow_step_types\/04d0cf46-b6a8-42c4-8683-60a7eaa69e8f",
+            "group": null,
+            "uuid": "0413c936-b669-4f6b-867a-00572ca09905"
+        },
+        {
+            "@type": "WorkflowStep",
+            "name": "Get Container Status (API)",
+            "description": null,
+            "arguments": {
+                "name": "API Connector Proxmox",
+                "config": "''",
+                "params": {
+                    "node": "{{ vars.node }}",
+                    "vmid": "{{ vars.vmid | int }}"
+                },
+                "version": "2.0.0",
+                "connector": "proxmox-api",
+                "operation": "get_container_status",
+                "operationTitle": "Get Container Status",
+                "pickFromTenant": false,
+                "step_variables": []
+            },
+            "status": null,
+            "top": "570",
+            "left": "125",
+            "stepType": "\/api\/3\/workflow_step_types\/0bfed618-0316-11e7-93ae-92361f002671",
+            "group": null,
+            "uuid": "a5724460-f8bc-4bdd-b889-bea1552c23cd"
+        },
+        {
+            "@type": "WorkflowStep",
+            "name": "Get VM Status (API)",
+            "description": null,
+            "arguments": {
+                "name": "API Connector Proxmox",
+                "config": "''",
+                "params": {
+                    "node": "{{ vars.node }}",
+                    "vmid": "{{ vars.vmid | int }}"
+                },
+                "version": "2.0.0",
+                "connector": "proxmox-api",
+                "operation": "get_vm_status",
+                "operationTitle": "Get VM Status",
+                "pickFromTenant": false,
+                "step_variables": []
+            },
+            "status": null,
+            "top": "570",
+            "left": "475",
+            "stepType": "\/api\/3\/workflow_step_types\/0bfed618-0316-11e7-93ae-92361f002671",
+            "group": null,
+            "uuid": "898c8ee6-cc06-41b2-9d97-88554219ee41"
+        },
+        {
+            "@type": "WorkflowStep",
+            "name": "Proxmox ID Valid",
+            "description": null,
+            "arguments": {
+                "conditions": [
+                    {
+                        "option": "yes",
+                        "step_iri": "\/api\/3\/workflow_steps\/ce9e0da9-e0d5-4428-a645-235b8000cbf3",
+                        "condition": "{{ vars.has_proxmox_id }}",
+                        "step_name": "Route Type"
+                    },
+                    {
+                        "option": "no",
+                        "default": true,
+                        "step_iri": "\/api\/3\/workflow_steps\/4e3c93c9-7fa9-423f-891c-66b0d8320ec1",
+                        "step_name": "Update No Proxmox ID"
+                    }
+                ],
+                "step_variables": []
+            },
+            "status": null,
+            "top": "300",
+            "left": "475",
+            "stepType": "\/api\/3\/workflow_step_types\/12254cf5-5db7-4b1a-8cb1-3af081924b28",
+            "group": null,
+            "uuid": "1f11615c-a2b4-4129-b322-c522adfab270"
+        },
+        {
+            "@type": "WorkflowStep",
+            "name": "Route Type",
+            "description": null,
+            "arguments": {
+                "conditions": [
+                    {
+                        "option": "Container",
+                        "step_iri": "\/api\/3\/workflow_steps\/a5724460-f8bc-4bdd-b889-bea1552c23cd",
+                        "condition": "{{ 'ct' in vars.vm_type or vars.vm_type == 'lxc' }}",
+                        "step_name": "Get Container Status (API)"
+                    },
+                    {
+                        "option": "VM",
+                        "default": true,
+                        "step_iri": "\/api\/3\/workflow_steps\/898c8ee6-cc06-41b2-9d97-88554219ee41",
+                        "step_name": "Get VM Status (API)"
+                    }
+                ],
+                "step_variables": []
+            },
+            "status": null,
+            "top": "435",
+            "left": "300",
+            "stepType": "\/api\/3\/workflow_step_types\/12254cf5-5db7-4b1a-8cb1-3af081924b28",
+            "group": null,
+            "uuid": "ce9e0da9-e0d5-4428-a645-235b8000cbf3"
+        },
+        {
+            "@type": "WorkflowStep",
+            "name": "Set Refresh Result",
+            "description": null,
+            "arguments": {
+                "log_msg": "{%- set is_ct = 'ct' in vars.vm_type or vars.vm_type == 'lxc' -%}{%- set s = vars.steps['Get Container Status (API)'] if is_ct else vars.steps['Get VM Status (API)'] -%}{%- if s and not (s.get('Error message') or s.get('error')) -%}<p>Refreshed from Proxmox: {{ s.data.data.status | default('unknown') }}<\/p>{%- else -%}<p>Refresh failed: {{ (s.get('Error message') or s.get('error') or 'No status response') if s else 'No status step' }}<\/p>{%- endif -%}",
+                "refresh_ok": "{%- set is_ct = 'ct' in vars.vm_type or vars.vm_type == 'lxc' -%}{%- set s = vars.steps['Get Container Status (API)'] if is_ct else vars.steps['Get VM Status (API)'] -%}{%- if s and not (s.get('Error message') or s.get('error')) -%}true{%- else -%}false{%- endif -%}",
+                "status_iri": "",
+                "proxmox_status": "{%- set is_ct = 'ct' in vars.vm_type or vars.vm_type == 'lxc' -%}{%- set s = vars.steps['Get Container Status (API)'] if is_ct else vars.steps['Get VM Status (API)'] -%}{{ s.data.data.status | default('') }}"
+            },
+            "status": null,
+            "top": "705",
+            "left": "300",
+            "stepType": "\/api\/3\/workflow_step_types\/04d0cf46-b6a8-42c4-8683-60a7eaa69e8f",
+            "group": null,
+            "uuid": "d8ab51b5-0be8-4dc3-90b1-7ac7a608751f"
+        },
         {
             "@type": "WorkflowStep",
             "name": "Start",
             "description": null,
             "arguments": {
-                "route": "f1a2b3c4-d5e6-7890-abcd-000000000001",
-                "resources": ["v_m_instances"],
+                "route": "0f08578b-554f-4f46-b5ec-ce972ddfe2ca",
+                "resources": [
+                    "v_m_instances"
+                ],
                 "__triggerLimit": true,
                 "inputVariables": [],
                 "step_variables": {
@@ -44,61 +188,19 @@
                 },
                 "executeButtonText": "Refresh Status",
                 "noRecordExecution": false,
-                "showToasterMessage": {"visible": false, "messageVisible": true},
+                "showToasterMessage": {
+                    "visible": false,
+                    "messageVisible": true
+                },
                 "triggerOnReplicate": false,
                 "singleRecordExecution": true
             },
             "status": null,
             "top": "30",
-            "left": "300",
-            "stepType": "/api/3/workflow_step_types/f414d039-bb0d-4e59-9c39-a8f1e880b18a",
+            "left": "475",
+            "stepType": "\/api\/3\/workflow_step_types\/f414d039-bb0d-4e59-9c39-a8f1e880b18a",
             "group": null,
-            "uuid": "f1a2b3c4-d5e6-7890-abcd-100000000001"
-        },
-        {
-            "@type": "WorkflowStep",
-            "name": "Configuration",
-            "description": null,
-            "arguments": {
-                "node": "{{ globalVars.proxmox_default_node | default('pve') }}",
-                "vmid": "{{ vars.input.records[0].proxmoxId or '' }}",
-                "vm_type": "{{ (vars.input.records[0].vMType.itemValue or '') | lower }}",
-                "has_proxmox_id": "{%- set id = (vars.input.records[0].proxmoxId | string) -%}{%- if id and (id | regex_search('^[0-9]+$')) -%}true{%- else -%}false{%- endif -%}"
-            },
-            "status": null,
-            "top": "105",
-            "left": "300",
-            "stepType": "/api/3/workflow_step_types/04d0cf46-b6a8-42c4-8683-60a7eaa69e8f",
-            "group": null,
-            "uuid": "f1a2b3c4-d5e6-7890-abcd-200000000002"
-        },
-        {
-            "@type": "WorkflowStep",
-            "name": "Proxmox ID Valid",
-            "description": null,
-            "arguments": {
-                "conditions": [
-                    {
-                        "option": "yes",
-                        "step_iri": "/api/3/workflow_steps/f1a2b3c4-d5e6-7890-abcd-300000000003",
-                        "condition": "{{ vars.has_proxmox_id }}",
-                        "step_name": "Route Type"
-                    },
-                    {
-                        "option": "no",
-                        "default": true,
-                        "step_iri": "/api/3/workflow_steps/f1a2b3c4-d5e6-7890-abcd-400000000004",
-                        "step_name": "Update No Proxmox ID"
-                    }
-                ],
-                "step_variables": []
-            },
-            "status": null,
-            "top": "180",
-            "left": "300",
-            "stepType": "/api/3/workflow_step_types/12254cf5-5db7-4b1a-8cb1-3af081924b28",
-            "group": null,
-            "uuid": "f1a2b3c4-d5e6-7890-abcd-500000000005"
+            "uuid": "351bdcfa-b4d1-44f6-9717-256f6ba61498"
         },
         {
             "@type": "WorkflowStep",
@@ -106,116 +208,23 @@
             "description": null,
             "arguments": {
                 "resource": {
-                    "logs": "<p>Refresh Status: No valid Proxmox ID on record. Set Proxmox ID or destroy the record.</p>"
+                    "logs": "<p>Refresh Status: No valid Proxmox ID on record. Set Proxmox ID or destroy the record.<\/p>"
                 },
                 "operation": "Append",
                 "collection": "{{vars.input.records[0]['@id']}}",
                 "__recommend": [],
-                "collectionType": "/api/3/v_m_instances",
-                "fieldOperation": {"recordTags": "Append"},
-                "step_variables": []
-            },
-            "status": null,
-            "top": "255",
-            "left": "475",
-            "stepType": "/api/3/workflow_step_types/b593663d-7d13-40ce-a3a3-96dece928722",
-            "group": null,
-            "uuid": "f1a2b3c4-d5e6-7890-abcd-400000000004"
-        },
-        {
-            "@type": "WorkflowStep",
-            "name": "Route Type",
-            "description": null,
-            "arguments": {
-                "conditions": [
-                    {
-                        "option": "Container",
-                        "step_iri": "/api/3/workflow_steps/f1a2b3c4-d5e6-7890-abcd-600000000006",
-                        "condition": "{{ 'ct' in vars.vm_type or vars.vm_type == 'lxc' }}",
-                        "step_name": "Get Container Status (API)"
-                    },
-                    {
-                        "option": "VM",
-                        "default": true,
-                        "step_iri": "/api/3/workflow_steps/f1a2b3c4-d5e6-7890-abcd-700000000007",
-                        "step_name": "Get VM Status (API)"
-                    }
-                ],
-                "step_variables": []
-            },
-            "status": null,
-            "top": "255",
-            "left": "125",
-            "stepType": "/api/3/workflow_step_types/12254cf5-5db7-4b1a-8cb1-3af081924b28",
-            "group": null,
-            "uuid": "f1a2b3c4-d5e6-7890-abcd-300000000003"
-        },
-        {
-            "@type": "WorkflowStep",
-            "name": "Get Container Status (API)",
-            "description": null,
-            "arguments": {
-                "name": "API Connector Proxmox",
-                "config": "''",
-                "params": {
-                    "node": "{{ vars.node }}",
-                    "vmid": "{{ vars.vmid | int }}"
+                "collectionType": "\/api\/3\/v_m_instances",
+                "fieldOperation": {
+                    "recordTags": "Append"
                 },
-                "version": "2.0.0",
-                "connector": "proxmox-api",
-                "operation": "get_container_status",
-                "operationTitle": "Get Container Status",
-                "pickFromTenant": false,
                 "step_variables": []
             },
             "status": null,
-            "top": "330",
-            "left": "125",
-            "stepType": "/api/3/workflow_step_types/0bfed618-0316-11e7-93ae-92361f002671",
+            "top": "435",
+            "left": "650",
+            "stepType": "\/api\/3\/workflow_step_types\/b593663d-7d13-40ce-a3a3-96dece928722",
             "group": null,
-            "uuid": "f1a2b3c4-d5e6-7890-abcd-600000000006"
-        },
-        {
-            "@type": "WorkflowStep",
-            "name": "Get VM Status (API)",
-            "description": null,
-            "arguments": {
-                "name": "API Connector Proxmox",
-                "config": "''",
-                "params": {
-                    "node": "{{ vars.node }}",
-                    "vmid": "{{ vars.vmid | int }}"
-                },
-                "version": "2.0.0",
-                "connector": "proxmox-api",
-                "operation": "get_vm_status",
-                "operationTitle": "Get VM Status",
-                "pickFromTenant": false,
-                "step_variables": []
-            },
-            "status": null,
-            "top": "330",
-            "left": "475",
-            "stepType": "/api/3/workflow_step_types/0bfed618-0316-11e7-93ae-92361f002671",
-            "group": null,
-            "uuid": "f1a2b3c4-d5e6-7890-abcd-700000000007"
-        },
-        {
-            "@type": "WorkflowStep",
-            "name": "Set Refresh Result",
-            "description": null,
-            "arguments": {
-                "proxmox_status": "{%- set is_ct = 'ct' in vars.vm_type or vars.vm_type == 'lxc' -%}{%- set s = vars.steps['Get Container Status (API)'] if is_ct else vars.steps['Get VM Status (API)'] -%}{{ s.data.data.status | default('') }}",
-                "refresh_ok": "{%- set is_ct = 'ct' in vars.vm_type or vars.vm_type == 'lxc' -%}{%- set s = vars.steps['Get Container Status (API)'] if is_ct else vars.steps['Get VM Status (API)'] -%}{%- if s and not (s.get('Error message') or s.get('error')) -%}true{%- else -%}false{%- endif -%}",
-                "status_iri": "",
-                "log_msg": "{%- set is_ct = 'ct' in vars.vm_type or vars.vm_type == 'lxc' -%}{%- set s = vars.steps['Get Container Status (API)'] if is_ct else vars.steps['Get VM Status (API)'] -%}{%- if s and not (s.get('Error message') or s.get('error')) -%}<p>Refreshed from Proxmox: {{ s.data.data.status | default('unknown') }}</p>{%- else -%}<p>Refresh failed: {{ (s.get('Error message') or s.get('error') or 'No status response') if s else 'No status step' }}</p>{%- endif -%}"
-            },
-            "status": null,
-            "top": "405",
-            "left": "300",
-            "stepType": "/api/3/workflow_step_types/04d0cf46-b6a8-42c4-8683-60a7eaa69e8f",
-            "group": null,
-            "uuid": "f1a2b3c4-d5e6-7890-abcd-800000000008"
+            "uuid": "4e3c93c9-7fa9-423f-891c-66b0d8320ec1"
         },
         {
             "@type": "WorkflowStep",
@@ -228,36 +237,121 @@
                 "operation": "Append",
                 "collection": "{{vars.input.records[0]['@id']}}",
                 "__recommend": [],
-                "collectionType": "/api/3/v_m_instances",
-                "fieldOperation": {"recordTags": "Append"},
+                "collectionType": "\/api\/3\/v_m_instances",
+                "fieldOperation": {
+                    "recordTags": "Append"
+                },
                 "step_variables": []
             },
             "status": null,
-            "top": "480",
+            "top": "840",
             "left": "300",
-            "stepType": "/api/3/workflow_step_types/b593663d-7d13-40ce-a3a3-96dece928722",
+            "stepType": "\/api\/3\/workflow_step_types\/b593663d-7d13-40ce-a3a3-96dece928722",
             "group": null,
-            "uuid": "f1a2b3c4-d5e6-7890-abcd-900000000009"
+            "uuid": "261342a4-5e0b-4592-81a3-670ab4bd3393"
         }
     ],
     "routes": [
-        {"@type": "WorkflowRoute", "name": "Start -> Configuration", "targetStep": "/api/3/workflow_steps/f1a2b3c4-d5e6-7890-abcd-200000000002", "sourceStep": "/api/3/workflow_steps/f1a2b3c4-d5e6-7890-abcd-100000000001", "label": null, "isExecuted": false, "group": null, "uuid": "b1a2b3c4-d5e6-7890-abcd-100000000010"},
-        {"@type": "WorkflowRoute", "name": "Configuration -> Proxmox ID Valid", "targetStep": "/api/3/workflow_steps/f1a2b3c4-d5e6-7890-abcd-500000000005", "sourceStep": "/api/3/workflow_steps/f1a2b3c4-d5e6-7890-abcd-200000000002", "label": null, "isExecuted": false, "group": null, "uuid": "b1a2b3c4-d5e6-7890-abcd-100000000011"},
-        {"@type": "WorkflowRoute", "name": "Proxmox ID Valid -> Route Type", "targetStep": "/api/3/workflow_steps/f1a2b3c4-d5e6-7890-abcd-300000000003", "sourceStep": "/api/3/workflow_steps/f1a2b3c4-d5e6-7890-abcd-500000000005", "label": "yes", "isExecuted": false, "group": null, "uuid": "b1a2b3c4-d5e6-7890-abcd-100000000012"},
-        {"@type": "WorkflowRoute", "name": "Proxmox ID Valid -> Update No Proxmox ID", "targetStep": "/api/3/workflow_steps/f1a2b3c4-d5e6-7890-abcd-400000000004", "sourceStep": "/api/3/workflow_steps/f1a2b3c4-d5e6-7890-abcd-500000000005", "label": "no", "isExecuted": false, "group": null, "uuid": "b1a2b3c4-d5e6-7890-abcd-100000000013"},
-        {"@type": "WorkflowRoute", "name": "Get Container Status -> Set Refresh Result", "targetStep": "/api/3/workflow_steps/f1a2b3c4-d5e6-7890-abcd-800000000008", "sourceStep": "/api/3/workflow_steps/f1a2b3c4-d5e6-7890-abcd-600000000006", "label": null, "isExecuted": false, "group": null, "uuid": "b1a2b3c4-d5e6-7890-abcd-100000000014"},
-        {"@type": "WorkflowRoute", "name": "Get VM Status -> Set Refresh Result", "targetStep": "/api/3/workflow_steps/f1a2b3c4-d5e6-7890-abcd-800000000008", "sourceStep": "/api/3/workflow_steps/f1a2b3c4-d5e6-7890-abcd-700000000007", "label": null, "isExecuted": false, "group": null, "uuid": "b1a2b3c4-d5e6-7890-abcd-100000000015"},
-        {"@type": "WorkflowRoute", "name": "Route Type -> Get Container Status", "targetStep": "/api/3/workflow_steps/f1a2b3c4-d5e6-7890-abcd-600000000006", "sourceStep": "/api/3/workflow_steps/f1a2b3c4-d5e6-7890-abcd-300000000003", "label": "Container", "isExecuted": false, "group": null, "uuid": "b1a2b3c4-d5e6-7890-abcd-100000000016"},
-        {"@type": "WorkflowRoute", "name": "Route Type -> Get VM Status", "targetStep": "/api/3/workflow_steps/f1a2b3c4-d5e6-7890-abcd-700000000007", "sourceStep": "/api/3/workflow_steps/f1a2b3c4-d5e6-7890-abcd-300000000003", "label": "VM", "isExecuted": false, "group": null, "uuid": "b1a2b3c4-d5e6-7890-abcd-100000000017"},
-        {"@type": "WorkflowRoute", "name": "Set Refresh Result -> Update VM Instance Status", "targetStep": "/api/3/workflow_steps/f1a2b3c4-d5e6-7890-abcd-900000000009", "sourceStep": "/api/3/workflow_steps/f1a2b3c4-d5e6-7890-abcd-800000000008", "label": null, "isExecuted": false, "group": null, "uuid": "b1a2b3c4-d5e6-7890-abcd-100000000018"}
+        {
+            "@type": "WorkflowRoute",
+            "name": "Configuration -> Proxmox ID Valid",
+            "targetStep": "\/api\/3\/workflow_steps\/1f11615c-a2b4-4129-b322-c522adfab270",
+            "sourceStep": "\/api\/3\/workflow_steps\/0413c936-b669-4f6b-867a-00572ca09905",
+            "label": null,
+            "isExecuted": false,
+            "group": null,
+            "uuid": "a77ccbdc-01c6-4648-bff0-6eace71c83d8"
+        },
+        {
+            "@type": "WorkflowRoute",
+            "name": "Get Container Status -> Set Refresh Result",
+            "targetStep": "\/api\/3\/workflow_steps\/d8ab51b5-0be8-4dc3-90b1-7ac7a608751f",
+            "sourceStep": "\/api\/3\/workflow_steps\/a5724460-f8bc-4bdd-b889-bea1552c23cd",
+            "label": null,
+            "isExecuted": false,
+            "group": null,
+            "uuid": "79e50edf-c979-4763-8a92-c167212f2c53"
+        },
+        {
+            "@type": "WorkflowRoute",
+            "name": "Get VM Status -> Set Refresh Result",
+            "targetStep": "\/api\/3\/workflow_steps\/d8ab51b5-0be8-4dc3-90b1-7ac7a608751f",
+            "sourceStep": "\/api\/3\/workflow_steps\/898c8ee6-cc06-41b2-9d97-88554219ee41",
+            "label": null,
+            "isExecuted": false,
+            "group": null,
+            "uuid": "e7c6234f-a7bc-4747-aa9c-fd5229c8f98f"
+        },
+        {
+            "@type": "WorkflowRoute",
+            "name": "Proxmox ID Valid -> Route Type",
+            "targetStep": "\/api\/3\/workflow_steps\/ce9e0da9-e0d5-4428-a645-235b8000cbf3",
+            "sourceStep": "\/api\/3\/workflow_steps\/1f11615c-a2b4-4129-b322-c522adfab270",
+            "label": "yes",
+            "isExecuted": false,
+            "group": null,
+            "uuid": "f35a9dc2-17be-491f-b3ed-22225fb44472"
+        },
+        {
+            "@type": "WorkflowRoute",
+            "name": "Proxmox ID Valid -> Update No Proxmox ID",
+            "targetStep": "\/api\/3\/workflow_steps\/4e3c93c9-7fa9-423f-891c-66b0d8320ec1",
+            "sourceStep": "\/api\/3\/workflow_steps\/1f11615c-a2b4-4129-b322-c522adfab270",
+            "label": "no",
+            "isExecuted": false,
+            "group": null,
+            "uuid": "ffeebad0-989d-4f11-a0b0-5c30e5eeb091"
+        },
+        {
+            "@type": "WorkflowRoute",
+            "name": "Route Type -> Get Container Status",
+            "targetStep": "\/api\/3\/workflow_steps\/a5724460-f8bc-4bdd-b889-bea1552c23cd",
+            "sourceStep": "\/api\/3\/workflow_steps\/ce9e0da9-e0d5-4428-a645-235b8000cbf3",
+            "label": "Container",
+            "isExecuted": false,
+            "group": null,
+            "uuid": "87ab9a9c-e4f7-4a1d-97fe-b7b7e4efc926"
+        },
+        {
+            "@type": "WorkflowRoute",
+            "name": "Route Type -> Get VM Status",
+            "targetStep": "\/api\/3\/workflow_steps\/898c8ee6-cc06-41b2-9d97-88554219ee41",
+            "sourceStep": "\/api\/3\/workflow_steps\/ce9e0da9-e0d5-4428-a645-235b8000cbf3",
+            "label": "VM",
+            "isExecuted": false,
+            "group": null,
+            "uuid": "a2c8c4c0-af91-4742-9e79-ef31bc3eb28d"
+        },
+        {
+            "@type": "WorkflowRoute",
+            "name": "Set Refresh Result -> Update VM Instance Status",
+            "targetStep": "\/api\/3\/workflow_steps\/261342a4-5e0b-4592-81a3-670ab4bd3393",
+            "sourceStep": "\/api\/3\/workflow_steps\/d8ab51b5-0be8-4dc3-90b1-7ac7a608751f",
+            "label": null,
+            "isExecuted": false,
+            "group": null,
+            "uuid": "ba8fb93e-07ac-40ac-8ee0-075558da9c63"
+        },
+        {
+            "@type": "WorkflowRoute",
+            "name": "Start -> Configuration",
+            "targetStep": "\/api\/3\/workflow_steps\/0413c936-b669-4f6b-867a-00572ca09905",
+            "sourceStep": "\/api\/3\/workflow_steps\/351bdcfa-b4d1-44f6-9717-256f6ba61498",
+            "label": null,
+            "isExecuted": false,
+            "group": null,
+            "uuid": "b18597f5-74b9-49cb-9eb0-81c5485f0c5f"
+        }
     ],
     "groups": [],
-    "priority": "/api/3/picklists/2b563c61-ae2c-41c0-a85a-c9709585e3f2",
-    "playbookOrigin": "/api/3/picklists/15c1e8c9-22bf-4e66-8fbb-0a502d4a4a3f",
+    "priority": "\/api\/3\/picklists\/2b563c61-ae2c-41c0-a85a-c9709585e3f2",
+    "playbookOrigin": "\/api\/3\/picklists\/15c1e8c9-22bf-4e66-8fbb-0a502d4a4a3f",
     "isEditable": true,
-    "uuid": "a1b2c3d4-e5f6-7890-abcd-0a0b0c0d0e0f",
+    "uuid": "a008c761-5842-40a5-a3b6-9c9581aff12e",
     "owners": [],
     "isPrivate": false,
     "deletedAt": null,
-    "recordTags": ["Create"]
+    "recordTags": [
+        "Create"
+    ]
 }

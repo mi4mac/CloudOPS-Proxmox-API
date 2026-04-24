@@ -5,5 +5,13 @@
     "config": {
         "rows": []
     },
-    "uuid": "modules-policies-form"
+    "module": "policies",
+    "filters": [],
+    "isDefault": true,
+    "visible": true,
+    "viewOptions": "form",
+    "name": "Custom Template",
+    "system": false,
+    "uuid": "modules-policies-form",
+    "newUuid": "00b5dfc5-3e18-4a93-8a73-48bc59679fc0"
 }

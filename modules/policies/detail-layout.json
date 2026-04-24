@@ -269,5 +269,13 @@
         "wid": "874a1781-d520-46ee-a147-7bbe3a019bcd",
         "metadata": []
     },
-    "uuid": "modules-policies-detail"
+    "module": "policies",
+    "filters": [],
+    "isDefault": true,
+    "visible": true,
+    "viewOptions": "detail",
+    "name": "Custom Template",
+    "system": false,
+    "uuid": "modules-policies-detail",
+    "newUuid": "b64d43ce-1496-410c-9b93-505f59a1fc16"
 }

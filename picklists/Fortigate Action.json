@@ -1,28 +1,28 @@
 {
-    "@context": "/api/3/contexts/PicklistName",
-    "@id": "/api/3/picklist_names/7cb287f7-8274-4be9-8810-975ed3d2ed86",
+    "@context": "\/api\/3\/contexts\/PicklistName",
+    "@id": "\/api\/3\/picklist_names\/7cb287f7-8274-4be9-8810-975ed3d2ed86",
     "@type": "PicklistName",
     "name": "Fortigate Action",
     "system": false,
     "picklists": [
         {
-            "@id": "/api/3/picklists/c99a753b-f56b-49ba-9820-408a4fded9de",
+            "@id": "\/api\/3\/picklists\/c99a753b-f56b-49ba-9820-408a4fded9de",
             "@type": "Picklist",
             "itemValue": "Accept",
             "orderIndex": 0,
             "color": null,
             "icon": null,
-            "listName": "/api/3/picklist_names/7cb287f7-8274-4be9-8810-975ed3d2ed86",
+            "listName": "\/api\/3\/picklist_names\/7cb287f7-8274-4be9-8810-975ed3d2ed86",
             "uuid": "c99a753b-f56b-49ba-9820-408a4fded9de"
         },
         {
-            "@id": "/api/3/picklists/7f143f82-0566-4ef3-a07a-74a5a5273b09",
+            "@id": "\/api\/3\/picklists\/7f143f82-0566-4ef3-a07a-74a5a5273b09",
             "@type": "Picklist",
             "itemValue": "Deny",
             "orderIndex": 1,
             "color": null,
             "icon": null,
-            "listName": "/api/3/picklist_names/7cb287f7-8274-4be9-8810-975ed3d2ed86",
+            "listName": "\/api\/3\/picklist_names\/7cb287f7-8274-4be9-8810-975ed3d2ed86",
             "uuid": "7f143f82-0566-4ef3-a07a-74a5a5273b09"
         }
     ],

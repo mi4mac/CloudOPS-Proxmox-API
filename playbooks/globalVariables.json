@@ -1,1 +1,67 @@
-[{"name":"Server_fqhn","value":"fsr-stable","default_value":"master.fortisoar.in"},{"name":"infrastructure_team_email","value":"cloud-ops@fortielab.com","default_value":"cloud-ops@fortielab.com"},{"name":"proxmox_storage","value":"local-lvm","default_value":"local-lvm"},{"name":"proxmox_default_node","value":"pve","default_value":"pve"}]
+[
+  {
+    "name": "Server_fqhn",
+    "value": "192.168.222.218",
+    "default_value": "master.fortisoar.in"
+  },
+  {
+    "name": "policyArchiveRetentionDays",
+    "value": "30",
+    "default_value": "30"
+  },
+  {
+    "name": "proxmox_storage",
+    "value": "local-lvm",
+    "default_value": "local-lvm"
+  },
+  {
+    "name": "proxmox_default_node",
+    "value": "pve",
+    "default_value": "pve"
+  },
+  {
+    "name": "proxmox_template_ubuntu2204_ct",
+    "value": "local:vztmpl/ubuntu-22.04-standard_22.04-1_amd64.tar.zst",
+    "default_value": "local:vztmpl/ubuntu-22.04-standard_22.04-1_amd64.tar.zst"
+  },
+  {
+    "name": "proxmox_template_debian13_ct",
+    "value": "local:vztmpl/debian-13-standard_13.1-2_amd64.tar.zst",
+    "default_value": "local:vztmpl/debian-13-standard_13.1-2_amd64.tar.zst"
+  },
+  {
+    "name": "proxmox_template_rockylinux9_ct",
+    "value": "local:vztmpl/rockylinux-9-default_20240912_amd64.tar.xz",
+    "default_value": "local:vztmpl/rockylinux-9-default_20240912_amd64.tar.xz"
+  },
+  {
+    "name": "proxmox_gateway",
+    "value": "10.255.255.1",
+    "default_value": "10.255.255.1"
+  },
+  {
+    "name": "proxmox_vlan_tag",
+    "value": "255",
+    "default_value": "255"
+  },
+  {
+    "name": "proxmox_bridge",
+    "value": "vmbr0",
+    "default_value": "vmbr0"
+  },
+  {
+    "name": "proxmox_node_name",
+    "value": "pve",
+    "default_value": "pve"
+  },
+  {
+    "name": "policyArchiveDryRun",
+    "value": "true",
+    "default_value": "true"
+  },
+  {
+    "name": "infrastructure_team_email",
+    "value": "forti.home@gmail.com",
+    "default_value": "forti.home@gmail.com"
+  }
+]

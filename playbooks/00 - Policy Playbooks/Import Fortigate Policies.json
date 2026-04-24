@@ -11,6 +11,7 @@
       "recordTags": [],
       "workflows": [
         {
+          "@context": "/api/3/contexts/Workflow",
           "@type": "Workflow",
           "triggerLimit": null,
           "name": "Import Fortigate Policies",
@@ -18,15 +19,14 @@
           "tag": null,
           "description": null,
           "isActive": true,
-          "debug": true,
+          "debug": false,
           "singleRecordExecution": false,
           "remoteExecutableFlag": false,
           "parameters": [],
           "synchronous": false,
-          "lastModifyDate": 1776772423,
-          "collection": "/api/3/workflow_collections/288c0ecb-d638-4c14-a963-0308451f25d5",
+          "collection": "/api/3/workflow_collections/04ee731b-278b-455b-a6c9-4744038c42e7",
           "versions": [],
-          "triggerStep": "/api/3/workflow_steps/f94b3d69-fc09-4400-8487-45d488cfde87",
+          "triggerStep": "/api/3/workflow_steps/9a5a1ef4-15e2-4520-a6f0-76b74bdc55f0",
           "steps": [
             {
               "@type": "WorkflowStep",
@@ -45,13 +45,13 @@
                   "action": "{{\"Fortigate Action\" | picklist(\"Accept\", \"@id\") if vars.item.action == \"accept\" else \"Fortigate Action\" | picklist(\"Deny\", \"@id\")}}",
                   "policyID": "{{vars.item.policyid}}",
                   "__replace": "true",
+                  "lastSeenAt": "{{arrow.get().int_timestamp}}",
                   "nATEnabled": "{{true if vars.item.nat == \"enable\" else false}}",
                   "sourcedata": "{{vars.item | toJSON}}",
                   "auditStatus": "/api/3/picklists/f64c4652-7d1a-46b6-9415-5176da6867a1",
                   "description": "{{vars.item | json_query('{srcaddr:srcaddr |[].name | join(`, `, @), srcintf:srcintf |[].name | join(`, `, @), dstaddr:dstaddr|[].name | join(`, `, @), dstintf : dstintf |[].name | join(`, `, @), service:service |[].name | join(`, `, @), status: status, nat:nat, comments: comments}') | json2html(row_fields= [\"srcaddr\",\"srcintf\",\"dstaddr\",\"dstintf\",\"service\",\"status\",\"nat\",\"comments\"], template=\"Stylized with row selection\", display=\"Vertical\")}}",
                   "policyStatus": "{{vars.item.status | title}}",
                   "reviewComplete": false,
-                  "lastSeenAt": "{{arrow.get().int_timestamp}}",
                   "fortiGateSerial": "{{vars.fgt_serial}}",
                   "__fieldsToUpdate": [
                     "name",
@@ -73,68 +73,43 @@
                 "step_variables": []
               },
               "status": null,
-              "top": "420",
-              "left": "40",
+              "top": "511",
+              "left": "604",
               "stepType": "/api/3/workflow_step_types/2597053c-e718-44b4-8394-4d40fe26d357",
               "group": null,
-              "uuid": "b5683910-13a8-47e0-9fdf-6960ecd9948a"
+              "uuid": "94eabf86-ee04-4f49-bf1a-3c234196107a"
             },
             {
               "@type": "WorkflowStep",
-              "name": "Get Policies",
-              "description": null,
+              "name": "Delete Stale Policies",
+              "description": "Marks policies as deleted on firewall instead of hard-deleting records.",
               "arguments": {
-                "name": "Fortinet FortiGate",
-                "config": "0bd845f8-406d-478c-af81-4da90ef60f7f",
-                "params": [],
-                "version": "5.2.0",
-                "connector": "fortigate-firewall",
-                "operation": "get_list_of_policies",
-                "operationTitle": "Get List of Policies",
-                "pickFromTenant": false,
+                "for_each": {
+                  "item": "{{vars.steps.Prepare_Stale_Policy_Delete_List}}",
+                  "parallel": false,
+                  "condition": ""
+                },
+                "resource": {
+                  "auditStatus": "/api/3/picklists/05f8b475-f9d1-4297-9440-c32758f15daa",
+                  "policyStatus": "DeletedOnFirewall",
+                  "deletedDetectedAt": "{{arrow.get().int_timestamp}}",
+                  "isDeletedOnFirewall": true
+                },
+                "operation": "Append",
+                "collection": "/api/3/policies/{{vars.item.deleted_policy_uuid}}",
+                "__recommend": [],
+                "collectionType": "/api/3/policies",
+                "fieldOperation": {
+                  "recordTags": "Append"
+                },
                 "step_variables": []
               },
               "status": null,
-              "top": "160",
-              "left": "40",
-              "stepType": "/api/3/workflow_step_types/0bfed618-0316-11e7-93ae-92361f002671",
+              "top": "1051",
+              "left": "604",
+              "stepType": "/api/3/workflow_step_types/b593663d-7d13-40ce-a3a3-96dece928722",
               "group": null,
-              "uuid": "ad5848bf-de31-421f-8655-6b92dd7ec4e3"
-            },
-            {
-              "@type": "WorkflowStep",
-              "name": "Link Policies to Firewall Assets by Serial",
-              "description": "Calls reference playbook to link policies to assets using fortiGateSerial.",
-              "arguments": {
-                "arguments": [],
-                "apply_async": false,
-                "step_variables": [],
-                "pass_parent_env": true,
-                "pass_input_record": false,
-                "workflowReference": "/api/3/workflows/520512cc-56ee-4d78-a5a8-637f88458841"
-              },
-              "status": null,
-              "top": "560",
-              "left": "40",
-              "stepType": "/api/3/workflow_step_types/74932bdc-b8b6-4d24-88c4-1a4dfbc524f3",
-              "group": null,
-              "uuid": "c2fa0519-9df5-40ee-9d6c-9d840841a5fa"
-            },
-            {
-              "@type": "WorkflowStep",
-              "name": "Set policies",
-              "description": null,
-              "arguments": {
-                "policies": "{{vars.steps.Get_Policies.data.result[0].results}}",
-                "fgt_serial": "{{vars.steps.Get_Policies.data.result[0].serial}}",
-                "current_policy_ids": "{{vars.steps.Get_Policies.data.result[0].results | json_query('[].policyid')}}"
-              },
-              "status": null,
-              "top": "280",
-              "left": "40",
-              "stepType": "/api/3/workflow_step_types/04d0cf46-b6a8-42c4-8683-60a7eaa69e8f",
-              "group": null,
-              "uuid": "c2750327-0ca7-4faa-a117-93f2c53fcd68"
+              "uuid": "9c80d74e-bd9d-4a2d-87f9-34a2b70e22d9"
             },
             {
               "@type": "WorkflowStep",
@@ -165,43 +140,52 @@
                 "step_variables": []
               },
               "status": null,
-              "top": "700",
-              "left": "40",
+              "top": "781",
+              "left": "604",
               "stepType": "/api/3/workflow_step_types/b593663d-7d13-40ce-a3a3-96dece928770",
               "group": null,
-              "uuid": "4c120ab9-ecf5-4061-94ea-bf7d8bfa1c10"
+              "uuid": "a4703244-c144-4d6e-aad4-efdf613a9580"
             },
             {
               "@type": "WorkflowStep",
-              "name": "Delete Stale Policies",
-              "description": "Marks policies as deleted on firewall instead of hard-deleting records.",
+              "name": "Get Policies",
+              "description": null,
               "arguments": {
-                "for_each": {
-                  "item": "{{vars.steps.Prepare_Stale_Policy_Delete_List}}",
-                  "parallel": false,
-                  "condition": ""
-                },
-                "resource": {
-                  "isDeletedOnFirewall": true,
-                  "deletedDetectedAt": "{{arrow.get().int_timestamp}}",
-                  "policyStatus": "DeletedOnFirewall",
-                  "auditStatus": "/api/3/picklists/05f8b475-f9d1-4297-9440-c32758f15daa"
-                },
-                "operation": "Append",
-                "collection": "/api/3/policies/{{vars.item.deleted_policy_uuid}}",
-                "__recommend": [],
-                "collectionType": "/api/3/policies",
-                "fieldOperation": {
-                  "recordTags": "Append"
-                },
+                "name": "Fortinet FortiGate",
+                "config": "0bd845f8-406d-478c-af81-4da90ef60f7f",
+                "params": [],
+                "version": "5.2.0",
+                "connector": "fortigate-firewall",
+                "operation": "get_list_of_policies",
+                "operationTitle": "Get List of Policies",
+                "pickFromTenant": false,
                 "step_variables": []
               },
               "status": null,
-              "top": "840",
-              "left": "40",
-              "stepType": "/api/3/workflow_step_types/b593663d-7d13-40ce-a3a3-96dece928722",
+              "top": "241",
+              "left": "604",
+              "stepType": "/api/3/workflow_step_types/0bfed618-0316-11e7-93ae-92361f002671",
               "group": null,
-              "uuid": "612dfba8-4ae6-4882-bda0-395df1f6f083"
+              "uuid": "906e990e-f050-47fd-a6b0-eaa2e893cb70"
+            },
+            {
+              "@type": "WorkflowStep",
+              "name": "Link Policies to Firewall Assets by Serial",
+              "description": "Calls reference playbook to link policies to assets using fortiGateSerial.",
+              "arguments": {
+                "arguments": [],
+                "apply_async": false,
+                "step_variables": [],
+                "pass_parent_env": true,
+                "pass_input_record": false,
+                "workflowReference": "/api/3/workflows/520512cc-56ee-4d78-a5a8-637f88458841"
+              },
+              "status": null,
+              "top": "646",
+              "left": "604",
+              "stepType": "/api/3/workflow_step_types/74932bdc-b8b6-4d24-88c4-1a4dfbc524f3",
+              "group": null,
+              "uuid": "8a89b80a-d2a4-4c03-8e8d-a82e0f0197a3"
             },
             {
               "@type": "WorkflowStep",
@@ -213,23 +197,39 @@
                   "parallel": false,
                   "condition": "{{vars.current_policy_ids and (vars.item.policyID not in vars.current_policy_ids)}}"
                 },
-                "deleted_policy_uuid": "{{vars.item.uuid}}",
                 "deleted_policy_id": "{{vars.item.policyID}}",
-                "deleted_policy_name": "{{vars.item.name}}"
+                "deleted_policy_name": "{{vars.item.name}}",
+                "deleted_policy_uuid": "{{vars.item.uuid}}"
               },
               "status": null,
-              "top": "780",
-              "left": "40",
+              "top": "916",
+              "left": "604",
               "stepType": "/api/3/workflow_step_types/04d0cf46-b6a8-42c4-8683-60a7eaa69e8f",
               "group": null,
-              "uuid": "be5c3c35-f099-4316-807e-b46ee57a230b"
+              "uuid": "f90d0a38-ff4c-4fde-9813-cf9a414edde0"
+            },
+            {
+              "@type": "WorkflowStep",
+              "name": "Set policies",
+              "description": null,
+              "arguments": {
+                "policies": "{{vars.steps.Get_Policies.data.result[0].results}}",
+                "fgt_serial": "{{vars.steps.Get_Policies.data.result[0].serial}}",
+                "current_policy_ids": "{{vars.steps.Get_Policies.data.result[0].results | json_query('[].policyid')}}"
+              },
+              "status": null,
+              "top": "376",
+              "left": "604",
+              "stepType": "/api/3/workflow_step_types/04d0cf46-b6a8-42c4-8683-60a7eaa69e8f",
+              "group": null,
+              "uuid": "b6665b50-8089-446d-a3eb-ba8f77bd777d"
             },
             {
               "@type": "WorkflowStep",
               "name": "Start",
               "description": null,
               "arguments": {
-                "route": "64581b62-e899-4bcd-8b20-4a616a548819",
+                "route": "0be190be-0c42-45c7-935a-316e900463ff",
                 "title": "Import Fortigate Policies",
                 "resources": [
                   "policies"
@@ -246,83 +246,83 @@
                 "singleRecordExecution": false
               },
               "status": null,
-              "top": "40",
-              "left": "40",
+              "top": "68",
+              "left": "604",
               "stepType": "/api/3/workflow_step_types/f414d039-bb0d-4e59-9c39-a8f1e880b18a",
               "group": null,
-              "uuid": "f94b3d69-fc09-4400-8487-45d488cfde87"
+              "uuid": "9a5a1ef4-15e2-4520-a6f0-76b74bdc55f0"
             }
           ],
           "routes": [
             {
               "@type": "WorkflowRoute",
               "name": "Create Policy Records -> Link Policies to Firewall Assets (by Serial)",
-              "targetStep": "/api/3/workflow_steps/c2fa0519-9df5-40ee-9d6c-9d840841a5fa",
-              "sourceStep": "/api/3/workflow_steps/b5683910-13a8-47e0-9fdf-6960ecd9948a",
+              "targetStep": "/api/3/workflow_steps/8a89b80a-d2a4-4c03-8e8d-a82e0f0197a3",
+              "sourceStep": "/api/3/workflow_steps/94eabf86-ee04-4f49-bf1a-3c234196107a",
               "label": null,
               "isExecuted": false,
               "group": null,
-              "uuid": "6d2b1eb6-34e8-4452-9ae6-690f5f93042d"
-            },
-            {
-              "@type": "WorkflowRoute",
-              "name": "Link Policies to Firewall Assets by Serial -> Get Existing Policies by Serial",
-              "targetStep": "/api/3/workflow_steps/4c120ab9-ecf5-4061-94ea-bf7d8bfa1c10",
-              "sourceStep": "/api/3/workflow_steps/c2fa0519-9df5-40ee-9d6c-9d840841a5fa",
-              "label": null,
-              "isExecuted": false,
-              "group": null,
-              "uuid": "8f9da8af-ff91-4214-9cad-184dbca3bc9a"
+              "uuid": "595336e4-45c9-4c89-8a40-844fa498570f"
             },
             {
               "@type": "WorkflowRoute",
               "name": "Get Existing Policies by Serial -> Prepare Stale Policy Delete List",
-              "targetStep": "/api/3/workflow_steps/be5c3c35-f099-4316-807e-b46ee57a230b",
-              "sourceStep": "/api/3/workflow_steps/4c120ab9-ecf5-4061-94ea-bf7d8bfa1c10",
+              "targetStep": "/api/3/workflow_steps/f90d0a38-ff4c-4fde-9813-cf9a414edde0",
+              "sourceStep": "/api/3/workflow_steps/a4703244-c144-4d6e-aad4-efdf613a9580",
               "label": null,
               "isExecuted": false,
               "group": null,
-              "uuid": "7f9a36c0-f063-4d01-9667-948d8d65f4be"
-            },
-            {
-              "@type": "WorkflowRoute",
-              "name": "Prepare Stale Policy Delete List -> Delete Stale Policies",
-              "targetStep": "/api/3/workflow_steps/612dfba8-4ae6-4882-bda0-395df1f6f083",
-              "sourceStep": "/api/3/workflow_steps/be5c3c35-f099-4316-807e-b46ee57a230b",
-              "label": null,
-              "isExecuted": false,
-              "group": null,
-              "uuid": "e25f0f59-2bd0-4700-98c0-befdb89bb165"
+              "uuid": "1d5105d2-922d-4abe-a3d6-f9fec6d639d4"
             },
             {
               "@type": "WorkflowRoute",
               "name": "Get Policies -> Set policies",
-              "targetStep": "/api/3/workflow_steps/c2750327-0ca7-4faa-a117-93f2c53fcd68",
-              "sourceStep": "/api/3/workflow_steps/ad5848bf-de31-421f-8655-6b92dd7ec4e3",
+              "targetStep": "/api/3/workflow_steps/b6665b50-8089-446d-a3eb-ba8f77bd777d",
+              "sourceStep": "/api/3/workflow_steps/906e990e-f050-47fd-a6b0-eaa2e893cb70",
               "label": null,
               "isExecuted": false,
               "group": null,
-              "uuid": "750870a7-55ef-43f6-9d62-436eecdb326d"
+              "uuid": "e334661c-e559-4329-81e9-4faad4c5df8d"
+            },
+            {
+              "@type": "WorkflowRoute",
+              "name": "Link Policies to Firewall Assets by Serial -> Get Existing Policies by Serial",
+              "targetStep": "/api/3/workflow_steps/a4703244-c144-4d6e-aad4-efdf613a9580",
+              "sourceStep": "/api/3/workflow_steps/8a89b80a-d2a4-4c03-8e8d-a82e0f0197a3",
+              "label": null,
+              "isExecuted": false,
+              "group": null,
+              "uuid": "9c59fc95-f468-4c14-b114-f60c22ab9c6d"
+            },
+            {
+              "@type": "WorkflowRoute",
+              "name": "Prepare Stale Policy Delete List -> Delete Stale Policies",
+              "targetStep": "/api/3/workflow_steps/9c80d74e-bd9d-4a2d-87f9-34a2b70e22d9",
+              "sourceStep": "/api/3/workflow_steps/f90d0a38-ff4c-4fde-9813-cf9a414edde0",
+              "label": null,
+              "isExecuted": false,
+              "group": null,
+              "uuid": "f70cd050-aceb-4a52-af57-98195516f6c7"
             },
             {
               "@type": "WorkflowRoute",
               "name": "Set policies -> Create Policy Records",
-              "targetStep": "/api/3/workflow_steps/b5683910-13a8-47e0-9fdf-6960ecd9948a",
-              "sourceStep": "/api/3/workflow_steps/c2750327-0ca7-4faa-a117-93f2c53fcd68",
+              "targetStep": "/api/3/workflow_steps/94eabf86-ee04-4f49-bf1a-3c234196107a",
+              "sourceStep": "/api/3/workflow_steps/b6665b50-8089-446d-a3eb-ba8f77bd777d",
               "label": null,
               "isExecuted": false,
               "group": null,
-              "uuid": "4add86cf-4241-4db2-8dfd-e4595c65ae7c"
+              "uuid": "74001ca9-62fc-4cc8-9caa-2483c1ac4f5b"
             },
             {
               "@type": "WorkflowRoute",
               "name": "Start -> Get Policies",
-              "targetStep": "/api/3/workflow_steps/ad5848bf-de31-421f-8655-6b92dd7ec4e3",
-              "sourceStep": "/api/3/workflow_steps/f94b3d69-fc09-4400-8487-45d488cfde87",
+              "targetStep": "/api/3/workflow_steps/906e990e-f050-47fd-a6b0-eaa2e893cb70",
+              "sourceStep": "/api/3/workflow_steps/9a5a1ef4-15e2-4520-a6f0-76b74bdc55f0",
               "label": null,
               "isExecuted": false,
               "group": null,
-              "uuid": "1bacbf10-42ac-4d76-b35c-62dfc42fc94b"
+              "uuid": "de24cb66-0560-4b06-872b-f0dad25a116d"
             }
           ],
           "groups": [
@@ -336,23 +336,21 @@
               "hideInLogs": true,
               "metadata": [],
               "reusable": false,
-              "top": "40",
-              "left": "640",
+              "top": "68",
+              "left": "190",
               "height": "136",
               "width": "379",
-              "uuid": "9125929e-fde5-469d-9e80-e5afd9fbea24",
+              "uuid": "6b4cf441-35e0-486c-a27e-ca78cf1acab4",
               "recordTags": []
             }
           ],
           "priority": "/api/3/picklists/2b563c61-ae2c-41c0-a85a-c9709585e3f2",
           "playbookOrigin": "/api/3/picklists/15c1e8c9-22bf-4e66-8fbb-0a502d4a4a3f",
           "isEditable": true,
-          "uuid": "c7b7d985-e690-4f50-9986-4d98aa3dd601",
-          "id": 1728,
+          "uuid": "a5c7a48e-6030-4547-a5d2-265740a2002f",
           "owners": [],
           "isPrivate": false,
           "deletedAt": null,
-          "importedBy": [],
           "recordTags": [
             "dataingestion",
             "Manual Trigger"

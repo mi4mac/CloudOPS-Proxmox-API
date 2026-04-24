@@ -1,1 +1,67 @@
-{"@context":"/api/3/contexts/SystemViewTemplate","@type":"SystemViewTemplate","type":"rows","config":{"rows":[{"columns":[{"widgets":[{"type":"grid","config":{"wid":"b4d7e4e8-2d3f-4ee0-a0b4-5f4b9a9e1d11","module":"proxmox_inventory","columns":["proxmoxId","name","node","vmType","status","cpuCores","memoryMB","diskGB","disksSummary","interfacesSummary","cluster","tracked","lastSeen"],"expandableCol":[],"relationshipField":[],"checkboxStatus":false,"editableFields":false,"actionButtons":[],"query":{"sort":[],"limit":30,"logic":"AND","filters":[]}}}],"style":"col-lg-12"}],"wid":"a7e8b9c1-3f45-4c67-9f10-4aa52f3c2e22","_collapsed":false}],"wid":"f5a2c3b4-6d7e-4f80-9b1c-7d8e9f0a1b33","metadata":{"customTemplateTitle":"Proxmox Inventory","originalTemplateTitle":"Proxmox Inventory"}},"module":"proxmox_inventory","filters":[],"isDefault":true,"visible":true,"viewOptions":"list","name":"Base Template","system":false,"uuid":"modules-proxmox_inventory-list","newUuid":"d4c3b2a1-9f8e-4d7c-6b5a-3e2d1c0b4f55"}
+{
+    "@context": "\/api\/3\/contexts\/SystemViewTemplate",
+    "@type": "SystemViewTemplate",
+    "type": "rows",
+    "config": {
+        "rows": [
+            {
+                "columns": [
+                    {
+                        "widgets": [
+                            {
+                                "type": "grid",
+                                "config": {
+                                    "wid": "b4d7e4e8-2d3f-4ee0-a0b4-5f4b9a9e1d11",
+                                    "module": "proxmox_inventory",
+                                    "columns": [
+                                        "proxmoxId",
+                                        "name",
+                                        "node",
+                                        "vmType",
+                                        "status",
+                                        "cpuCores",
+                                        "memoryMB",
+                                        "diskGB",
+                                        "disksSummary",
+                                        "interfacesSummary",
+                                        "cluster",
+                                        "tracked",
+                                        "lastSeen"
+                                    ],
+                                    "expandableCol": [],
+                                    "relationshipField": [],
+                                    "checkboxStatus": false,
+                                    "editableFields": false,
+                                    "actionButtons": [],
+                                    "query": {
+                                        "sort": [],
+                                        "limit": 30,
+                                        "logic": "AND",
+                                        "filters": []
+                                    }
+                                }
+                            }
+                        ],
+                        "style": "col-lg-12"
+                    }
+                ],
+                "wid": "a7e8b9c1-3f45-4c67-9f10-4aa52f3c2e22",
+                "_collapsed": false
+            }
+        ],
+        "wid": "f5a2c3b4-6d7e-4f80-9b1c-7d8e9f0a1b33",
+        "metadata": {
+            "customTemplateTitle": "Proxmox Inventory",
+            "originalTemplateTitle": "Proxmox Inventory"
+        }
+    },
+    "module": "proxmox_inventory",
+    "filters": [],
+    "isDefault": true,
+    "visible": true,
+    "viewOptions": "list",
+    "name": "Base Template",
+    "system": false,
+    "uuid": "modules-proxmox_inventory-list",
+    "newUuid": "d4c3b2a1-9f8e-4d7c-6b5a-3e2d1c0b4f55"
+}

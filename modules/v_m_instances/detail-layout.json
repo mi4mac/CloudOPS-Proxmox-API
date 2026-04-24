@@ -126,12 +126,12 @@
         "wid": "2ece9f93-b712-4713-b2fb-de19712e4a32",
         "actionButtons": [
             {
-                "id": "/api/3/workflows/41ea49b2-01a1-47c0-a66b-29e1f844135d",
+                "id": "\/api\/3\/workflows\/41ea49b2-01a1-47c0-a66b-29e1f844135d",
                 "name": "Destroy VM Instance",
                 "icon": "fa fa-trash"
             },
             {
-                "id": "/api/3/workflows/a1b2c3d4-e5f6-7890-abcd-0a0b0c0d0e0f",
+                "id": "\/api\/3\/workflows\/a1b2c3d4-e5f6-7890-abcd-0a0b0c0d0e0f",
                 "name": "Refresh Status from Proxmox",
                 "icon": "fa fa-sync"
             }

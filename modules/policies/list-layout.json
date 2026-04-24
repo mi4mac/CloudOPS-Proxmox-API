@@ -49,19 +49,103 @@
                                     "mapping": {
                                         "fieldName": "auditStatus"
                                     },
-                                    "assignedToSetting": "onlyMe",
+                                    "assignedToSetting": "all",
                                     "aggregate": true,
                                     "title": "Audit Completion",
                                     "resource": "policies",
-                                    "chart": "pie"
+                                    "chart": "pie",
+                                    "showTabularData": false,
+                                    "viewType": "chart"
                                 }
                             }
                         ],
-                        "style": "col-lg-12"
+                        "style": "col-lg-6"
+                    },
+                    {
+                        "widgets": [
+                            {
+                                "type": "readonlyFormGroup",
+                                "config": {
+                                    "wid": "b8c15ca7-930b-4d14-b2d7-87b45e73dc39",
+                                    "gridColumns": [],
+                                    "displayType": "card-view",
+                                    "widgetAlwaysDisplay": true,
+                                    "query": {
+                                        "sort": [],
+                                        "limit": 10,
+                                        "logic": "AND",
+                                        "filters": [
+                                            {
+                                                "field": "isDeletedOnFirewall",
+                                                "operator": "eq",
+                                                "_operator": "eq",
+                                                "value": true,
+                                                "type": "primitive"
+                                            }
+                                        ]
+                                    },
+                                    "recordTitle": {
+                                        "type": "sectionHeader",
+                                        "wid": "6d725367-79e0-49a3-98f2-dc27de4dab94",
+                                        "clone": false,
+                                        "remove": false
+                                    },
+                                    "relatedTemplate": {
+                                        "type": "rows",
+                                        "rows": [],
+                                        "wid": "1eb5a714-ddeb-4fb3-9ae1-c059c2a92508"
+                                    },
+                                    "resource": "policies",
+                                    "rows": [
+                                        {
+                                            "columns": [
+                                                {
+                                                    "fields": [
+                                                        {
+                                                            "name": "name",
+                                                            "highlightMode": true,
+                                                            "linky": true,
+                                                            "readOnly": true
+                                                        }
+                                                    ],
+                                                    "style": "col-lg-4"
+                                                },
+                                                {
+                                                    "fields": [
+                                                        {
+                                                            "name": "policyID",
+                                                            "highlightMode": true,
+                                                            "linky": true,
+                                                            "readOnly": true
+                                                        }
+                                                    ],
+                                                    "style": "col-lg-4"
+                                                },
+                                                {
+                                                    "fields": [
+                                                        {
+                                                            "name": "lastSeenAt",
+                                                            "highlightMode": true,
+                                                            "linky": true,
+                                                            "readOnly": true
+                                                        }
+                                                    ],
+                                                    "style": "col-lg-4"
+                                                }
+                                            ]
+                                        }
+                                    ],
+                                    "title": "Deleted Policies"
+                                }
+                            }
+                        ],
+                        "style": "col-lg-6"
                     }
                 ],
                 "wid": "b361867c-d759-447f-8365-6ae2972677d1",
-                "_collapsed": false
+                "_collapsed": false,
+                "collapsible": false,
+                "collapsibleIndex": 0
             },
             {
                 "columns": [
@@ -70,7 +154,8 @@
                             {
                                 "type": "grid",
                                 "config": {
-                                    "wid": "8a39079b-c7a0-41b2-81ba-334927d281ef"
+                                    "wid": "8a39079b-c7a0-41b2-81ba-334927d281ef",
+                                    "lightMode": true
                                 }
                             }
                         ],
@@ -87,5 +172,13 @@
             "originalTemplateTitle": "Policies"
         }
     },
-    "uuid": "modules-policies-list"
+    "module": "policies",
+    "filters": [],
+    "isDefault": true,
+    "visible": true,
+    "viewOptions": "list",
+    "name": "Custom Template",
+    "system": false,
+    "uuid": "modules-policies-list",
+    "newUuid": "3d9df446-bcde-4497-bb18-d4cfa643d73a"
 }

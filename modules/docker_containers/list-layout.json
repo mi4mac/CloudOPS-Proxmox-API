@@ -1,63 +1,78 @@
 {
-  "@context": "/api/3/contexts/SystemViewTemplate",
-  "@type": "SystemViewTemplate",
-  "type": "rows",
-  "config": {
-    "rows": [
-      {
-        "columns": [
-          {
-            "widgets": [
-              {
-                "type": "grid",
-                "config": {
-                  "wid": "a1b2c3d4-e5f6-4a5b-8c9d-0e1f2a3b4c5d",
-                  "module": "docker_containers",
-                  "columns": [
-                    "dockerId",
-                    "name",
-                    "image","imageSizeMB",
-                    "status",
-                    "node",
-                    "cpuCores",
-                    "memoryMB",
-                    "swapMB",
-                    "lastSeen"
-                  ],
-                  "expandableCol": [],
-                  "relationshipField": [],
-                  "checkboxStatus": false,
-                  "editableFields": false,
-                  "actionButtons": [],
-                  "query": {
-                    "sort": [],
-                    "limit": 30,
-                    "logic": "AND",
-                    "filters": []
-                  }
-                }
-              }
-            ],
-            "style": "col-lg-12"
-          }
+    "@context": "\/api\/3\/contexts\/SystemViewTemplate",
+    "@type": "SystemViewTemplate",
+    "type": "rows",
+    "config": {
+        "rows": [
+            {
+                "columns": [
+                    {
+                        "widgets": [
+                            {
+                                "type": "grid",
+                                "config": {
+                                    "wid": "a1b2c3d4-e5f6-4a5b-8c9d-0e1f2a3b4c5d",
+                                    "module": "docker_containers",
+                                    "columns": [
+                                        "dockerId",
+                                        "name",
+                                        "image",
+                                        "imageSizeMB",
+                                        "status",
+                                        "node",
+                                        "cpuCores",
+                                        "memoryMB",
+                                        "swapMB",
+                                        "lastSeen"
+                                    ],
+                                    "expandableCol": [],
+                                    "relationshipField": [],
+                                    "checkboxStatus": false,
+                                    "editableFields": false,
+                                    "actionButtons": [
+                                        {
+                                            "id": "\/api\/3\/workflows\/157fce18-4bff-458a-8b1d-81370e0135f5",
+                                            "name": "Refresh Docker Inventory",
+                                            "icon": "fa fa-th-list"
+                                        }
+                                    ],
+                                    "query": {
+                                        "sort": [
+                                            {
+                                                "direction": "ASC",
+                                                "field": "name",
+                                                "_fieldTitle": "Name",
+                                                "_fieldName": "name"
+                                            }
+                                        ],
+                                        "limit": 30,
+                                        "logic": "AND",
+                                        "filters": []
+                                    },
+                                    "lightMode": true
+                                }
+                            }
+                        ],
+                        "style": "col-lg-12"
+                    }
+                ],
+                "wid": "b2c3d4e5-f6a7-5b6c-9d0e-1f2a3b4c5d6e",
+                "_collapsed": false
+            }
         ],
-        "wid": "b2c3d4e5-f6a7-5b6c-9d0e-1f2a3b4c5d6e",
-        "_collapsed": false
-      }
-    ],
-    "wid": "c3d4e5f6-a7b8-6c7d-0e1f-2a3b4c5d6e7f",
-    "metadata": {
-      "customTemplateTitle": "Docker Containers",
-      "originalTemplateTitle": "Docker Containers"
-    }
-  },
-  "module": "docker_containers",
-  "filters": [],
-  "isDefault": true,
-  "visible": true,
-  "viewOptions": "list",
-  "name": "Base Template",
-  "system": false,
-  "uuid": "modules-docker_containers-list",
-  "newUuid": "5b161c4a-0f9a-4035-aeb7-d923c20610d4"
+        "wid": "c3d4e5f6-a7b8-6c7d-0e1f-2a3b4c5d6e7f",
+        "metadata": {
+            "customTemplateTitle": "Docker Containers",
+            "originalTemplateTitle": "Docker Containers"
+        }
+    },
+    "module": "docker_containers",
+    "filters": [],
+    "isDefault": true,
+    "visible": true,
+    "viewOptions": "list",
+    "name": "Base Template",
+    "system": false,
+    "uuid": "modules-docker_containers-list",
+    "newUuid": "5b161c4a-0f9a-4035-aeb7-d923c20610d4"
 }

@@ -11,6 +11,7 @@
       "recordTags": [],
       "workflows": [
         {
+          "@context": "/api/3/contexts/Workflow",
           "@type": "Workflow",
           "triggerLimit": null,
           "name": "PB_REF_LinkPolicyToFirewallAsset_BySerial",
@@ -18,13 +19,12 @@
           "tag": null,
           "description": "Reference playbook to link Policy records to Asset records by serial number.",
           "isActive": true,
-          "debug": true,
+          "debug": false,
           "singleRecordExecution": false,
           "remoteExecutableFlag": false,
           "parameters": [],
           "synchronous": false,
-          "lastModifyDate": 1776772409,
-          "collection": "/api/3/workflow_collections/288c0ecb-d638-4c14-a963-0308451f25d5",
+          "collection": "/api/3/workflow_collections/04ee731b-278b-455b-a6c9-4744038c42e7",
           "versions": [],
           "triggerStep": "/api/3/workflow_steps/93715474-16b0-473f-9771-933dab8a0626",
           "steps": [
@@ -193,11 +193,9 @@
           "playbookOrigin": "/api/3/picklists/15c1e8c9-22bf-4e66-8fbb-0a502d4a4a3f",
           "isEditable": true,
           "uuid": "520512cc-56ee-4d78-a5a8-637f88458841",
-          "id": 1746,
           "owners": [],
           "isPrivate": false,
           "deletedAt": null,
-          "importedBy": [],
           "recordTags": [
             "asset-linking",
             "reference"
