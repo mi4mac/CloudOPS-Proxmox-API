@@ -172,28 +172,31 @@
             {
               "@type": "WorkflowStep",
               "name": "Delete Stale Policies",
-              "description": "Deletes policy records that are no longer returned by the firewall.",
+              "description": "Marks policies as deleted on firewall instead of hard-deleting records.",
               "arguments": {
-                "params": {
-                  "iri": "/api/3/policies/{{vars.item.deleted_policy_uuid}}",
-                  "body": "",
-                  "method": "DELETE"
-                },
-                "version": "3.7.0",
                 "for_each": {
                   "item": "{{vars.steps.Prepare_Stale_Policy_Delete_List}}",
                   "parallel": false,
                   "condition": ""
                 },
-                "connector": "cyops_utilities",
-                "operation": "make_cyops_request",
-                "operationTitle": "FSR: Make FortiSOAR API Call",
+                "resource": {
+                  "isDeletedOnFirewall": true,
+                  "deletedDetectedAt": "{{arrow.get().int_timestamp}}",
+                  "policyStatus": "DeletedOnFirewall"
+                },
+                "operation": "Append",
+                "collection": "/api/3/policies/{{vars.item.deleted_policy_uuid}}",
+                "__recommend": [],
+                "collectionType": "/api/3/policies",
+                "fieldOperation": {
+                  "recordTags": "Append"
+                },
                 "step_variables": []
               },
               "status": null,
               "top": "840",
               "left": "40",
-              "stepType": "/api/3/workflow_step_types/0109f35d-090b-4a2b-bd8a-94cbc3508562",
+              "stepType": "/api/3/workflow_step_types/b593663d-7d13-40ce-a3a3-96dece928722",
               "group": null,
               "uuid": "612dfba8-4ae6-4882-bda0-395df1f6f083"
             },
