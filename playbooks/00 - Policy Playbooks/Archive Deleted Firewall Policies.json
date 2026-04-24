@@ -1,0 +1,325 @@
+{
+  "type": "workflow_collections",
+  "data": [
+    {
+      "uuid": "288c0ecb-d638-4c14-a963-0308451f25d5",
+      "@type": "WorkflowCollection",
+      "name": "00 - Policy Playbooks",
+      "description": null,
+      "visible": true,
+      "image": null,
+      "recordTags": [],
+      "workflows": [
+        {
+          "@type": "Workflow",
+          "triggerLimit": null,
+          "name": "Archive Deleted Firewall Policies",
+          "aliasName": null,
+          "tag": null,
+          "description": "Archives (soft-retires) soft-deleted policies older than retention days (30/60/90). Supports dry-run mode.",
+          "isActive": true,
+          "debug": true,
+          "singleRecordExecution": false,
+          "remoteExecutableFlag": false,
+          "parameters": [],
+          "synchronous": false,
+          "collection": "/api/3/workflow_collections/288c0ecb-d638-4c14-a963-0308451f25d5",
+          "versions": [],
+          "triggerStep": "/api/3/workflow_steps/2b9f0e32-a7a1-4d5c-bc1e-c4d3ce002001",
+          "steps": [
+            {
+              "@type": "WorkflowStep",
+              "name": "Start",
+              "description": null,
+              "arguments": {
+                "route": "2b9f0e32-a7a1-4d5c-bc1e-c4d3ce00r001",
+                "title": "Archive Deleted Firewall Policies",
+                "resources": [
+                  "policies"
+                ],
+                "inputVariables": [],
+                "step_variables": {
+                  "input": {
+                    "params": [],
+                    "records": "{{vars.input.records}}"
+                  }
+                },
+                "executeButtonText": "Execute",
+                "noRecordExecution": true,
+                "singleRecordExecution": false
+              },
+              "status": null,
+              "top": "40",
+              "left": "40",
+              "stepType": "/api/3/workflow_step_types/f414d039-bb0d-4e59-9c39-a8f1e880b18a",
+              "group": null,
+              "uuid": "2b9f0e32-a7a1-4d5c-bc1e-c4d3ce002001"
+            },
+            {
+              "@type": "WorkflowStep",
+              "name": "Set Retention Config",
+              "description": null,
+              "arguments": {
+                "retention_days": "{{vars.input.params.retentionDays or 30}}",
+                "dry_run": "{{vars.input.params.dryRun if vars.input.params.dryRun is not none else true}}",
+                "cutoff_ts": "{{arrow.get().shift(days=-(vars.input.params.retentionDays or 30)).int_timestamp}}"
+              },
+              "status": null,
+              "top": "180",
+              "left": "40",
+              "stepType": "/api/3/workflow_step_types/04d0cf46-b6a8-42c4-8683-60a7eaa69e8f",
+              "group": null,
+              "uuid": "2b9f0e32-a7a1-4d5c-bc1e-c4d3ce002002"
+            },
+            {
+              "@type": "WorkflowStep",
+              "name": "Get Archive Candidates",
+              "description": "Policies soft-deleted on firewall older than retention cutoff.",
+              "arguments": {
+                "query": {
+                  "sort": [],
+                  "limit": 5000,
+                  "logic": "AND",
+                  "filters": [
+                    {
+                      "type": "primitive",
+                      "field": "isDeletedOnFirewall",
+                      "value": true,
+                      "operator": "eq",
+                      "_operator": "eq"
+                    },
+                    {
+                      "type": "primitive",
+                      "field": "deletedDetectedAt",
+                      "value": "{{vars.cutoff_ts}}",
+                      "operator": "lte",
+                      "_operator": "lte"
+                    }
+                  ],
+                  "__selectFields": [
+                    "uuid",
+                    "policyID",
+                    "name",
+                    "fortiGateSerial",
+                    "deletedDetectedAt",
+                    "policyStatus"
+                  ]
+                },
+                "module": "policies?$limit=5000",
+                "checkboxFields": true,
+                "step_variables": []
+              },
+              "status": null,
+              "top": "320",
+              "left": "40",
+              "stepType": "/api/3/workflow_step_types/b593663d-7d13-40ce-a3a3-96dece928770",
+              "group": null,
+              "uuid": "2b9f0e32-a7a1-4d5c-bc1e-c4d3ce002003"
+            },
+            {
+              "@type": "WorkflowStep",
+              "name": "Prepare Archive List",
+              "description": "Visible list of policies targeted for archive update.",
+              "arguments": {
+                "for_each": {
+                  "item": "{{vars.steps.Get_Archive_Candidates}}",
+                  "parallel": false,
+                  "condition": ""
+                },
+                "archive_uuid": "{{vars.item.uuid}}",
+                "archive_policy_id": "{{vars.item.policyID}}",
+                "archive_policy_name": "{{vars.item.name}}",
+                "archive_forti_serial": "{{vars.item.fortiGateSerial}}",
+                "archive_deleted_at": "{{vars.item.deletedDetectedAt}}"
+              },
+              "status": null,
+              "top": "460",
+              "left": "40",
+              "stepType": "/api/3/workflow_step_types/04d0cf46-b6a8-42c4-8683-60a7eaa69e8f",
+              "group": null,
+              "uuid": "2b9f0e32-a7a1-4d5c-bc1e-c4d3ce002004"
+            },
+            {
+              "@type": "WorkflowStep",
+              "name": "Dry Run?",
+              "description": null,
+              "arguments": {
+                "conditions": [
+                  {
+                    "option": "yes",
+                    "step_iri": "/api/3/workflow_steps/2b9f0e32-a7a1-4d5c-bc1e-c4d3ce002005",
+                    "condition": "{{vars.dry_run == true}}",
+                    "default": true,
+                    "step_name": "Dry Run Summary"
+                  },
+                  {
+                    "option": "no",
+                    "step_iri": "/api/3/workflow_steps/2b9f0e32-a7a1-4d5c-bc1e-c4d3ce002006",
+                    "condition": "",
+                    "step_name": "Archive Policies"
+                  }
+                ],
+                "step_variables": []
+              },
+              "status": null,
+              "top": "600",
+              "left": "40",
+              "stepType": "/api/3/workflow_step_types/12254cf5-5db7-4b1a-8cb1-3af081924b28",
+              "group": null,
+              "uuid": "2b9f0e32-a7a1-4d5c-bc1e-c4d3ce002007"
+            },
+            {
+              "@type": "WorkflowStep",
+              "name": "Dry Run Summary",
+              "description": "No archive update performed. Review Prepare Archive List output.",
+              "arguments": {
+                "archive_candidate_count": "{{vars.steps.Prepare_Archive_List|length}}",
+                "mode": "dry_run"
+              },
+              "status": null,
+              "top": "740",
+              "left": "40",
+              "stepType": "/api/3/workflow_step_types/04d0cf46-b6a8-42c4-8683-60a7eaa69e8f",
+              "group": null,
+              "uuid": "2b9f0e32-a7a1-4d5c-bc1e-c4d3ce002005"
+            },
+            {
+              "@type": "WorkflowStep",
+              "name": "Archive Policies",
+              "description": "Marks old deleted policies as archived for long-term retention.",
+              "arguments": {
+                "for_each": {
+                  "item": "{{vars.steps.Prepare_Archive_List}}",
+                  "parallel": false,
+                  "condition": ""
+                },
+                "resource": {
+                  "policyStatus": "Archived",
+                  "isDeletedOnFirewall": true,
+                  "archivedAt": "{{arrow.get().int_timestamp}}"
+                },
+                "operation": "Append",
+                "collection": "/api/3/policies/{{vars.item.archive_uuid}}",
+                "__recommend": [],
+                "collectionType": "/api/3/policies",
+                "fieldOperation": {
+                  "recordTags": "Append"
+                },
+                "step_variables": []
+              },
+              "status": null,
+              "top": "740",
+              "left": "320",
+              "stepType": "/api/3/workflow_step_types/b593663d-7d13-40ce-a3a3-96dece928722",
+              "group": null,
+              "uuid": "2b9f0e32-a7a1-4d5c-bc1e-c4d3ce002006"
+            },
+            {
+              "@type": "WorkflowStep",
+              "name": "Stop",
+              "description": null,
+              "arguments": {
+                "params": [],
+                "version": "3.7.0",
+                "connector": "cyops_utilities",
+                "operation": "no_op",
+                "operationTitle": "Utils: No Operation",
+                "step_variables": []
+              },
+              "status": null,
+              "top": "900",
+              "left": "180",
+              "stepType": "/api/3/workflow_step_types/0109f35d-090b-4a2b-bd8a-94cbc3508562",
+              "group": null,
+              "uuid": "2b9f0e32-a7a1-4d5c-bc1e-c4d3ce002008"
+            }
+          ],
+          "routes": [
+            {
+              "@type": "WorkflowRoute",
+              "name": "Start -> Set Retention Config",
+              "targetStep": "/api/3/workflow_steps/2b9f0e32-a7a1-4d5c-bc1e-c4d3ce002002",
+              "sourceStep": "/api/3/workflow_steps/2b9f0e32-a7a1-4d5c-bc1e-c4d3ce002001",
+              "label": null,
+              "isExecuted": false,
+              "uuid": "2b9f0e32-a7a1-4d5c-bc1e-c4d3ce00r001"
+            },
+            {
+              "@type": "WorkflowRoute",
+              "name": "Set Retention Config -> Get Archive Candidates",
+              "targetStep": "/api/3/workflow_steps/2b9f0e32-a7a1-4d5c-bc1e-c4d3ce002003",
+              "sourceStep": "/api/3/workflow_steps/2b9f0e32-a7a1-4d5c-bc1e-c4d3ce002002",
+              "label": null,
+              "isExecuted": false,
+              "uuid": "2b9f0e32-a7a1-4d5c-bc1e-c4d3ce00r002"
+            },
+            {
+              "@type": "WorkflowRoute",
+              "name": "Get Archive Candidates -> Prepare Archive List",
+              "targetStep": "/api/3/workflow_steps/2b9f0e32-a7a1-4d5c-bc1e-c4d3ce002004",
+              "sourceStep": "/api/3/workflow_steps/2b9f0e32-a7a1-4d5c-bc1e-c4d3ce002003",
+              "label": null,
+              "isExecuted": false,
+              "uuid": "2b9f0e32-a7a1-4d5c-bc1e-c4d3ce00r003"
+            },
+            {
+              "@type": "WorkflowRoute",
+              "name": "Prepare Archive List -> Dry Run?",
+              "targetStep": "/api/3/workflow_steps/2b9f0e32-a7a1-4d5c-bc1e-c4d3ce002007",
+              "sourceStep": "/api/3/workflow_steps/2b9f0e32-a7a1-4d5c-bc1e-c4d3ce002004",
+              "label": null,
+              "isExecuted": false,
+              "uuid": "2b9f0e32-a7a1-4d5c-bc1e-c4d3ce00r004"
+            },
+            {
+              "@type": "WorkflowRoute",
+              "name": "Dry Run? -> Dry Run Summary",
+              "targetStep": "/api/3/workflow_steps/2b9f0e32-a7a1-4d5c-bc1e-c4d3ce002005",
+              "sourceStep": "/api/3/workflow_steps/2b9f0e32-a7a1-4d5c-bc1e-c4d3ce002007",
+              "label": "yes",
+              "isExecuted": false,
+              "uuid": "2b9f0e32-a7a1-4d5c-bc1e-c4d3ce00r005"
+            },
+            {
+              "@type": "WorkflowRoute",
+              "name": "Dry Run? -> Archive Policies",
+              "targetStep": "/api/3/workflow_steps/2b9f0e32-a7a1-4d5c-bc1e-c4d3ce002006",
+              "sourceStep": "/api/3/workflow_steps/2b9f0e32-a7a1-4d5c-bc1e-c4d3ce002007",
+              "label": "no",
+              "isExecuted": false,
+              "uuid": "2b9f0e32-a7a1-4d5c-bc1e-c4d3ce00r006"
+            },
+            {
+              "@type": "WorkflowRoute",
+              "name": "Dry Run Summary -> Stop",
+              "targetStep": "/api/3/workflow_steps/2b9f0e32-a7a1-4d5c-bc1e-c4d3ce002008",
+              "sourceStep": "/api/3/workflow_steps/2b9f0e32-a7a1-4d5c-bc1e-c4d3ce002005",
+              "label": null,
+              "isExecuted": false,
+              "uuid": "2b9f0e32-a7a1-4d5c-bc1e-c4d3ce00r007"
+            },
+            {
+              "@type": "WorkflowRoute",
+              "name": "Archive Policies -> Stop",
+              "targetStep": "/api/3/workflow_steps/2b9f0e32-a7a1-4d5c-bc1e-c4d3ce002008",
+              "sourceStep": "/api/3/workflow_steps/2b9f0e32-a7a1-4d5c-bc1e-c4d3ce002006",
+              "label": null,
+              "isExecuted": false,
+              "uuid": "2b9f0e32-a7a1-4d5c-bc1e-c4d3ce00r008"
+            }
+          ],
+          "groups": [],
+          "priority": "/api/3/picklists/2b563c61-ae2c-41c0-a85a-c9709585e3f2",
+          "uuid": "2b9f0e32-a7a1-4d5c-bc1e-c4d3ce002000",
+          "owners": [],
+          "isPrivate": false,
+          "deletedAt": null,
+          "recordTags": [
+            "maintenance",
+            "policy-archive"
+          ]
+        }
+      ]
+    }
+  ]
+}

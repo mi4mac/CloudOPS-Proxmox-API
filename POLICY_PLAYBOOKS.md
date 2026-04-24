@@ -1,6 +1,6 @@
 # Policy playbooks (FortiGate)
 
-This document describes the **00 - Policy Playbooks** collection and the **Policies** module included in the CloudOPS Proxmox pack: what each playbook does, prerequisites, and **post-import configuration** (config UUID replacement and policy-to-asset linking).
+This document describes the **00 - Policy Playbooks** collection and the **Policies** module included in the CloudOPS Proxmox pack: what each playbook does, prerequisites, and **post-import configuration** (config UUID replacement, policy-to-asset linking, and stale policy lifecycle).
 
 ## Contents
 
@@ -31,8 +31,9 @@ After this, comments and disable/enable actions will target the correct FortiGat
 
 | Playbook | Trigger | What it does |
 |----------|---------|----------------|
-| **Import Fortigate Policies** | Manual or schedule | Gets policies from the FortiGate connector and upserts them into the **Policies** module. Updates name, status, description, NAT, `reviewComplete`, `fortiGateSerial`, etc. After upsert, it calls **Link Policies to Firewall Assets by Serial**. |
+| **Import Fortigate Policies** | Manual or schedule | Gets policies from the FortiGate connector and upserts them into the **Policies** module. Updates name, status, description, NAT, `reviewComplete`, `fortiGateSerial`, etc. After upsert, it calls **Link Policies to Firewall Assets by Serial**, computes stale policies for the current serial, and removes stale records while exposing the stale list in run output. |
 | **PB_REF_LinkPolicyToFirewallAsset_BySerial** | Referenced by `Import Fortigate Policies` | Finds the firewall Asset by `assets.serialNumber == policies.fortiGateSerial` (using the FortiGate serial from the current import run) and appends the matching Asset to each policy's `assets` relationship. |
+| **Archive Deleted Firewall Policies** | Manual or schedule | Optional lifecycle playbook for environments that use soft-delete fields (`isDeletedOnFirewall`, `deletedDetectedAt`). Supports `retentionDays` and `dryRun`, prepares a visible archive list, and marks candidates as archived (`policyStatus = Archived`, `archivedAt`). |
 | **Review Policy** | Manual (from Policies record) | Presents a form for the SOC analyst: **Mark as Approved**, **Mark as Denied**, or **Email NOC team for additional input**. For **Mark as Denied**, runs **Disable Policy on FortiGate** (disables the policy and sets the comment), then stores the justification; for **Mark as Approved**, writes the justification to the record (which triggers **> Update comments on Fortigate**). After updating the record, runs **Refresh Firewall Policies** (re-runs Import Fortigate Policies) to sync state from the firewall. |
 | **> Update comments on Fortigate** | Field-based: `businessJustification` changed | Sends the policy’s **businessJustification** to the FortiGate as the policy comment, then marks the policy review complete (sets `reviewComplete`, `lastReviewedTime`, `nextReviewTime`, `auditStatus`). |
 | **Enable Policy** | Manual (from Policies record) | Enables a disabled firewall policy on FortiGate (`update_policy` with `status`: **Enable**), then runs **Refresh Firewall Policies** to re-import policies from the firewall. |
@@ -52,6 +53,12 @@ The **Update Comments on Policy** step uses the FortiGate connector’s **update
 - The reference playbook matches against **Asset field API key** `serialNumber` (label often shown as **Serial No**).
 - If no Asset is found for the serial, no relationship is written.
 - If multiple Assets match the same serial, the first returned record is used. For deterministic results, keep `serialNumber` unique for firewall assets.
+
+## Stale policy lifecycle notes
+
+- `Import Fortigate Policies` prepares a visible stale list (`Prepare Stale Policy Delete List`) before deleting stale policy records.
+- Stale policy detection is scoped by current `fortiGateSerial` and compares existing `policyID` values against current imported policy IDs.
+- If you prefer retention over immediate delete, use the optional `Archive Deleted Firewall Policies` playbook with soft-delete fields and a retention schedule.
 
 ## Import format notes
 
