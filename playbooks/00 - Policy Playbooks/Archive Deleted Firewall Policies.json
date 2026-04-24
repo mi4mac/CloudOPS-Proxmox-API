@@ -87,13 +87,6 @@
                       "value": true,
                       "operator": "eq",
                       "_operator": "eq"
-                    },
-                    {
-                      "type": "primitive",
-                      "field": "deletedDetectedAt",
-                      "value": "{{vars.cutoff_ts}}",
-                      "operator": "lte",
-                      "_operator": "lte"
                     }
                   ],
                   "__selectFields": [
@@ -119,12 +112,12 @@
             {
               "@type": "WorkflowStep",
               "name": "Prepare Archive List",
-              "description": "Visible list of policies targeted for archive update.",
+              "description": "Visible list of policies older than retention and targeted for delete.",
               "arguments": {
                 "for_each": {
                   "item": "{{vars.steps.Get_Archive_Candidates}}",
                   "parallel": false,
-                  "condition": ""
+                  "condition": "{{(vars.item.deletedDetectedAt | default(0) | int) <= (vars.cutoff_ts | int)}}"
                 },
                 "archive_uuid": "{{vars.item.uuid}}",
                 "archive_policy_id": "{{vars.item.policyID}}",
@@ -155,8 +148,8 @@
                   {
                     "option": "no",
                     "step_iri": "/api/3/workflow_steps/2b9f0e32-a7a1-4d5c-bc1e-c4d3ce002006",
-                    "condition": "",
-                    "step_name": "Archive Policies"
+                    "condition": "{{vars.dry_run != true}}",
+                    "step_name": "Delete Policies"
                   }
                 ],
                 "step_variables": []
@@ -185,32 +178,29 @@
             },
             {
               "@type": "WorkflowStep",
-              "name": "Archive Policies",
-              "description": "Marks old deleted policies as archived for long-term retention.",
+              "name": "Delete Policies",
+              "description": "Hard-deletes deleted firewall policies older than the retention cutoff.",
               "arguments": {
+                "params": {
+                  "iri": "/api/3/policies/{{vars.item.archive_uuid}}",
+                  "body": "",
+                  "method": "DELETE"
+                },
+                "version": "3.7.0",
                 "for_each": {
                   "item": "{{vars.steps.Prepare_Archive_List}}",
                   "parallel": false,
-                  "condition": ""
+                  "condition": "{{true}}"
                 },
-                "resource": {
-                  "policyStatus": "Archived",
-                  "isDeletedOnFirewall": true,
-                  "archivedAt": "{{arrow.get().int_timestamp}}"
-                },
-                "operation": "Append",
-                "collection": "/api/3/policies/{{vars.item.archive_uuid}}",
-                "__recommend": [],
-                "collectionType": "/api/3/policies",
-                "fieldOperation": {
-                  "recordTags": "Append"
-                },
+                "connector": "cyops_utilities",
+                "operation": "make_cyops_request",
+                "operationTitle": "FSR: Make FortiSOAR API Call",
                 "step_variables": []
               },
               "status": null,
               "top": "740",
               "left": "320",
-              "stepType": "/api/3/workflow_step_types/b593663d-7d13-40ce-a3a3-96dece928722",
+              "stepType": "/api/3/workflow_step_types/0109f35d-090b-4a2b-bd8a-94cbc3508562",
               "group": null,
               "uuid": "2b9f0e32-a7a1-4d5c-bc1e-c4d3ce002006"
             },
@@ -282,7 +272,7 @@
             },
             {
               "@type": "WorkflowRoute",
-              "name": "Dry Run? -> Archive Policies",
+              "name": "Dry Run? -> Delete Policies",
               "targetStep": "/api/3/workflow_steps/2b9f0e32-a7a1-4d5c-bc1e-c4d3ce002006",
               "sourceStep": "/api/3/workflow_steps/2b9f0e32-a7a1-4d5c-bc1e-c4d3ce002007",
               "label": "no",
@@ -300,7 +290,7 @@
             },
             {
               "@type": "WorkflowRoute",
-              "name": "Archive Policies -> Stop",
+              "name": "Delete Policies -> Stop",
               "targetStep": "/api/3/workflow_steps/2b9f0e32-a7a1-4d5c-bc1e-c4d3ce002008",
               "sourceStep": "/api/3/workflow_steps/2b9f0e32-a7a1-4d5c-bc1e-c4d3ce002006",
               "label": null,

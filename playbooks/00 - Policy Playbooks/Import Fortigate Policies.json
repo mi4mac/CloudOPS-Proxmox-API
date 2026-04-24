@@ -51,6 +51,7 @@
                   "description": "{{vars.item | json_query('{srcaddr:srcaddr |[].name | join(`, `, @), srcintf:srcintf |[].name | join(`, `, @), dstaddr:dstaddr|[].name | join(`, `, @), dstintf : dstintf |[].name | join(`, `, @), service:service |[].name | join(`, `, @), status: status, nat:nat, comments: comments}') | json2html(row_fields= [\"srcaddr\",\"srcintf\",\"dstaddr\",\"dstintf\",\"service\",\"status\",\"nat\",\"comments\"], template=\"Stylized with row selection\", display=\"Vertical\")}}",
                   "policyStatus": "{{vars.item.status | title}}",
                   "reviewComplete": false,
+                  "lastSeenAt": "{{arrow.get().int_timestamp}}",
                   "fortiGateSerial": "{{vars.fgt_serial}}",
                   "__fieldsToUpdate": [
                     "name",
@@ -59,6 +60,7 @@
                     "description",
                     "nATEnabled",
                     "reviewComplete",
+                    "lastSeenAt",
                     "fortiGateSerial"
                   ]
                 },
@@ -182,7 +184,8 @@
                 "resource": {
                   "isDeletedOnFirewall": true,
                   "deletedDetectedAt": "{{arrow.get().int_timestamp}}",
-                  "policyStatus": "DeletedOnFirewall"
+                  "policyStatus": "DeletedOnFirewall",
+                  "auditStatus": "/api/3/picklists/05f8b475-f9d1-4297-9440-c32758f15daa"
                 },
                 "operation": "Append",
                 "collection": "/api/3/policies/{{vars.item.deleted_policy_uuid}}",
