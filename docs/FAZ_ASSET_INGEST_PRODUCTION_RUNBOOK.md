@@ -97,5 +97,11 @@ Host identifier fallback:
   - Keeps first record per `deviceUid` and marks older duplicates.
   - Applies `duplicateStatus=duplicate-old` and tags `duplicate-old`, `faz-review`, `keep-newest`.
   - Duplicate detection reads from FortiSOAR response path `hydra:member`.
+- When to run `Mark FAZ Duplicates Keep Newest`:
+  - Immediately after importing this update for baseline cleanup.
+  - After any identity-logic change in FAZ ingest (for example `deviceUid` or hostname normalization updates).
+  - After bulk re-import or backfill runs.
+  - On demand when duplicate indicators are observed (same `deviceUid` appearing more than once).
+  - Optional periodic hygiene run (for example weekly) in highly dynamic environments.
 - Temporary export workspace is now ignored by git:
   - `.tmp/service-mgmt-export/`
