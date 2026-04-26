@@ -80,3 +80,14 @@ Host identifier fallback:
 3. `srcname`
 4. `srcip`
 
+## 9) Recent hardening updates
+
+- Observed-host label normalization added in `Import FAZ Assets to FortiSOAR (Portable)`:
+  - `name` and `hostname` are lowercased before write.
+  - Purpose: prevent case-only duplicates (for example `MITC` vs `miTC`) when identity stays the same.
+- New one-time cleanup helper added: `Mark FAZ Duplicates Keep Newest`.
+  - Reads up to 5000 assets sorted by newest first (`$sort=-modifyDate`).
+  - Keeps first record per `deviceUid` and tags older duplicates.
+  - Applies non-destructive tags only: `duplicate-candidate`, `faz-review`, `keep-newest`.
+- Temporary export workspace is now ignored by git:
+  - `.tmp/service-mgmt-export/`

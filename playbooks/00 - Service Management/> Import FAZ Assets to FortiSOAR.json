@@ -314,7 +314,7 @@
             {
               "@type": "WorkflowStep",
               "name": "Upsert Observed Hosts",
-              "description": "Upserts hosts observed in traffic logs including MAC addresses.",
+              "description": "Upserts hosts observed in traffic logs including MAC addresses. Host labels are normalized to lowercase to prevent case-only duplicates.",
               "arguments": {
                 "for_each": {
                   "item": "{{ vars.traffic_rows or [] }}",
@@ -325,8 +325,8 @@
                 },
                 "resource": {
                   "__replace": "true",
-                  "name": "{{ vars.item.srcname | default(vars.item.srcip | default('')) }}",
-                  "hostname": "{{ vars.item.srcname | default('') }}",
+                  "name": "{{ (vars.item.srcname | default(vars.item.srcip | default(''))) | lower }}",
+                  "hostname": "{{ (vars.item.srcname | default('')) | lower }}",
                   "deviceUid": "{{ 'FortiAnalyzer' ~ '|' ~ (vars.faz_adom | default('root')) ~ '|' ~ (vars.item.devid | default('')) ~ '|' ~ (vars.item.vd | default('root')) ~ '|' ~ ((vars.item.srcmac | default(vars.item.mastersrcmac | default(vars.item.srcname | default(vars.item.srcip | default('unknown'))))) | lower) }}",
                   "ip": "{{ vars.item.srcip | default('') }}",
                   "macAddress": "{{ (vars.item.srcmac | default(vars.item.mastersrcmac | default(''))) | lower }}",

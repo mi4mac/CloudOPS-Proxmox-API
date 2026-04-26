@@ -1,0 +1,546 @@
+{
+  "type": "workflow_collections",
+  "data": [
+    {
+      "uuid": "59667fcc-7feb-4ba4-a5a2-e03a9287f857",
+      "@type": "WorkflowCollection",
+      "name": "02 - Use Cases",
+      "description": "Use case playbooks",
+      "visible": true,
+      "image": null,
+      "recordTags": [],
+      "workflows": [
+        {
+          "@context": "/api/3/contexts/Workflow",
+          "@type": "Workflow",
+          "triggerLimit": null,
+          "name": "Link Alert to Asset SourceIP First",
+          "aliasName": null,
+          "tag": null,
+          "description": "Links alert targetAsset using sourceIp to asset.ip, then sourcedata.epname to asset.hostname or asset.name, then firewall serial to asset.serialNumber.",
+          "isActive": true,
+          "debug": false,
+          "singleRecordExecution": true,
+          "remoteExecutableFlag": false,
+          "parameters": [],
+          "synchronous": false,
+          "collection": "/api/3/workflow_collections/59667fcc-7feb-4ba4-a5a2-e03a9287f857",
+          "versions": [],
+          "triggerStep": "/api/3/workflow_steps/e8dcce07-4db7-4fbe-b0f7-4a7a9e8b0001",
+          "steps": [
+            {
+              "@type": "WorkflowStep",
+              "name": "Start",
+              "description": null,
+              "arguments": {
+                "route": "c9aab821-9652-4f1c-84d8-66f89f0bb001",
+                "title": "Link Alert to Asset SourceIP First",
+                "resources": [
+                  "alerts"
+                ],
+                "inputVariables": [],
+                "step_variables": {
+                  "input": {
+                    "params": [],
+                    "records": "{{vars.input.records}}"
+                  }
+                },
+                "executeButtonText": "Execute",
+                "noRecordExecution": false,
+                "singleRecordExecution": true
+              },
+              "status": null,
+              "top": "40",
+              "left": "80",
+              "stepType": "/api/3/workflow_step_types/f414d039-bb0d-4e59-9c39-a8f1e880b18a",
+              "group": null,
+              "uuid": "e8dcce07-4db7-4fbe-b0f7-4a7a9e8b0001"
+            },
+            {
+              "@type": "WorkflowStep",
+              "name": "Set Alert Context",
+              "description": "Capture endpoint source IP, endpoint name, and firewall serial from alert.",
+              "arguments": {
+                "alert_iri": "{{vars.input.records[0]['@id'] if vars.input and vars.input.records and vars.input.records|length > 0 else ''}}",
+                "source_ip": "{{vars.input.records[0].sourceIp | default('') if vars.input and vars.input.records and vars.input.records|length > 0 else ''}}",
+                "source_name": "{{(vars.input.records[0].sourcedata.epname if vars.input and vars.input.records and vars.input.records|length > 0 and vars.input.records[0].sourcedata and vars.input.records[0].sourcedata.epname is defined else (((vars.input.records[0].sourcedata | from_json).epname) if vars.input and vars.input.records and vars.input.records|length > 0 and vars.input.records[0].sourcedata else '')) | default('')}}",
+                "firewall_serial": "{{vars.input.records[0].deviceSerialNo | default('') if vars.input and vars.input.records and vars.input.records|length > 0 else ''}}"
+              },
+              "status": null,
+              "top": "160",
+              "left": "80",
+              "stepType": "/api/3/workflow_step_types/04d0cf46-b6a8-42c4-8683-60a7eaa69e8f",
+              "group": null,
+              "uuid": "e8dcce07-4db7-4fbe-b0f7-4a7a9e8b0002"
+            },
+            {
+              "@type": "WorkflowStep",
+              "name": "Find Asset by Source IP",
+              "description": "Primary match: alert.sourceIp -> assets.ip.",
+              "arguments": {
+                "query": {
+                  "sort": [],
+                  "limit": 1,
+                  "logic": "AND",
+                  "filters": [
+                    {
+                      "type": "primitive",
+                      "field": "ip",
+                      "value": "{{vars.source_ip}}",
+                      "operator": "eq",
+                      "_operator": "eq"
+                    }
+                  ],
+                  "__selectFields": [
+                    "uuid",
+                    "name",
+                    "hostname",
+                    "ip",
+                    "serialNumber",
+                    "deviceUid"
+                  ]
+                },
+                "module": "assets?$limit=1",
+                "checkboxFields": true,
+                "step_variables": []
+              },
+              "status": null,
+              "top": "280",
+              "left": "80",
+              "stepType": "/api/3/workflow_step_types/b593663d-7d13-40ce-a3a3-96dece928770",
+              "group": null,
+              "uuid": "e8dcce07-4db7-4fbe-b0f7-4a7a9e8b0003"
+            },
+            {
+              "@type": "WorkflowStep",
+              "name": "Has Source IP Match",
+              "description": "If no endpoint IP match, fallback to endpoint name from sourcedata.",
+              "arguments": {
+                "conditions": [
+                  {
+                    "option": "yes",
+                    "step_iri": "/api/3/workflow_steps/e8dcce07-4db7-4fbe-b0f7-4a7a9e8b0006",
+                    "condition": "{{vars.steps.Find_Asset_by_Source_IP and (vars.steps.Find_Asset_by_Source_IP|length) > 0}}",
+                    "step_name": "Set Selected Asset from Source IP"
+                  },
+                  {
+                    "option": "no",
+                    "default": true,
+                    "step_iri": "/api/3/workflow_steps/e8dcce07-4db7-4fbe-b0f7-4a7a9e8b000b",
+                    "step_name": "Find Asset by Source Name"
+                  }
+                ],
+                "step_variables": []
+              },
+              "status": null,
+              "top": "400",
+              "left": "80",
+              "stepType": "/api/3/workflow_step_types/12254cf5-5db7-4b1a-8cb1-3af081924b28",
+              "group": null,
+              "uuid": "e8dcce07-4db7-4fbe-b0f7-4a7a9e8b0005"
+            },
+            {
+              "@type": "WorkflowStep",
+              "name": "Find Asset by Source Name",
+              "description": "Second match: alert sourcedata.epname -> assets.hostname or assets.name.",
+              "arguments": {
+                "query": {
+                  "sort": [],
+                  "limit": 1,
+                  "logic": "OR",
+                  "filters": [
+                    {
+                      "type": "primitive",
+                      "field": "hostname",
+                      "value": "{{vars.source_name}}",
+                      "operator": "eq",
+                      "_operator": "eq"
+                    },
+                    {
+                      "type": "primitive",
+                      "field": "name",
+                      "value": "{{vars.source_name}}",
+                      "operator": "eq",
+                      "_operator": "eq"
+                    }
+                  ],
+                  "__selectFields": [
+                    "uuid",
+                    "name",
+                    "hostname",
+                    "ip",
+                    "serialNumber",
+                    "deviceUid"
+                  ]
+                },
+                "module": "assets?$limit=1",
+                "checkboxFields": true,
+                "step_variables": []
+              },
+              "status": null,
+              "top": "520",
+              "left": "80",
+              "stepType": "/api/3/workflow_step_types/b593663d-7d13-40ce-a3a3-96dece928770",
+              "group": null,
+              "uuid": "e8dcce07-4db7-4fbe-b0f7-4a7a9e8b000b"
+            },
+            {
+              "@type": "WorkflowStep",
+              "name": "Has Source Name Match",
+              "description": "If no endpoint name match, fallback to firewall serial.",
+              "arguments": {
+                "conditions": [
+                  {
+                    "option": "yes",
+                    "step_iri": "/api/3/workflow_steps/e8dcce07-4db7-4fbe-b0f7-4a7a9e8b000c",
+                    "condition": "{{vars.steps.Find_Asset_by_Source_Name and (vars.steps.Find_Asset_by_Source_Name|length) > 0}}",
+                    "step_name": "Set Selected Asset from Source Name"
+                  },
+                  {
+                    "option": "no",
+                    "default": true,
+                    "step_iri": "/api/3/workflow_steps/e8dcce07-4db7-4fbe-b0f7-4a7a9e8b0004",
+                    "step_name": "Find Asset by Firewall Serial"
+                  }
+                ],
+                "step_variables": []
+              },
+              "status": null,
+              "top": "640",
+              "left": "80",
+              "stepType": "/api/3/workflow_step_types/12254cf5-5db7-4b1a-8cb1-3af081924b28",
+              "group": null,
+              "uuid": "e8dcce07-4db7-4fbe-b0f7-4a7a9e8b000d"
+            },
+            {
+              "@type": "WorkflowStep",
+              "name": "Set Selected Asset from Source Name",
+              "description": null,
+              "arguments": {
+                "selected_asset_uuid": "{{vars.steps.Find_Asset_by_Source_Name[0].uuid}}",
+                "selected_asset_name": "{{vars.steps.Find_Asset_by_Source_Name[0].name | default(vars.steps.Find_Asset_by_Source_Name[0].hostname | default(vars.steps.Find_Asset_by_Source_Name[0].ip | default('')))}}",
+                "selected_asset_device_uid": "{{vars.steps.Find_Asset_by_Source_Name[0].deviceUid | default('')}}",
+                "selected_asset_match_type": "sourceName"
+              },
+              "status": null,
+              "top": "760",
+              "left": "390",
+              "stepType": "/api/3/workflow_step_types/04d0cf46-b6a8-42c4-8683-60a7eaa69e8f",
+              "group": null,
+              "uuid": "e8dcce07-4db7-4fbe-b0f7-4a7a9e8b000c"
+            },
+            {
+              "@type": "WorkflowStep",
+              "name": "Find Asset by Firewall Serial",
+              "description": "Fallback match: alert.deviceSerialNo -> assets.serialNumber.",
+              "arguments": {
+                "query": {
+                  "sort": [],
+                  "limit": 1,
+                  "logic": "AND",
+                  "filters": [
+                    {
+                      "type": "primitive",
+                      "field": "serialNumber",
+                      "value": "{{vars.firewall_serial}}",
+                      "operator": "eq",
+                      "_operator": "eq"
+                    }
+                  ],
+                  "__selectFields": [
+                    "uuid",
+                    "name",
+                    "hostname",
+                    "ip",
+                    "serialNumber",
+                    "deviceUid"
+                  ]
+                },
+                "module": "assets?$limit=1",
+                "checkboxFields": true,
+                "step_variables": []
+              },
+              "status": null,
+              "top": "760",
+              "left": "80",
+              "stepType": "/api/3/workflow_step_types/b593663d-7d13-40ce-a3a3-96dece928770",
+              "group": null,
+              "uuid": "e8dcce07-4db7-4fbe-b0f7-4a7a9e8b0004"
+            },
+            {
+              "@type": "WorkflowStep",
+              "name": "Set Selected Asset from Source IP",
+              "description": null,
+              "arguments": {
+                "selected_asset_uuid": "{{vars.steps.Find_Asset_by_Source_IP[0].uuid}}",
+                "selected_asset_name": "{{vars.steps.Find_Asset_by_Source_IP[0].name | default(vars.steps.Find_Asset_by_Source_IP[0].hostname | default(vars.steps.Find_Asset_by_Source_IP[0].ip | default('')))}}",
+                "selected_asset_device_uid": "{{vars.steps.Find_Asset_by_Source_IP[0].deviceUid | default('')}}",
+                "selected_asset_match_type": "sourceIp"
+              },
+              "status": null,
+              "top": "520",
+              "left": "390",
+              "stepType": "/api/3/workflow_step_types/04d0cf46-b6a8-42c4-8683-60a7eaa69e8f",
+              "group": null,
+              "uuid": "e8dcce07-4db7-4fbe-b0f7-4a7a9e8b0006"
+            },
+            {
+              "@type": "WorkflowStep",
+              "name": "Set Selected Asset from Firewall Serial",
+              "description": null,
+              "arguments": {
+                "selected_asset_uuid": "{{vars.steps.Find_Asset_by_Firewall_Serial[0].uuid if vars.steps.Find_Asset_by_Firewall_Serial and (vars.steps.Find_Asset_by_Firewall_Serial|length) > 0 else ''}}",
+                "selected_asset_name": "{{vars.steps.Find_Asset_by_Firewall_Serial[0].name | default(vars.steps.Find_Asset_by_Firewall_Serial[0].hostname | default(vars.steps.Find_Asset_by_Firewall_Serial[0].ip | default(''))) if vars.steps.Find_Asset_by_Firewall_Serial and (vars.steps.Find_Asset_by_Firewall_Serial|length) > 0 else ''}}",
+                "selected_asset_device_uid": "{{vars.steps.Find_Asset_by_Firewall_Serial[0].deviceUid | default('') if vars.steps.Find_Asset_by_Firewall_Serial and (vars.steps.Find_Asset_by_Firewall_Serial|length) > 0 else ''}}",
+                "selected_asset_match_type": "firewallSerial"
+              },
+              "status": null,
+              "top": "900",
+              "left": "80",
+              "stepType": "/api/3/workflow_step_types/04d0cf46-b6a8-42c4-8683-60a7eaa69e8f",
+              "group": null,
+              "uuid": "e8dcce07-4db7-4fbe-b0f7-4a7a9e8b0007"
+            },
+            {
+              "@type": "WorkflowStep",
+              "name": "Has Selected Asset",
+              "description": "Only update alert when an asset was resolved.",
+              "arguments": {
+                "conditions": [
+                  {
+                    "option": "yes",
+                    "step_iri": "/api/3/workflow_steps/e8dcce07-4db7-4fbe-b0f7-4a7a9e8b0009",
+                    "condition": "{{vars.selected_asset_uuid | default('') != ''}}",
+                    "step_name": "Update Alert Asset Fields"
+                  },
+                  {
+                    "option": "no",
+                    "default": true,
+                    "step_iri": "/api/3/workflow_steps/e8dcce07-4db7-4fbe-b0f7-4a7a9e8b0010",
+                    "step_name": "No Match"
+                  }
+                ],
+                "step_variables": []
+              },
+              "status": null,
+              "top": "1030",
+              "left": "220",
+              "stepType": "/api/3/workflow_step_types/12254cf5-5db7-4b1a-8cb1-3af081924b28",
+              "group": null,
+              "uuid": "e8dcce07-4db7-4fbe-b0f7-4a7a9e8b0008"
+            },
+            {
+              "@type": "WorkflowStep",
+              "name": "Update Alert Asset Fields",
+              "description": "Writes selected asset context back to alert. targetAsset is set to the resolved asset display name.",
+              "arguments": {
+                "resource": {
+                  "targetAsset": "{{vars.selected_asset_name}}",
+                  "deviceUID": "{{vars.selected_asset_device_uid}}",
+                  "recordTags": [
+                    "asset-linked",
+                    "asset-match-{{vars.selected_asset_match_type}}"
+                  ]
+                },
+                "operation": "Append",
+                "collection": "{{vars.alert_iri}}",
+                "__recommend": [],
+                "collectionType": "/api/3/alerts",
+                "fieldOperation": {
+                  "recordTags": "Append"
+                },
+                "step_variables": []
+              },
+              "status": null,
+              "top": "1170",
+              "left": "220",
+              "stepType": "/api/3/workflow_step_types/b593663d-7d13-40ce-a3a3-96dece928722",
+              "group": null,
+              "uuid": "e8dcce07-4db7-4fbe-b0f7-4a7a9e8b0009"
+            },
+            {
+              "@type": "WorkflowStep",
+              "name": "No Match",
+              "description": null,
+              "arguments": {
+                "resource": {
+                  "recordTags": [
+                    "asset-link-miss"
+                  ]
+                },
+                "operation": "Append",
+                "collection": "{{vars.alert_iri}}",
+                "__recommend": [],
+                "collectionType": "/api/3/alerts",
+                "fieldOperation": {
+                  "recordTags": "Append"
+                },
+                "step_variables": []
+              },
+              "status": null,
+              "top": "1170",
+              "left": "510",
+              "stepType": "/api/3/workflow_step_types/b593663d-7d13-40ce-a3a3-96dece928722",
+              "group": null,
+              "uuid": "e8dcce07-4db7-4fbe-b0f7-4a7a9e8b0010"
+            }
+          ],
+          "routes": [
+            {
+              "@type": "WorkflowRoute",
+              "name": "Start -> Set Alert Context",
+              "targetStep": "/api/3/workflow_steps/e8dcce07-4db7-4fbe-b0f7-4a7a9e8b0002",
+              "sourceStep": "/api/3/workflow_steps/e8dcce07-4db7-4fbe-b0f7-4a7a9e8b0001",
+              "label": null,
+              "isExecuted": false,
+              "group": null,
+              "uuid": "c9aab821-9652-4f1c-84d8-66f89f0bb001"
+            },
+            {
+              "@type": "WorkflowRoute",
+              "name": "Set Alert Context -> Find Asset by Source IP",
+              "targetStep": "/api/3/workflow_steps/e8dcce07-4db7-4fbe-b0f7-4a7a9e8b0003",
+              "sourceStep": "/api/3/workflow_steps/e8dcce07-4db7-4fbe-b0f7-4a7a9e8b0002",
+              "label": null,
+              "isExecuted": false,
+              "group": null,
+              "uuid": "c9aab821-9652-4f1c-84d8-66f89f0bb002"
+            },
+            {
+              "@type": "WorkflowRoute",
+              "name": "Find Asset by Source IP -> Has Source IP Match",
+              "targetStep": "/api/3/workflow_steps/e8dcce07-4db7-4fbe-b0f7-4a7a9e8b0005",
+              "sourceStep": "/api/3/workflow_steps/e8dcce07-4db7-4fbe-b0f7-4a7a9e8b0003",
+              "label": null,
+              "isExecuted": false,
+              "group": null,
+              "uuid": "c9aab821-9652-4f1c-84d8-66f89f0bb003"
+            },
+            {
+              "@type": "WorkflowRoute",
+              "name": "Has Source IP Match -> Set Selected Asset from Source IP",
+              "targetStep": "/api/3/workflow_steps/e8dcce07-4db7-4fbe-b0f7-4a7a9e8b0006",
+              "sourceStep": "/api/3/workflow_steps/e8dcce07-4db7-4fbe-b0f7-4a7a9e8b0005",
+              "label": "yes",
+              "isExecuted": false,
+              "group": null,
+              "uuid": "c9aab821-9652-4f1c-84d8-66f89f0bb004"
+            },
+            {
+              "@type": "WorkflowRoute",
+              "name": "Has Source IP Match -> Find Asset by Source Name",
+              "targetStep": "/api/3/workflow_steps/e8dcce07-4db7-4fbe-b0f7-4a7a9e8b000b",
+              "sourceStep": "/api/3/workflow_steps/e8dcce07-4db7-4fbe-b0f7-4a7a9e8b0005",
+              "label": "no",
+              "isExecuted": false,
+              "group": null,
+              "uuid": "c9aab821-9652-4f1c-84d8-66f89f0bb005"
+            },
+            {
+              "@type": "WorkflowRoute",
+              "name": "Find Asset by Source Name -> Has Source Name Match",
+              "targetStep": "/api/3/workflow_steps/e8dcce07-4db7-4fbe-b0f7-4a7a9e8b000d",
+              "sourceStep": "/api/3/workflow_steps/e8dcce07-4db7-4fbe-b0f7-4a7a9e8b000b",
+              "label": null,
+              "isExecuted": false,
+              "group": null,
+              "uuid": "c9aab821-9652-4f1c-84d8-66f89f0bb006"
+            },
+            {
+              "@type": "WorkflowRoute",
+              "name": "Has Source Name Match -> Set Selected Asset from Source Name",
+              "targetStep": "/api/3/workflow_steps/e8dcce07-4db7-4fbe-b0f7-4a7a9e8b000c",
+              "sourceStep": "/api/3/workflow_steps/e8dcce07-4db7-4fbe-b0f7-4a7a9e8b000d",
+              "label": "yes",
+              "isExecuted": false,
+              "group": null,
+              "uuid": "c9aab821-9652-4f1c-84d8-66f89f0bb011"
+            },
+            {
+              "@type": "WorkflowRoute",
+              "name": "Has Source Name Match -> Find Asset by Firewall Serial",
+              "targetStep": "/api/3/workflow_steps/e8dcce07-4db7-4fbe-b0f7-4a7a9e8b0004",
+              "sourceStep": "/api/3/workflow_steps/e8dcce07-4db7-4fbe-b0f7-4a7a9e8b000d",
+              "label": "no",
+              "isExecuted": false,
+              "group": null,
+              "uuid": "c9aab821-9652-4f1c-84d8-66f89f0bb012"
+            },
+            {
+              "@type": "WorkflowRoute",
+              "name": "Find Asset by Firewall Serial -> Set Selected Asset from Firewall Serial",
+              "targetStep": "/api/3/workflow_steps/e8dcce07-4db7-4fbe-b0f7-4a7a9e8b0007",
+              "sourceStep": "/api/3/workflow_steps/e8dcce07-4db7-4fbe-b0f7-4a7a9e8b0004",
+              "label": null,
+              "isExecuted": false,
+              "group": null,
+              "uuid": "c9aab821-9652-4f1c-84d8-66f89f0bb013"
+            },
+            {
+              "@type": "WorkflowRoute",
+              "name": "Set Selected Asset from Source IP -> Has Selected Asset",
+              "targetStep": "/api/3/workflow_steps/e8dcce07-4db7-4fbe-b0f7-4a7a9e8b0008",
+              "sourceStep": "/api/3/workflow_steps/e8dcce07-4db7-4fbe-b0f7-4a7a9e8b0006",
+              "label": null,
+              "isExecuted": false,
+              "group": null,
+              "uuid": "c9aab821-9652-4f1c-84d8-66f89f0bb007"
+            },
+            {
+              "@type": "WorkflowRoute",
+              "name": "Set Selected Asset from Source Name -> Has Selected Asset",
+              "targetStep": "/api/3/workflow_steps/e8dcce07-4db7-4fbe-b0f7-4a7a9e8b0008",
+              "sourceStep": "/api/3/workflow_steps/e8dcce07-4db7-4fbe-b0f7-4a7a9e8b000c",
+              "label": null,
+              "isExecuted": false,
+              "group": null,
+              "uuid": "c9aab821-9652-4f1c-84d8-66f89f0bb014"
+            },
+            {
+              "@type": "WorkflowRoute",
+              "name": "Set Selected Asset from Firewall Serial -> Has Selected Asset",
+              "targetStep": "/api/3/workflow_steps/e8dcce07-4db7-4fbe-b0f7-4a7a9e8b0008",
+              "sourceStep": "/api/3/workflow_steps/e8dcce07-4db7-4fbe-b0f7-4a7a9e8b0007",
+              "label": null,
+              "isExecuted": false,
+              "group": null,
+              "uuid": "c9aab821-9652-4f1c-84d8-66f89f0bb008"
+            },
+            {
+              "@type": "WorkflowRoute",
+              "name": "Has Selected Asset -> Update Alert Asset Fields",
+              "targetStep": "/api/3/workflow_steps/e8dcce07-4db7-4fbe-b0f7-4a7a9e8b0009",
+              "sourceStep": "/api/3/workflow_steps/e8dcce07-4db7-4fbe-b0f7-4a7a9e8b0008",
+              "label": "yes",
+              "isExecuted": false,
+              "group": null,
+              "uuid": "c9aab821-9652-4f1c-84d8-66f89f0bb009"
+            },
+            {
+              "@type": "WorkflowRoute",
+              "name": "Has Selected Asset -> No Match",
+              "targetStep": "/api/3/workflow_steps/e8dcce07-4db7-4fbe-b0f7-4a7a9e8b0010",
+              "sourceStep": "/api/3/workflow_steps/e8dcce07-4db7-4fbe-b0f7-4a7a9e8b0008",
+              "label": "no",
+              "isExecuted": false,
+              "group": null,
+              "uuid": "c9aab821-9652-4f1c-84d8-66f89f0bb010"
+            }
+          ],
+          "groups": [],
+          "priority": "/api/3/picklists/2b563c61-ae2c-41c0-a85a-c9709585e3f2",
+          "playbookOrigin": "/api/3/picklists/15c1e8c9-22bf-4e66-8fbb-0a502d4a4a3f",
+          "isEditable": true,
+          "uuid": "5f0d3c93-13a2-4878-a9d8-a8df71480001",
+          "owners": [],
+          "isPrivate": false,
+          "deletedAt": null,
+          "recordTags": [
+            "asset-linking",
+            "source-ip-first"
+          ]
+        }
+      ]
+    }
+  ]
+}

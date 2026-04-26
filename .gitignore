@@ -24,6 +24,7 @@ pack_build/
 # Cursor
 .cursor/
 agent-tools/
+.tmp/service-mgmt-export/
 
 # Placeholders (empty or stray)
 /Provision
