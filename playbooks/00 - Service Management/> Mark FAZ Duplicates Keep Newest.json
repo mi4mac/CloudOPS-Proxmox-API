@@ -17,7 +17,7 @@
           "name": "Mark FAZ Duplicates Keep Newest",
           "aliasName": null,
           "tag": null,
-          "description": "One-time helper to keep newest FAZ asset per deviceUid and tag older duplicates for review.",
+          "description": "One-time helper to keep newest FAZ asset per deviceUid and tag older duplicates as duplicate-old for historical linkage safety.",
           "isActive": true,
           "debug": false,
           "singleRecordExecution": false,
@@ -84,7 +84,7 @@
               "name": "Compute Older Duplicate IDs",
               "description": "Keeps first seen deviceUid and marks subsequent records as older duplicates.",
               "arguments": {
-                "duplicate_asset_ids": "{% set ns = namespace(seen=[], dup=[]) %}{% for a in (vars.steps.Get_Assets_Newest_First.data.data | default([])) %}{% set uid = a.deviceUid | default('') %}{% if uid and uid.startswith('FortiAnalyzer|') %}{% if uid in ns.seen %}{% set _ = ns.dup.append(a['@id']) %}{% else %}{% set _ = ns.seen.append(uid) %}{% endif %}{% endif %}{% endfor %}{{ ns.dup }}"
+                "duplicate_asset_ids": "{% set ns = namespace(seen=[], dup=[]) %}{% for a in (vars.steps.Get_Assets_Newest_First.data['hydra:member'] | default([])) %}{% set uid = a.deviceUid | default('') %}{% if uid and uid.startswith('FortiAnalyzer|') %}{% if uid in ns.seen %}{% set _ = ns.dup.append(a['@id']) %}{% else %}{% set _ = ns.seen.append(uid) %}{% endif %}{% endif %}{% endfor %}{{ ns.dup }}"
               },
               "status": null,
               "top": "320",
@@ -124,7 +124,7 @@
             {
               "@type": "WorkflowStep",
               "name": "Tag Older Duplicates",
-              "description": "Marks older duplicate rows for manual cleanup.",
+              "description": "Marks older duplicate rows as duplicate-old to preserve historical alert linkage.",
               "arguments": {
                 "for_each": {
                   "item": "{{ vars.duplicate_asset_ids | default([]) }}",
@@ -134,8 +134,9 @@
                   "batch_size": 100
                 },
                 "resource": {
+                  "duplicateStatus": "duplicate-old",
                   "recordTags": [
-                    "duplicate-candidate",
+                    "duplicate-old",
                     "faz-review",
                     "keep-newest"
                   ]
@@ -180,7 +181,7 @@
               "name": "Set Summary",
               "description": null,
               "arguments": {
-                "summary_message": "Tagged {{ vars.duplicate_asset_ids | default([]) | length }} older FAZ duplicate assets with duplicate-candidate,faz-review,keep-newest."
+                "summary_message": "Marked {{ vars.duplicate_asset_ids | default([]) | length }} older FAZ duplicate assets with duplicateStatus=duplicate-old and tags duplicate-old,faz-review,keep-newest."
               },
               "status": null,
               "top": "740",

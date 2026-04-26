@@ -85,9 +85,17 @@ Host identifier fallback:
 - Observed-host label normalization added in `Import FAZ Assets to FortiSOAR (Portable)`:
   - `name` and `hostname` are lowercased before write.
   - Purpose: prevent case-only duplicates (for example `MITC` vs `miTC`) when identity stays the same.
+- In-run duplicate suppression added before observed-host writes:
+  - Traffic rows are deduplicated by computed `deviceUid` per run.
+  - Preference order keeps rows with non-empty `srcname` first.
+  - Purpose: prevent same-run duplicate asset creation when FAZ emits multiple rows for the same host.
+- Dedup monitoring metadata added to observed-host `sourceData`:
+  - `identityConfidence`, `dedupInputRows`, `dedupOutputRows`, `dedupDroppedRows`, `dedupDropRatio`.
+  - Purpose: improve SOC observability and triage confidence.
 - New one-time cleanup helper added: `Mark FAZ Duplicates Keep Newest`.
   - Reads up to 5000 assets sorted by newest first (`$sort=-modifyDate`).
-  - Keeps first record per `deviceUid` and tags older duplicates.
-  - Applies non-destructive tags only: `duplicate-candidate`, `faz-review`, `keep-newest`.
+  - Keeps first record per `deviceUid` and marks older duplicates.
+  - Applies `duplicateStatus=duplicate-old` and tags `duplicate-old`, `faz-review`, `keep-newest`.
+  - Duplicate detection reads from FortiSOAR response path `hydra:member`.
 - Temporary export workspace is now ignored by git:
   - `.tmp/service-mgmt-export/`

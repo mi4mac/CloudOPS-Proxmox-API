@@ -327,6 +327,23 @@
             },
             {
               "@type": "WorkflowStep",
+              "name": "Set Dedup Metrics",
+              "description": "Captures run-level dedup metrics for monitoring and auditing.",
+              "arguments": {
+                "dedup_input_rows": "{{ vars.traffic_rows | default([]) | length }}",
+                "dedup_output_rows": "{{ vars.deduped_traffic_rows | default([]) | length }}",
+                "dedup_dropped_rows": "{{ (vars.traffic_rows | default([]) | length) - (vars.deduped_traffic_rows | default([]) | length) }}",
+                "dedup_drop_ratio": "{{ (((vars.traffic_rows | default([]) | length) - (vars.deduped_traffic_rows | default([]) | length)) / ((vars.traffic_rows | default([]) | length) if (vars.traffic_rows | default([]) | length) > 0 else 1)) | round(4) }}"
+              },
+              "status": null,
+              "top": "1125",
+              "left": "340",
+              "stepType": "/api/3/workflow_step_types/04d0cf46-b6a8-42c4-8683-60a7eaa69e8f",
+              "group": null,
+              "uuid": "79e2f5e8-2a6a-4be9-a896-766ef80f9da1"
+            },
+            {
+              "@type": "WorkflowStep",
               "name": "Upsert Observed Hosts",
               "description": "Upserts hosts observed in traffic logs including MAC addresses. Host labels are normalized to lowercase to prevent case-only duplicates.",
               "arguments": {
@@ -349,10 +366,11 @@
                   "firmware": "{{ vars.item.srcswversion | default('') }}",
                   "network": "{{ vars.item.srcintf | default('') }}",
                   "description": "Observed in FAZ traffic logs",
-                  "sourceData": "{{ {'sourceSystem':'FortiAnalyzer','sourceAdom':(vars.faz_adom | default('root')),'sourceDeviceId':(vars.item.devid | default('')),'sourceVdom':(vars.item.vd | default('root')),'sourceIdentityKey':('FortiAnalyzer|' ~ (vars.faz_adom | default('root')) ~ '|' ~ (vars.item.devid | default('')) ~ '|' ~ (vars.item.vd | default('root')) ~ '|' ~ ((vars.item.srcmac | default(vars.item.srcip | default('unknown'))) | lower)),'lastSeen':(vars.item.itime | default(vars.item.dtime | default('')))} | tojson }}",
+                  "sourceData": "{{ {'sourceSystem':'FortiAnalyzer','sourceAdom':(vars.faz_adom | default('root')),'sourceDeviceId':(vars.item.devid | default('')),'sourceVdom':(vars.item.vd | default('root')),'sourceIdentityKey':('FortiAnalyzer|' ~ (vars.faz_adom | default('root')) ~ '|' ~ (vars.item.devid | default('')) ~ '|' ~ (vars.item.vd | default('root')) ~ '|' ~ ((vars.item.srcmac | default(vars.item.srcip | default('unknown'))) | lower)),'identityConfidence':'high','dedupInputRows':(vars.dedup_input_rows | default(0)),'dedupOutputRows':(vars.dedup_output_rows | default(0)),'dedupDroppedRows':(vars.dedup_dropped_rows | default(0)),'dedupDropRatio':(vars.dedup_drop_ratio | default(0)),'lastSeen':(vars.item.itime | default(vars.item.dtime | default('')))} | tojson }}",
                   "recordTags": [
                     "faz",
-                    "observed-host"
+                    "observed-host",
+                    "identity-confidence-high"
                   ]
                 },
                 "operation": "Overwrite",
@@ -523,13 +541,23 @@
             },
             {
               "@type": "WorkflowRoute",
-              "name": "Deduplicate Traffic Rows -> Upsert Observed Hosts",
-              "targetStep": "/api/3/workflow_steps/5fa4626a-6c99-4f1d-b006-cbd899eeef19",
+              "name": "Deduplicate Traffic Rows -> Set Dedup Metrics",
+              "targetStep": "/api/3/workflow_steps/79e2f5e8-2a6a-4be9-a896-766ef80f9da1",
               "sourceStep": "/api/3/workflow_steps/0ec3da5e-7f1e-4d2e-9b76-3298f56a2341",
               "label": null,
               "isExecuted": false,
               "group": null,
               "uuid": "9e6d34eb-e564-41b1-a570-18e67cad781f"
+            },
+            {
+              "@type": "WorkflowRoute",
+              "name": "Set Dedup Metrics -> Upsert Observed Hosts",
+              "targetStep": "/api/3/workflow_steps/5fa4626a-6c99-4f1d-b006-cbd899eeef19",
+              "sourceStep": "/api/3/workflow_steps/79e2f5e8-2a6a-4be9-a896-766ef80f9da1",
+              "label": null,
+              "isExecuted": false,
+              "group": null,
+              "uuid": "8cbb0ff7-cc2b-4134-991c-c2f02f7af57a"
             },
             {
               "@type": "WorkflowRoute",
