@@ -1,0 +1,3560 @@
+{
+  "type": "workflow_collections",
+  "data": [
+    {
+      "@type": "WorkflowCollection",
+      "name": "02 - Use Case - IT OT Asset Management",
+      "description": null,
+      "visible": true,
+      "image": null,
+      "uuid": "fb4aa534-4bfc-4196-b509-96ef02fb9270",
+      "id": 127,
+      "deletedAt": null,
+      "importedBy": [
+        {
+          "apiName": "oT-AssetManagement",
+          "name": "OT - Asset Management",
+          "version": "2.0.0"
+        }
+      ],
+      "recordTags": [
+        "IT OT"
+      ],
+      "workflows": [
+        {
+          "@type": "Workflow",
+          "triggerLimit": null,
+          "name": "Isolate Devices From Network",
+          "aliasName": null,
+          "tag": null,
+          "description": "Isolate Selected Devices From Network Based On Criticality and Risk",
+          "isActive": true,
+          "debug": false,
+          "singleRecordExecution": false,
+          "remoteExecutableFlag": false,
+          "parameters": [],
+          "synchronous": false,
+          "lastModifyDate": 1772273523,
+          "collection": "/api/3/workflow_collections/fb4aa534-4bfc-4196-b509-96ef02fb9270",
+          "versions": [],
+          "triggerStep": "/api/3/workflow_steps/519a0d5a-1600-453a-a82b-0ab412e0a387",
+          "steps": [
+            {
+              "@type": "WorkflowStep",
+              "name": "Configuration",
+              "description": null,
+              "arguments": {
+                "macAddress": "",
+                "useMockOutput": "{{globalVars.Demo_mode}}"
+              },
+              "status": null,
+              "top": "165",
+              "left": "125",
+              "stepType": "/api/3/workflow_step_types/04d0cf46-b6a8-42c4-8683-60a7eaa69e8f",
+              "group": null,
+              "uuid": "b4d3ba90-c20f-4d56-b254-489fd9cf3d25"
+            },
+            {
+              "@type": "WorkflowStep",
+              "name": "Quarantine Host",
+              "description": null,
+              "arguments": {
+                "name": "Fortinet FortiGate",
+                "config": "fe87a666-f971-448b-91f0-4d85d1bf81e6",
+                "params": {
+                  "macs": "{{vars.macAddress}}",
+                  "vdom": ""
+                },
+                "version": "5.2.1",
+                "connector": "fortigate-firewall",
+                "operation": "quarantine_host",
+                "mock_result": "{\"status\": \"finished\"}",
+                "ignore_errors": false,
+                "operationTitle": "Quarantine Host",
+                "pickFromTenant": false,
+                "step_variables": []
+              },
+              "status": null,
+              "top": "300",
+              "left": "125",
+              "stepType": "/api/3/workflow_step_types/0bfed618-0316-11e7-93ae-92361f002671",
+              "group": null,
+              "uuid": "2c32f1ac-0215-4c08-bb6f-b2394bf70897"
+            },
+            {
+              "@type": "WorkflowStep",
+              "name": "Start",
+              "description": null,
+              "arguments": {
+                "route": "bbf0706e-8fc2-47ae-99a3-496dc9fda427",
+                "title": "Isolate Devices From Network",
+                "resources": [
+                  "warrooms"
+                ],
+                "inputVariables": [],
+                "step_variables": {
+                  "input": {
+                    "params": [],
+                    "records": "{{vars.input.records}}"
+                  }
+                },
+                "displayConditions": {
+                  "warrooms": {
+                    "sort": [],
+                    "limit": 30,
+                    "logic": "AND",
+                    "filters": []
+                  }
+                },
+                "executeButtonText": "Execute",
+                "noRecordExecution": false,
+                "singleRecordExecution": false
+              },
+              "status": null,
+              "top": "30",
+              "left": "125",
+              "stepType": "/api/3/workflow_step_types/f414d039-bb0d-4e59-9c39-a8f1e880b18a",
+              "group": null,
+              "uuid": "519a0d5a-1600-453a-a82b-0ab412e0a387"
+            }
+          ],
+          "routes": [
+            {
+              "@type": "WorkflowRoute",
+              "name": "Config -> Update Policy",
+              "targetStep": "/api/3/workflow_steps/2c32f1ac-0215-4c08-bb6f-b2394bf70897",
+              "sourceStep": "/api/3/workflow_steps/b4d3ba90-c20f-4d56-b254-489fd9cf3d25",
+              "label": null,
+              "isExecuted": false,
+              "group": null,
+              "uuid": "75aa0445-94fd-4796-9c27-2d5de5e8deb8"
+            },
+            {
+              "@type": "WorkflowRoute",
+              "name": "Start -> Config",
+              "targetStep": "/api/3/workflow_steps/b4d3ba90-c20f-4d56-b254-489fd9cf3d25",
+              "sourceStep": "/api/3/workflow_steps/519a0d5a-1600-453a-a82b-0ab412e0a387",
+              "label": null,
+              "isExecuted": false,
+              "group": null,
+              "uuid": "ff9d7351-b89b-401a-a4cf-1f663705c719"
+            }
+          ],
+          "groups": [],
+          "priority": "/api/3/picklists/2b563c61-ae2c-41c0-a85a-c9709585e3f2",
+          "playbookOrigin": "/api/3/picklists/b6d710a9-a8ec-41ec-8817-fe9fa062fcdd",
+          "isEditable": false,
+          "uuid": "1884493e-59b1-4f87-820b-a418e8b78f6b",
+          "id": 1272,
+          "owners": [],
+          "isPrivate": false,
+          "deletedAt": null,
+          "importedBy": [
+            {
+              "apiName": "oT-AssetManagement",
+              "name": "OT - Asset Management",
+              "version": "2.0.0"
+            }
+          ],
+          "recordTags": [
+            "FortiGate",
+            "Isolate",
+            "IT OT",
+            "ManualTrigger",
+            "War Room"
+          ]
+        },
+        {
+          "@type": "Workflow",
+          "triggerLimit": null,
+          "name": "Quarantine Asset and Raise Ticket",
+          "aliasName": null,
+          "tag": null,
+          "description": "Playbook quarantine assets in FortiEDR and raise ticket in Service Now.",
+          "isActive": true,
+          "debug": false,
+          "singleRecordExecution": false,
+          "remoteExecutableFlag": false,
+          "parameters": [],
+          "synchronous": false,
+          "lastModifyDate": 1772273523,
+          "collection": "/api/3/workflow_collections/fb4aa534-4bfc-4196-b509-96ef02fb9270",
+          "versions": [],
+          "triggerStep": "/api/3/workflow_steps/2256a05a-3f3b-4f0b-acb4-cc07e8e32af8",
+          "steps": [
+            {
+              "@type": "WorkflowStep",
+              "name": "Configuration",
+              "description": null,
+              "arguments": {
+                "alertList": "{{vars.relatedRecord.alerts}}",
+                "assetList": "{{vars.relatedRecord.assets}}",
+                "useMockOutput": "{{globalVars.Demo_mode}}",
+                "loggedInUserName": "{{vars.loggedInUser.firstname}} {{vars.loggedInUser.lastname}}"
+              },
+              "status": null,
+              "top": "165",
+              "left": "300",
+              "stepType": "/api/3/workflow_step_types/04d0cf46-b6a8-42c4-8683-60a7eaa69e8f",
+              "group": null,
+              "uuid": "f21a954a-cb5a-4ca0-ad78-439c3a2ddda1"
+            },
+            {
+              "@type": "WorkflowStep",
+              "name": "Do Nothing",
+              "description": null,
+              "arguments": {
+                "params": [],
+                "version": "3.2.4",
+                "connector": "cyops_utilities",
+                "operation": "no_op",
+                "operationTitle": "Utils: No Operation",
+                "step_variables": []
+              },
+              "status": null,
+              "top": "435",
+              "left": "125",
+              "stepType": "/api/3/workflow_step_types/0109f35d-090b-4a2b-bd8a-94cbc3508562",
+              "group": null,
+              "uuid": "55d5a05f-708c-4112-9d3a-6a436c5c3067"
+            },
+            {
+              "@type": "WorkflowStep",
+              "name": "Get Alerts Of Assets",
+              "description": null,
+              "arguments": {
+                "assetAlertList": "{% set data = [] %}\n{% for asset in vars.assetList %}\n{% set _ = data.append((asset['@id'] + \"?$relationships=true\") | fromIRI) %}\n{% endfor %}\n{{data}}"
+              },
+              "status": null,
+              "top": "570",
+              "left": "475",
+              "stepType": "/api/3/workflow_step_types/04d0cf46-b6a8-42c4-8683-60a7eaa69e8f",
+              "group": null,
+              "uuid": "2c25298f-7204-488b-9f95-ceb46f18e708"
+            },
+            {
+              "@type": "WorkflowStep",
+              "name": "Isolate Assets",
+              "description": null,
+              "arguments": {
+                "for_each": {
+                  "item": "{{vars.assetAlertList}}",
+                  "parallel": false,
+                  "condition": ""
+                },
+                "arguments": {
+                  "assetRecord": "{{vars.item}}"
+                },
+                "apply_async": false,
+                "step_variables": [],
+                "pass_input_record": false,
+                "workflowReference": "/api/3/workflows/90e2748c-7a9b-4b2a-9e26-ae1ea5fb1c76"
+              },
+              "status": null,
+              "top": "705",
+              "left": "475",
+              "stepType": "/api/3/workflow_step_types/74932bdc-b8b6-4d24-88c4-1a4dfbc524f3",
+              "group": null,
+              "uuid": "32b3d1b9-cb80-427e-8655-6b24ebdfddac"
+            },
+            {
+              "@type": "WorkflowStep",
+              "name": "Listing Assets",
+              "description": null,
+              "arguments": {
+                "type": "DecisionBased",
+                "input": {
+                  "schema": {
+                    "title": "Assets Discovered In Alerts",
+                    "description": "{% for item in vars.assetList %}\n{% set criticality = (item.criticality | fromIRI) %}\n<h5><li>{{ item.name }} : {{ (item.level | fromIRI).itemValue }} : {{ (item.zone | fromIRI).itemValue }} : <span style=\"color:{{criticality.color}}\">{{ criticality.itemValue }}</span></li></h5>\n{% endfor %}",
+                    "inputVariables": []
+                  }
+                },
+                "record": "{{ vars.input.records[0][\"@id\"] }}",
+                "resources": "incidents",
+                "owner_detail": {
+                  "isAssigned": false
+                },
+                "isRecordLinked": true,
+                "step_variables": [],
+                "response_mapping": {
+                  "options": [
+                    {
+                      "option": "Quarantine Assets",
+                      "primary": true,
+                      "step_iri": "/api/3/workflow_steps/53b26070-caf2-4315-86f5-30e6736f0e4a"
+                    },
+                    {
+                      "option": "Cancel",
+                      "step_iri": "/api/3/workflow_steps/55d5a05f-708c-4112-9d3a-6a436c5c3067"
+                    }
+                  ],
+                  "duplicateOption": false
+                },
+                "email_notification": {
+                  "enabled": false,
+                  "smtpParameters": []
+                },
+                "unauthenticated_input": false
+              },
+              "status": null,
+              "top": "300",
+              "left": "300",
+              "stepType": "/api/3/workflow_step_types/fc04082a-d7dc-4299-96fb-6837b1baa0fe",
+              "group": null,
+              "uuid": "39844618-a8df-4a19-9fe9-0f91ad200edf"
+            },
+            {
+              "@type": "WorkflowStep",
+              "name": "Quarantine Asset In FortiEDR",
+              "description": null,
+              "arguments": {
+                "name": "Fortinet FortiEDR",
+                "config": "aa61698b-d3c2-46eb-935e-ce098f24a9aa",
+                "params": {
+                  "type": "Name",
+                  "devices": "{{vars.item.hostname}}",
+                  "organization": ""
+                },
+                "version": "1.3.0",
+                "for_each": {
+                  "item": "{{vars.assetList}}",
+                  "parallel": false,
+                  "condition": ""
+                },
+                "connector": "fortinet-fortiedr",
+                "operation": "isolate_collector",
+                "mock_result": "{\n  \"data\": {\n    \"result\": \"Successfully executed isolate_collector\"\n  },\n  \"status\": \"Success\",\n  \"_status\": true,\n  \"message\": \"\",\n  \"operation\": null,\n  \"request_id\": null\n}",
+                "ignore_errors": false,
+                "operationTitle": "Isolate Collector",
+                "pickFromTenant": false,
+                "step_variables": []
+              },
+              "status": null,
+              "top": "435",
+              "left": "475",
+              "stepType": "/api/3/workflow_step_types/0bfed618-0316-11e7-93ae-92361f002671",
+              "group": null,
+              "uuid": "53b26070-caf2-4315-86f5-30e6736f0e4a"
+            },
+            {
+              "@type": "WorkflowStep",
+              "name": "Raise ServiceNow Ticket",
+              "description": null,
+              "arguments": {
+                "name": "ServiceNow",
+                "config": "e3bb83dd-17a7-4542-a75d-1f2c5b9327c0",
+                "params": {
+                  "state": "",
+                  "impact": "1",
+                  "urgency": "1",
+                  "category": "",
+                  "location": "",
+                  "severity": "1",
+                  "caller_id": "{{vars.loggedInUserName}}",
+                  "work_notes": "",
+                  "assigned_to": "{{vars.loggedInUserName}}",
+                  "description": "",
+                  "other_fields": "",
+                  "assignment_group": "",
+                  "short_description": "The asset has been quarantined; please take the appropriate action."
+                },
+                "message": {
+                  "tags": [],
+                  "type": "/api/3/picklists/ff599189-3eeb-4c86-acb0-a7915e85ac3b",
+                  "tenant": "",
+                  "content": "<p><span style=\"background-color: orange; color: black; border-radius: 4px; font-size: 5mm;\"><span style=\"font-size: 15px; font-weight: bold; font-family: 'Georgia', monospace;\">💡Note <br /></span></span> Isolated the following assets on Fortinet FortiEDR and raised a ticket in ServiceNow to take further action: <span class=\"badge badge-pill badge-danger\" style=\"background: #009d00; color: #fff;\">{{vars.result.data.result.number}}</span></p>\n<p>{% for asset in vars.assetList %}</p>\n<ul>\n<li><a href=\"/modules/assets/{{asset.uuid}}\" target=\"_blank\" rel=\"noopener\">{{asset.hostname}}</a></li>\n</ul>\n<p>{% endfor %}</p>",
+                  "records": "{{vars.input.records[0]['@id']}}"
+                },
+                "version": "3.2.0",
+                "connector": "servicenow",
+                "operation": "create_incident",
+                "mock_result": "{\n  \"data\": {\n    \"result\": {\n      \"rfc\": \"\",\n      \"order\": \"\",\n      \"state\": \"2\",\n      \"active\": \"true\",\n      \"impact\": \"1\",\n      \"notify\": \"1\",\n      \"number\": \"INC0010001\",\n      \"parent\": \"\",\n      \"skills\": \"\",\n      \"sys_id\": \"\",\n      \"cmdb_ci\": \"\",\n      \"company\": \"\",\n      \"sla_due\": \"\",\n      \"urgency\": \"1\",\n      \"approval\": \"not requested\",\n      \"category\": \"inquiry\",\n      \"comments\": \"\",\n      \"contract\": \"\",\n      \"due_date\": \"\",\n      \"location\": \"\",\n      \"made_sla\": \"true\",\n      \"priority\": \"1\",\n      \"severity\": \"1\",\n      \"sys_tags\": \"\",\n      \"work_end\": \"\",\n      \"caller_id\": {\n        \"link\": \"\",\n        \"value\": \"\"\n      },\n      \"caused_by\": \"\",\n      \"closed_at\": \"\",\n      \"closed_by\": \"\",\n      \"follow_up\": \"\",\n      \"knowledge\": \"false\",\n      \"opened_at\": \"\",\n      \"opened_by\": {\n        \"link\": \"\",\n        \"value\": \"\"\n      },\n      \"close_code\": \"\",\n      \"escalation\": \"0\",\n      \"group_list\": \"\",\n      \"problem_id\": \"\",\n      \"sys_domain\": {\n        \"link\": \"\",\n        \"value\": \"\"\n      },\n      \"user_input\": \"\",\n      \"watch_list\": \"\",\n      \"work_notes\": \"\",\n      \"work_start\": \"\",\n      \"assigned_to\": {\n        \"link\": \"\",\n        \"value\": \"\"\n      },\n      \"close_notes\": \"\",\n      \"description\": \"\",\n      \"hold_reason\": \"\",\n      \"reopened_by\": \"\",\n      \"resolved_at\": \"\",\n      \"resolved_by\": \"\",\n      \"subcategory\": \"\",\n      \"time_worked\": \"\",\n      \"upon_reject\": \"cancel\",\n      \"activity_due\": \"\",\n      \"approval_set\": \"\",\n      \"business_stc\": \"\",\n      \"calendar_stc\": \"\",\n      \"contact_type\": \"\",\n      \"reopen_count\": \"0\",\n      \"route_reason\": \"\",\n      \"delivery_plan\": \"\",\n      \"delivery_task\": \"\",\n      \"reopened_time\": \"\",\n      \"sys_mod_count\": \"0\",\n      \"upon_approval\": \"proceed\",\n      \"correlation_id\": \"\",\n      \"expected_start\": \"\",\n      \"incident_state\": \"2\",\n      \"sys_class_name\": \"incident\",\n      \"sys_created_by\": \"admin\",\n      \"sys_created_on\": \"2023-01-04 13:27:20\",\n      \"sys_updated_by\": \"admin\",\n      \"sys_updated_on\": \"2023-01-04 13:27:20\",\n      \"child_incidents\": \"0\",\n      \"parent_incident\": \"\",\n      \"sys_domain_path\": \"/\",\n      \"work_notes_list\": \"\",\n      \"approval_history\": \"\",\n      \"assignment_group\": \"\",\n      \"business_service\": \"\",\n      \"service_offering\": \"\",\n      \"business_duration\": \"\",\n      \"calendar_duration\": \"\",\n      \"short_description\": \"The asset has been quarantined; please take the appropriate action.\",\n      \"universal_request\": \"\",\n      \"reassignment_count\": \"0\",\n      \"correlation_display\": \"\",\n      \"task_effective_number\": \"INC0010001\",\n      \"comments_and_work_notes\": \"\",\n      \"additional_assignee_list\": \"\"\n    }\n  },\n  \"status\": \"Success\",\n  \"message\": \"\",\n  \"operation\": null\n}",
+                "operationTitle": "Create Incident",
+                "pickFromTenant": false,
+                "step_variables": []
+              },
+              "status": null,
+              "top": "840",
+              "left": "475",
+              "stepType": "/api/3/workflow_step_types/0bfed618-0316-11e7-93ae-92361f002671",
+              "group": null,
+              "uuid": "1979a115-5fc9-4d48-a46f-c0cf2e2c5b90"
+            },
+            {
+              "@type": "WorkflowStep",
+              "name": "Start",
+              "description": null,
+              "arguments": {
+                "route": "884dac3b-3422-48d9-b26c-3fdb066f1f81",
+                "resources": [
+                  "incidents"
+                ],
+                "inputVariables": [],
+                "step_variables": {
+                  "input": {
+                    "params": [],
+                    "records": "{{vars.input.records}}"
+                  },
+                  "loggedInUser": "{{vars.currentUser | fromIRI }}",
+                  "relatedRecord": "{{ (vars.input.records[0]['@id'] + \"?$relationships=true\") | fromIRI }}"
+                },
+                "displayConditions": {
+                  "incidents": {
+                    "sort": [],
+                    "limit": 30,
+                    "logic": "AND",
+                    "filters": []
+                  },
+                  "indicators": {
+                    "sort": [],
+                    "limit": 30,
+                    "logic": "AND",
+                    "filters": []
+                  }
+                },
+                "executeButtonText": "Execute",
+                "noRecordExecution": false,
+                "singleRecordExecution": true
+              },
+              "status": null,
+              "top": "30",
+              "left": "300",
+              "stepType": "/api/3/workflow_step_types/f414d039-bb0d-4e59-9c39-a8f1e880b18a",
+              "group": null,
+              "uuid": "2256a05a-3f3b-4f0b-acb4-cc07e8e32af8"
+            }
+          ],
+          "routes": [
+            {
+              "@type": "WorkflowRoute",
+              "name": "Get Alerts Of Assets -> Isolate Assetss",
+              "targetStep": "/api/3/workflow_steps/32b3d1b9-cb80-427e-8655-6b24ebdfddac",
+              "sourceStep": "/api/3/workflow_steps/2c25298f-7204-488b-9f95-ceb46f18e708",
+              "label": null,
+              "isExecuted": false,
+              "group": null,
+              "uuid": "87c6a582-9d33-4984-9f95-8ca9384f8db1"
+            },
+            {
+              "@type": "WorkflowRoute",
+              "name": "Get Related Records -> Listing Assets",
+              "targetStep": "/api/3/workflow_steps/39844618-a8df-4a19-9fe9-0f91ad200edf",
+              "sourceStep": "/api/3/workflow_steps/f21a954a-cb5a-4ca0-ad78-439c3a2ddda1",
+              "label": null,
+              "isExecuted": false,
+              "group": null,
+              "uuid": "a2339eca-a5e6-47b5-bc96-5221ad5c36c3"
+            },
+            {
+              "@type": "WorkflowRoute",
+              "name": "Isolate Assets -> Raise Ticket",
+              "targetStep": "/api/3/workflow_steps/1979a115-5fc9-4d48-a46f-c0cf2e2c5b90",
+              "sourceStep": "/api/3/workflow_steps/32b3d1b9-cb80-427e-8655-6b24ebdfddac",
+              "label": null,
+              "isExecuted": false,
+              "group": null,
+              "uuid": "af724926-7937-40c2-b45a-7dbe8636af3f"
+            },
+            {
+              "@type": "WorkflowRoute",
+              "name": "Listing Assets -> Do Nothing",
+              "targetStep": "/api/3/workflow_steps/55d5a05f-708c-4112-9d3a-6a436c5c3067",
+              "sourceStep": "/api/3/workflow_steps/39844618-a8df-4a19-9fe9-0f91ad200edf",
+              "label": "Cancel",
+              "isExecuted": false,
+              "group": null,
+              "uuid": "413ca19a-6b58-4cb3-b84a-ced328486f74"
+            },
+            {
+              "@type": "WorkflowRoute",
+              "name": "Listing -> Qu",
+              "targetStep": "/api/3/workflow_steps/53b26070-caf2-4315-86f5-30e6736f0e4a",
+              "sourceStep": "/api/3/workflow_steps/39844618-a8df-4a19-9fe9-0f91ad200edf",
+              "label": "Quarantine Assets",
+              "isExecuted": false,
+              "group": null,
+              "uuid": "68444f49-fe9a-4e6a-a6a1-52b0913d2812"
+            },
+            {
+              "@type": "WorkflowRoute",
+              "name": "Quarantine Asset -> Get Alerts Of Assets",
+              "targetStep": "/api/3/workflow_steps/2c25298f-7204-488b-9f95-ceb46f18e708",
+              "sourceStep": "/api/3/workflow_steps/53b26070-caf2-4315-86f5-30e6736f0e4a",
+              "label": null,
+              "isExecuted": false,
+              "group": null,
+              "uuid": "d41716ff-d044-4fcc-b753-46a8757537de"
+            },
+            {
+              "@type": "WorkflowRoute",
+              "name": "Start -> Get Asset List",
+              "targetStep": "/api/3/workflow_steps/f21a954a-cb5a-4ca0-ad78-439c3a2ddda1",
+              "sourceStep": "/api/3/workflow_steps/2256a05a-3f3b-4f0b-acb4-cc07e8e32af8",
+              "label": null,
+              "isExecuted": false,
+              "group": null,
+              "uuid": "3fb73b16-917e-4d5b-8909-9cc89f8a66c3"
+            }
+          ],
+          "groups": [],
+          "priority": "/api/3/picklists/2b563c61-ae2c-41c0-a85a-c9709585e3f2",
+          "playbookOrigin": "/api/3/picklists/b6d710a9-a8ec-41ec-8817-fe9fa062fcdd",
+          "isEditable": false,
+          "uuid": "4cab0c60-eb05-4fbd-b788-c18d039c1f23",
+          "id": 1275,
+          "owners": [],
+          "isPrivate": false,
+          "deletedAt": null,
+          "importedBy": [
+            {
+              "apiName": "oT-AssetManagement",
+              "name": "OT - Asset Management",
+              "version": "2.0.0"
+            }
+          ],
+          "recordTags": [
+            "FortiEDR",
+            "Incident",
+            "IT OT",
+            "ManualTrigger",
+            "Quarantine",
+            "Raise Ticket",
+            "ServiceNow"
+          ]
+        },
+        {
+          "@type": "Workflow",
+          "triggerLimit": null,
+          "name": "Links Assets To Alert",
+          "aliasName": null,
+          "tag": null,
+          "description": "Playbook correlates Assets using source IP first, then source host name, with firewall serial fallback, and destination IP.",
+          "isActive": true,
+          "debug": false,
+          "singleRecordExecution": false,
+          "remoteExecutableFlag": false,
+          "parameters": [],
+          "synchronous": false,
+          "lastModifyDate": 1772273523,
+          "collection": "/api/3/workflow_collections/fb4aa534-4bfc-4196-b509-96ef02fb9270",
+          "versions": [],
+          "triggerStep": "/api/3/workflow_steps/6c29b7f0-bc5c-4a5f-a11c-59fe67128595",
+          "steps": [
+            {
+              "@type": "WorkflowStep",
+              "name": "Find Assets",
+              "description": null,
+              "arguments": {
+                "arguments": {
+                  "sourceIPAddress": "{{vars.input.records[0].sourceIp}}",
+                  "destinationIPAddress": "{{vars.input.records[0].destinationIp}}",
+                  "sourceHostName": "{{(vars.input.records[0].sourcedata.epname if vars.input.records[0].sourcedata and vars.input.records[0].sourcedata.epname is defined else (((vars.input.records[0].sourcedata | from_json).epname) if vars.input.records[0].sourcedata else '')) | default('')}}",
+                  "firewallSerial": "{{vars.input.records[0].deviceSerialNo | default('')}}"
+                },
+                "apply_async": false,
+                "step_variables": {
+                  "assetIRIList": "{% set IRIList = [] %}{% if vars.steps.Find_Assets['sourceAsset'] != \"\" %}{% set _ = IRIList.append(vars.steps.Find_Assets['sourceAsset']) %}{% endif %}{% if vars.steps.Find_Assets['destinationAsset'] != \"\" %}{% set _ = IRIList.append(vars.steps.Find_Assets['destinationAsset']) %}{% endif %}{{IRIList}}"
+                },
+                "pass_parent_env": false,
+                "pass_input_record": false,
+                "workflowReference": "/api/3/workflows/9a71aada-d52d-414a-af6a-8e14e3877907"
+              },
+              "status": null,
+              "top": "165",
+              "left": "125",
+              "stepType": "/api/3/workflow_step_types/74932bdc-b8b6-4d24-88c4-1a4dfbc524f3",
+              "group": null,
+              "uuid": "0ed35b01-73bc-4ba8-8be3-e302d8580c85"
+            },
+            {
+              "@type": "WorkflowStep",
+              "name": "Link Asset To Alert",
+              "description": null,
+              "arguments": {
+                "resource": {
+                  "__link": {
+                    "assets": "{{vars.assetIRIList}}"
+                  }
+                },
+                "_showJson": false,
+                "operation": "Append",
+                "collection": "{{vars.input.records[0]['@id']}}",
+                "__recommend": [],
+                "collectionType": "/api/3/alerts",
+                "fieldOperation": {
+                  "recordTags": "Append"
+                },
+                "step_variables": []
+              },
+              "status": null,
+              "top": "300",
+              "left": "125",
+              "stepType": "/api/3/workflow_step_types/b593663d-7d13-40ce-a3a3-96dece928722",
+              "group": null,
+              "uuid": "21be74e2-762e-4991-9ee1-ad9c5667c5a6"
+            },
+            {
+              "@type": "WorkflowStep",
+              "name": "Start",
+              "description": null,
+              "arguments": {
+                "resource": "alerts",
+                "resources": [
+                  "alerts"
+                ],
+                "step_variables": {
+                  "input": {
+                    "params": [],
+                    "records": [
+                      "{{vars.input.records[0]}}"
+                    ]
+                  }
+                },
+                "fieldbasedtrigger": {
+                  "sort": [],
+                  "limit": 30,
+                  "logic": "AND",
+                  "filters": []
+                }
+              },
+              "status": null,
+              "top": "30",
+              "left": "125",
+              "stepType": "/api/3/workflow_step_types/ea155646-3821-4542-9702-b246da430a8d",
+              "group": null,
+              "uuid": "6c29b7f0-bc5c-4a5f-a11c-59fe67128595"
+            }
+          ],
+          "routes": [
+            {
+              "@type": "WorkflowRoute",
+              "name": "Find Assets -> Update Alert",
+              "targetStep": "/api/3/workflow_steps/21be74e2-762e-4991-9ee1-ad9c5667c5a6",
+              "sourceStep": "/api/3/workflow_steps/0ed35b01-73bc-4ba8-8be3-e302d8580c85",
+              "label": null,
+              "isExecuted": false,
+              "group": null,
+              "uuid": "3dd3c322-be8c-4263-9a05-73ec18fcd083"
+            },
+            {
+              "@type": "WorkflowRoute",
+              "name": "Start -> Find Assets",
+              "targetStep": "/api/3/workflow_steps/0ed35b01-73bc-4ba8-8be3-e302d8580c85",
+              "sourceStep": "/api/3/workflow_steps/6c29b7f0-bc5c-4a5f-a11c-59fe67128595",
+              "label": null,
+              "isExecuted": false,
+              "group": null,
+              "uuid": "62979e16-9d74-41dd-8d1e-948d5caf97fe"
+            }
+          ],
+          "groups": [],
+          "priority": "/api/3/picklists/2b563c61-ae2c-41c0-a85a-c9709585e3f2",
+          "playbookOrigin": "/api/3/picklists/b6d710a9-a8ec-41ec-8817-fe9fa062fcdd",
+          "isEditable": false,
+          "uuid": "7e71283d-4d73-46ca-98de-21bb738a0148",
+          "id": 1274,
+          "owners": [],
+          "isPrivate": false,
+          "deletedAt": null,
+          "importedBy": [
+            {
+              "apiName": "oT-AssetManagement",
+              "name": "OT - Asset Management",
+              "version": "2.0.0"
+            }
+          ],
+          "recordTags": [
+            "Alerts",
+            "Assets",
+            "IT OT",
+            "PostCreate"
+          ]
+        },
+        {
+          "@type": "Workflow",
+          "triggerLimit": null,
+          "name": "Isolate and Comment Assets",
+          "aliasName": null,
+          "tag": null,
+          "description": "Playbook will update the assets as Isolate and add a comment.",
+          "isActive": true,
+          "debug": false,
+          "singleRecordExecution": false,
+          "remoteExecutableFlag": false,
+          "parameters": [
+            "assetRecord"
+          ],
+          "synchronous": false,
+          "lastModifyDate": 1772273523,
+          "collection": "/api/3/workflow_collections/fb4aa534-4bfc-4196-b509-96ef02fb9270",
+          "versions": [],
+          "triggerStep": "/api/3/workflow_steps/63fa3688-0730-4782-997e-24a450d2f20e",
+          "steps": [
+            {
+              "@type": "WorkflowStep",
+              "name": "Start",
+              "description": null,
+              "arguments": {
+                "step_variables": {
+                  "input": {
+                    "params": []
+                  },
+                  "record": "{{vars.input.params.assetRecord}}"
+                }
+              },
+              "status": null,
+              "top": "30",
+              "left": "125",
+              "stepType": "/api/3/workflow_step_types/b348f017-9a94-471f-87f8-ce88b6a7ad62",
+              "group": null,
+              "uuid": "63fa3688-0730-4782-997e-24a450d2f20e"
+            },
+            {
+              "@type": "WorkflowStep",
+              "name": "Update Asset State",
+              "description": null,
+              "arguments": {
+                "message": {
+                  "tags": [],
+                  "type": "/api/3/picklists/ff599189-3eeb-4c86-acb0-a7915e85ac3b",
+                  "tenant": "",
+                  "content": "<p>Isolated because found in malicious activity:</p>\n<p>{% for alert in vars.record['alerts'] %}Alert {{loop.index}}:<a href=\"/modules/alerts/{{alert.uuid}}\">{{alert.name}}</a><br>{% endfor %}{% for incident in vars.record['incidents'] %}Incident {{loop.index}}:<a href=\"/modules/incidents/{{incident.uuid}}\">{{incident.name}}</a><br>{% endfor %}</p>",
+                  "records": "{{vars.record['@id']}}"
+                },
+                "resource": {
+                  "state": "/api/3/picklists/321ad354-42ce-42b6-8636-2fa184a7dcd5"
+                },
+                "operation": "Append",
+                "collection": "{{vars.record['@id']}}",
+                "__recommend": [],
+                "collectionType": "/api/3/assets",
+                "fieldOperation": {
+                  "protocol": "Append",
+                  "recordTags": "Append"
+                },
+                "step_variables": []
+              },
+              "status": null,
+              "top": "165",
+              "left": "125",
+              "stepType": "/api/3/workflow_step_types/b593663d-7d13-40ce-a3a3-96dece928722",
+              "group": null,
+              "uuid": "d7292293-bb93-4aaa-8471-a5db587a185d"
+            }
+          ],
+          "routes": [
+            {
+              "@type": "WorkflowRoute",
+              "name": "Start -> Isolate Asset",
+              "targetStep": "/api/3/workflow_steps/d7292293-bb93-4aaa-8471-a5db587a185d",
+              "sourceStep": "/api/3/workflow_steps/63fa3688-0730-4782-997e-24a450d2f20e",
+              "label": null,
+              "isExecuted": false,
+              "group": null,
+              "uuid": "db82d602-e180-4f38-b9f9-a2c7e8e0b58b"
+            }
+          ],
+          "groups": [],
+          "priority": "/api/3/picklists/2b563c61-ae2c-41c0-a85a-c9709585e3f2",
+          "playbookOrigin": "/api/3/picklists/b6d710a9-a8ec-41ec-8817-fe9fa062fcdd",
+          "isEditable": false,
+          "uuid": "90e2748c-7a9b-4b2a-9e26-ae1ea5fb1c76",
+          "id": 1273,
+          "owners": [],
+          "isPrivate": false,
+          "deletedAt": null,
+          "importedBy": [
+            {
+              "apiName": "oT-AssetManagement",
+              "name": "OT - Asset Management",
+              "version": "2.0.0"
+            }
+          ],
+          "recordTags": [
+            "Assets",
+            "Comment",
+            "Isolate",
+            "IT OT",
+            "Referenced"
+          ]
+        },
+        {
+          "@type": "Workflow",
+          "triggerLimit": null,
+          "name": "Scan All Assets Involved",
+          "aliasName": null,
+          "tag": null,
+          "description": "Initiate a quick scan on all assets related to incident",
+          "isActive": true,
+          "debug": false,
+          "singleRecordExecution": false,
+          "remoteExecutableFlag": false,
+          "parameters": [],
+          "synchronous": false,
+          "lastModifyDate": 1772273523,
+          "collection": "/api/3/workflow_collections/fb4aa534-4bfc-4196-b509-96ef02fb9270",
+          "versions": [],
+          "triggerStep": "/api/3/workflow_steps/dc032c6a-045c-4c48-96f5-67a9bacc5cbc",
+          "steps": [
+            {
+              "@type": "WorkflowStep",
+              "name": "Configuration",
+              "description": null,
+              "arguments": {
+                "useMockOutput": "{{globalVars.Demo_mode}}"
+              },
+              "status": null,
+              "top": "165",
+              "left": "125",
+              "stepType": "/api/3/workflow_step_types/04d0cf46-b6a8-42c4-8683-60a7eaa69e8f",
+              "group": null,
+              "uuid": "db5c2f7a-1011-471c-9087-c08e15ea8698"
+            },
+            {
+              "@type": "WorkflowStep",
+              "name": "Scan Assets",
+              "description": null,
+              "arguments": {
+                "name": "Qualys",
+                "config": "d0a127d1-d74f-4bf3-bdf3-bdfd0170cb0e",
+                "params": {
+                  "ids": "",
+                  "ips": "",
+                  "ag_ids": "",
+                  "id_max": "",
+                  "id_min": "",
+                  "details": "Basic",
+                  "ag_titles": "",
+                  "os_pattern": "",
+                  "network_ids": "",
+                  "vm_scan_since": "",
+                  "no_vm_scan_since": "",
+                  "truncation_limit": "",
+                  "vm_processed_after": "",
+                  "vm_scan_date_after": "",
+                  "vm_processed_before": "",
+                  "vm_scan_date_before": "",
+                  "compliance_scan_since": "",
+                  "no_compliance_scan_since": ""
+                },
+                "version": "1.0.1",
+                "connector": "qualys",
+                "operation": "list_host",
+                "mock_result": "{\"status\": \"finished\"}",
+                "operationTitle": "Get Scanned Host List",
+                "pickFromTenant": false,
+                "step_variables": []
+              },
+              "status": null,
+              "top": "300",
+              "left": "125",
+              "stepType": "/api/3/workflow_step_types/0bfed618-0316-11e7-93ae-92361f002671",
+              "group": null,
+              "uuid": "0fc79091-1948-4105-be29-664b517df5e7"
+            },
+            {
+              "@type": "WorkflowStep",
+              "name": "Start",
+              "description": null,
+              "arguments": {
+                "route": "e78351e1-464f-49fe-8caf-2af9d129f2ee",
+                "title": "Scan All Assets Involved",
+                "resources": [
+                  "warrooms"
+                ],
+                "inputVariables": [],
+                "step_variables": {
+                  "input": {
+                    "params": [],
+                    "records": "{{vars.input.records}}"
+                  }
+                },
+                "displayConditions": {
+                  "warrooms": {
+                    "sort": [],
+                    "limit": 30,
+                    "logic": "AND",
+                    "filters": []
+                  }
+                },
+                "executeButtonText": "Execute",
+                "noRecordExecution": false,
+                "singleRecordExecution": false
+              },
+              "status": null,
+              "top": "30",
+              "left": "125",
+              "stepType": "/api/3/workflow_step_types/f414d039-bb0d-4e59-9c39-a8f1e880b18a",
+              "group": null,
+              "uuid": "dc032c6a-045c-4c48-96f5-67a9bacc5cbc"
+            }
+          ],
+          "routes": [
+            {
+              "@type": "WorkflowRoute",
+              "name": "Config -> Scan Assets",
+              "targetStep": "/api/3/workflow_steps/0fc79091-1948-4105-be29-664b517df5e7",
+              "sourceStep": "/api/3/workflow_steps/db5c2f7a-1011-471c-9087-c08e15ea8698",
+              "label": null,
+              "isExecuted": false,
+              "group": null,
+              "uuid": "13d27fbf-2156-4b05-8ac0-75ffb7f34b21"
+            },
+            {
+              "@type": "WorkflowRoute",
+              "name": "Start -> Config",
+              "targetStep": "/api/3/workflow_steps/db5c2f7a-1011-471c-9087-c08e15ea8698",
+              "sourceStep": "/api/3/workflow_steps/dc032c6a-045c-4c48-96f5-67a9bacc5cbc",
+              "label": null,
+              "isExecuted": false,
+              "group": null,
+              "uuid": "2eddb53b-69c5-4568-9fae-d91cbbc545aa"
+            }
+          ],
+          "groups": [],
+          "priority": "/api/3/picklists/2b563c61-ae2c-41c0-a85a-c9709585e3f2",
+          "playbookOrigin": "/api/3/picklists/b6d710a9-a8ec-41ec-8817-fe9fa062fcdd",
+          "isEditable": false,
+          "uuid": "92e5982c-f203-466d-896d-7ea4d2192a20",
+          "id": 1276,
+          "owners": [],
+          "isPrivate": false,
+          "deletedAt": null,
+          "importedBy": [
+            {
+              "apiName": "oT-AssetManagement",
+              "name": "OT - Asset Management",
+              "version": "2.0.0"
+            }
+          ],
+          "recordTags": [
+            "Assets",
+            "Isolate",
+            "IT OT",
+            "ManualTrigger",
+            "Qualys"
+          ]
+        },
+        {
+          "@type": "Workflow",
+          "triggerLimit": null,
+          "name": "Find Assets Related To Alert",
+          "aliasName": null,
+          "tag": null,
+          "description": "Finds source and destination assets using source IP, source host name, and firewall serial fallback.",
+          "isActive": true,
+          "debug": false,
+          "singleRecordExecution": false,
+          "remoteExecutableFlag": false,
+          "parameters": [
+            "sourceIPAddress",
+            "destinationIPAddress",
+            "sourceHostName",
+            "firewallSerial"
+          ],
+          "synchronous": false,
+          "lastModifyDate": 1772273523,
+          "collection": "/api/3/workflow_collections/fb4aa534-4bfc-4196-b509-96ef02fb9270",
+          "versions": [],
+          "triggerStep": "/api/3/workflow_steps/e97fa1d4-6c88-4e44-9c6a-84be3856b6e6",
+          "steps": [
+            {
+              "@type": "WorkflowStep",
+              "name": "Find Destination Asset",
+              "description": null,
+              "arguments": {
+                "query": {
+                  "sort": [],
+                  "limit": 30,
+                  "logic": "AND",
+                  "filters": [
+                    {
+                      "type": "primitive",
+                      "field": "ip",
+                      "value": "{{vars.input.params.destinationIPAddress}}",
+                      "operator": "eq",
+                      "_operator": "eq"
+                    }
+                  ]
+                },
+                "module": "assets?$limit=30",
+                "step_variables": []
+              },
+              "status": null,
+              "top": "300",
+              "left": "125",
+              "stepType": "/api/3/workflow_step_types/b593663d-7d13-40ce-a3a3-96dece928770",
+              "group": null,
+              "uuid": "69579354-1616-4139-8881-eda98d65a856"
+            },
+            {
+              "@type": "WorkflowStep",
+              "name": "Find Source Asset",
+              "description": null,
+              "arguments": {
+                "query": {
+                  "sort": [],
+                  "limit": 30,
+                  "logic": "AND",
+                  "filters": [
+                    {
+                      "type": "primitive",
+                      "field": "ip",
+                      "value": "{{vars.input.params.sourceIPAddress}}",
+                      "operator": "eq",
+                      "_operator": "eq"
+                    }
+                  ]
+                },
+                "module": "assets?$limit=30",
+                "step_variables": []
+              },
+              "status": null,
+              "top": "165",
+              "left": "125",
+              "stepType": "/api/3/workflow_step_types/b593663d-7d13-40ce-a3a3-96dece928770",
+              "group": null,
+              "uuid": "9ece3af4-de58-4ca8-b3a3-758551abfe84"
+            },
+            {
+              "@type": "WorkflowStep",
+              "name": "Find Source Asset by Firewall Serial",
+              "description": null,
+              "arguments": {
+                "query": {
+                  "sort": [],
+                  "limit": 30,
+                  "logic": "AND",
+                  "filters": [
+                    {
+                      "type": "primitive",
+                      "field": "serialNumber",
+                      "value": "{{vars.input.params.firewallSerial}}",
+                      "operator": "eq",
+                      "_operator": "eq"
+                    }
+                  ]
+                },
+                "module": "assets?$limit=30",
+                "step_variables": []
+              },
+              "status": null,
+              "top": "435",
+              "left": "475",
+              "stepType": "/api/3/workflow_step_types/b593663d-7d13-40ce-a3a3-96dece928770",
+              "group": null,
+              "uuid": "8c539145-c94f-4ff2-99f9-3ebefd5d7801"
+            },
+            {
+              "@type": "WorkflowStep",
+              "name": "Find Source Asset by Host Name",
+              "description": null,
+              "arguments": {
+                "query": {
+                  "sort": [],
+                  "limit": 30,
+                  "logic": "OR",
+                  "filters": [
+                    {
+                      "type": "primitive",
+                      "field": "hostname",
+                      "value": "{{vars.input.params.sourceHostName}}",
+                      "operator": "eq",
+                      "_operator": "eq"
+                    },
+                    {
+                      "type": "primitive",
+                      "field": "name",
+                      "value": "{{vars.input.params.sourceHostName}}",
+                      "operator": "eq",
+                      "_operator": "eq"
+                    }
+                  ]
+                },
+                "module": "assets?$limit=30",
+                "step_variables": []
+              },
+              "status": null,
+              "top": "300",
+              "left": "475",
+              "stepType": "/api/3/workflow_step_types/b593663d-7d13-40ce-a3a3-96dece928770",
+              "group": null,
+              "uuid": "267de039-e851-4f29-8f8e-5c5240c591e9"
+            },
+            {
+              "@type": "WorkflowStep",
+              "name": "Has Source IP Match",
+              "description": null,
+              "arguments": {
+                "conditions": [
+                  {
+                    "option": "yes",
+                    "step_iri": "/api/3/workflow_steps/69579354-1616-4139-8881-eda98d65a856",
+                    "condition": "{{vars.steps.Find_Source_Asset and (vars.steps.Find_Source_Asset|length) > 0}}",
+                    "step_name": "Find Destination Asset"
+                  },
+                  {
+                    "option": "no",
+                    "default": true,
+                    "step_iri": "/api/3/workflow_steps/267de039-e851-4f29-8f8e-5c5240c591e9",
+                    "step_name": "Find Source Asset by Host Name"
+                  }
+                ],
+                "step_variables": []
+              },
+              "status": null,
+              "top": "300",
+              "left": "125",
+              "stepType": "/api/3/workflow_step_types/12254cf5-5db7-4b1a-8cb1-3af081924b28",
+              "group": null,
+              "uuid": "cf751260-eebd-432f-9405-cbc77ec5014a"
+            },
+            {
+              "@type": "WorkflowStep",
+              "name": "Has Source Host Name Match",
+              "description": null,
+              "arguments": {
+                "conditions": [
+                  {
+                    "option": "yes",
+                    "step_iri": "/api/3/workflow_steps/69579354-1616-4139-8881-eda98d65a856",
+                    "condition": "{{vars.steps.Find_Source_Asset_by_Host_Name and (vars.steps.Find_Source_Asset_by_Host_Name|length) > 0}}",
+                    "step_name": "Find Destination Asset"
+                  },
+                  {
+                    "option": "no",
+                    "default": true,
+                    "step_iri": "/api/3/workflow_steps/8c539145-c94f-4ff2-99f9-3ebefd5d7801",
+                    "step_name": "Find Source Asset by Firewall Serial"
+                  }
+                ],
+                "step_variables": []
+              },
+              "status": null,
+              "top": "435",
+              "left": "300",
+              "stepType": "/api/3/workflow_step_types/12254cf5-5db7-4b1a-8cb1-3af081924b28",
+              "group": null,
+              "uuid": "9b6a67bf-c441-41c6-aeb2-0b6263688ec8"
+            },
+            {
+              "@type": "WorkflowStep",
+              "name": "Set Source Asset Match",
+              "description": null,
+              "arguments": {
+                "sourceAsset": "{% if vars.steps.Find_Source_Asset and (vars.steps.Find_Source_Asset|length) > 0 %}{{vars.steps.Find_Source_Asset[0]['@id']}}{% elif vars.steps.Find_Source_Asset_by_Host_Name and (vars.steps.Find_Source_Asset_by_Host_Name|length) > 0 %}{{vars.steps.Find_Source_Asset_by_Host_Name[0]['@id']}}{% elif vars.steps.Find_Source_Asset_by_Firewall_Serial and (vars.steps.Find_Source_Asset_by_Firewall_Serial|length) > 0 %}{{vars.steps.Find_Source_Asset_by_Firewall_Serial[0]['@id']}}{% else %}{% endif %}"
+              },
+              "status": null,
+              "top": "570",
+              "left": "475",
+              "stepType": "/api/3/workflow_step_types/04d0cf46-b6a8-42c4-8683-60a7eaa69e8f",
+              "group": null,
+              "uuid": "b531c1bb-f19c-43b2-9a29-ecfda44f9438"
+            },
+            {
+              "@type": "WorkflowStep",
+              "name": "Output",
+              "description": null,
+              "arguments": {
+                "sourceAsset": "{{vars.sourceAsset | default('')}}",
+                "destinationAsset": "{{vars.steps.Find_Destination_Asset[0]['@id'] if vars.steps.Find_Destination_Asset and (vars.steps.Find_Destination_Asset|length) > 0 else ''}}"
+              },
+              "status": null,
+              "top": "435",
+              "left": "125",
+              "stepType": "/api/3/workflow_step_types/04d0cf46-b6a8-42c4-8683-60a7eaa69e8f",
+              "group": null,
+              "uuid": "eacd414e-835d-4db0-b9e7-3302a88c6ae6"
+            },
+            {
+              "@type": "WorkflowStep",
+              "name": "Start",
+              "description": null,
+              "arguments": {
+                "step_variables": {
+                  "input": {
+                    "params": []
+                  }
+                }
+              },
+              "status": null,
+              "top": "30",
+              "left": "125",
+              "stepType": "/api/3/workflow_step_types/b348f017-9a94-471f-87f8-ce88b6a7ad62",
+              "group": null,
+              "uuid": "e97fa1d4-6c88-4e44-9c6a-84be3856b6e6"
+            }
+          ],
+          "routes": [
+            {
+              "@type": "WorkflowRoute",
+              "name": "Find Destination Asset -> Set Source Asset Match",
+              "targetStep": "/api/3/workflow_steps/b531c1bb-f19c-43b2-9a29-ecfda44f9438",
+              "sourceStep": "/api/3/workflow_steps/69579354-1616-4139-8881-eda98d65a856",
+              "label": null,
+              "isExecuted": false,
+              "group": null,
+              "uuid": "011a3e45-de65-48a0-be9a-7d9a59474897"
+            },
+            {
+              "@type": "WorkflowRoute",
+              "name": "Find Source Asset -> Has Source IP Match",
+              "targetStep": "/api/3/workflow_steps/cf751260-eebd-432f-9405-cbc77ec5014a",
+              "sourceStep": "/api/3/workflow_steps/9ece3af4-de58-4ca8-b3a3-758551abfe84",
+              "label": null,
+              "isExecuted": false,
+              "group": null,
+              "uuid": "d35b549a-52fe-488b-a14f-fae08b96ee2e"
+            },
+            {
+              "@type": "WorkflowRoute",
+              "name": "Start -> Find Source",
+              "targetStep": "/api/3/workflow_steps/9ece3af4-de58-4ca8-b3a3-758551abfe84",
+              "sourceStep": "/api/3/workflow_steps/e97fa1d4-6c88-4e44-9c6a-84be3856b6e6",
+              "label": null,
+              "isExecuted": false,
+              "group": null,
+              "uuid": "4b3b4a2e-0c22-443d-bc8e-d32d844cca52"
+            },
+            {
+              "@type": "WorkflowRoute",
+              "name": "Has Source IP Match -> Find Destination Asset",
+              "targetStep": "/api/3/workflow_steps/69579354-1616-4139-8881-eda98d65a856",
+              "sourceStep": "/api/3/workflow_steps/cf751260-eebd-432f-9405-cbc77ec5014a",
+              "label": "yes",
+              "isExecuted": false,
+              "group": null,
+              "uuid": "0538ec97-2a74-42e8-be95-bbcdc3c2fd0e"
+            },
+            {
+              "@type": "WorkflowRoute",
+              "name": "Has Source IP Match -> Find Source Asset by Host Name",
+              "targetStep": "/api/3/workflow_steps/267de039-e851-4f29-8f8e-5c5240c591e9",
+              "sourceStep": "/api/3/workflow_steps/cf751260-eebd-432f-9405-cbc77ec5014a",
+              "label": "no",
+              "isExecuted": false,
+              "group": null,
+              "uuid": "843a6da8-e11d-4279-b7fb-bd88d7d7f0a1"
+            },
+            {
+              "@type": "WorkflowRoute",
+              "name": "Find Source Asset by Host Name -> Has Source Host Name Match",
+              "targetStep": "/api/3/workflow_steps/9b6a67bf-c441-41c6-aeb2-0b6263688ec8",
+              "sourceStep": "/api/3/workflow_steps/267de039-e851-4f29-8f8e-5c5240c591e9",
+              "label": null,
+              "isExecuted": false,
+              "group": null,
+              "uuid": "7127d460-a32f-4405-bac6-770cc5af4372"
+            },
+            {
+              "@type": "WorkflowRoute",
+              "name": "Has Source Host Name Match -> Find Destination Asset",
+              "targetStep": "/api/3/workflow_steps/69579354-1616-4139-8881-eda98d65a856",
+              "sourceStep": "/api/3/workflow_steps/9b6a67bf-c441-41c6-aeb2-0b6263688ec8",
+              "label": "yes",
+              "isExecuted": false,
+              "group": null,
+              "uuid": "0a3478d4-bd66-4f94-860a-6ad30cc8d45c"
+            },
+            {
+              "@type": "WorkflowRoute",
+              "name": "Has Source Host Name Match -> Find Source Asset by Firewall Serial",
+              "targetStep": "/api/3/workflow_steps/8c539145-c94f-4ff2-99f9-3ebefd5d7801",
+              "sourceStep": "/api/3/workflow_steps/9b6a67bf-c441-41c6-aeb2-0b6263688ec8",
+              "label": "no",
+              "isExecuted": false,
+              "group": null,
+              "uuid": "34910643-e9cc-4fab-896c-071e80968764"
+            },
+            {
+              "@type": "WorkflowRoute",
+              "name": "Find Source Asset by Firewall Serial -> Find Destination Asset",
+              "targetStep": "/api/3/workflow_steps/69579354-1616-4139-8881-eda98d65a856",
+              "sourceStep": "/api/3/workflow_steps/8c539145-c94f-4ff2-99f9-3ebefd5d7801",
+              "label": null,
+              "isExecuted": false,
+              "group": null,
+              "uuid": "77958382-f2f2-4258-8dc5-38576fb6dbdb"
+            },
+            {
+              "@type": "WorkflowRoute",
+              "name": "Set Source Asset Match -> Output",
+              "targetStep": "/api/3/workflow_steps/eacd414e-835d-4db0-b9e7-3302a88c6ae6",
+              "sourceStep": "/api/3/workflow_steps/b531c1bb-f19c-43b2-9a29-ecfda44f9438",
+              "label": null,
+              "isExecuted": false,
+              "group": null,
+              "uuid": "e511e9f7-c3bb-4cd8-91f9-2811f00a86ff"
+            }
+          ],
+          "groups": [],
+          "priority": "/api/3/picklists/2b563c61-ae2c-41c0-a85a-c9709585e3f2",
+          "playbookOrigin": "/api/3/picklists/b6d710a9-a8ec-41ec-8817-fe9fa062fcdd",
+          "isEditable": false,
+          "uuid": "9a71aada-d52d-414a-af6a-8e14e3877907",
+          "id": 1271,
+          "owners": [],
+          "isPrivate": false,
+          "deletedAt": null,
+          "importedBy": [
+            {
+              "apiName": "oT-AssetManagement",
+              "name": "OT - Asset Management",
+              "version": "2.0.0"
+            }
+          ],
+          "recordTags": [
+            "Assets",
+            "IP Address",
+            "IT OT",
+            "Referenced"
+          ]
+        },
+        {
+          "@type": "Workflow",
+          "triggerLimit": null,
+          "name": "Scenario - OT - Create Assets Record",
+          "aliasName": null,
+          "tag": null,
+          "description": "Playbook reads CSV file and create Assets records",
+          "isActive": true,
+          "debug": false,
+          "singleRecordExecution": false,
+          "remoteExecutableFlag": false,
+          "parameters": [],
+          "synchronous": false,
+          "lastModifyDate": 1772273523,
+          "collection": "/api/3/workflow_collections/fb4aa534-4bfc-4196-b509-96ef02fb9270",
+          "versions": [],
+          "triggerStep": "/api/3/workflow_steps/f0b926e5-9a05-4c2c-a570-95da381d456a",
+          "steps": [
+            {
+              "@type": "WorkflowStep",
+              "name": "Create Assets Record",
+              "description": null,
+              "arguments": {
+                "for_each": {
+                  "item": "{{vars.data}}",
+                  "parallel": false,
+                  "condition": ""
+                },
+                "arguments": {
+                  "assetRecord": "{{vars.item}}"
+                },
+                "apply_async": false,
+                "step_variables": [],
+                "pass_parent_env": false,
+                "pass_input_record": false,
+                "workflowReference": "/api/3/workflows/d6017f29-92f5-464f-b41b-e55f0f4d0298"
+              },
+              "status": null,
+              "top": "300",
+              "left": "125",
+              "stepType": "/api/3/workflow_step_types/74932bdc-b8b6-4d24-88c4-1a4dfbc524f3",
+              "group": null,
+              "uuid": "6c1c16bb-8ae7-4978-90c0-0fcb5c82509d"
+            },
+            {
+              "@type": "WorkflowStep",
+              "name": "Get Data From CSV File",
+              "description": null,
+              "arguments": {
+                "name": "CSV Data Management",
+                "params": {
+                  "input": "Attachment IRI",
+                  "value": "/api/3/attachments/27e7ad03-7746-46c4-9580-81b9842cbe91",
+                  "columnNames": "",
+                  "filterInput": "",
+                  "recordBatch": "",
+                  "deDupValuesOn": "",
+                  "saveAsAttachment": "",
+                  "numberOfRowsToSkip": ""
+                },
+                "version": "1.2.0",
+                "connector": "csv-data-management",
+                "operation": "extract_data_from_csv",
+                "operationTitle": "Extract Data from Single CSV",
+                "pickFromTenant": false,
+                "step_variables": {
+                  "data": "{{vars.steps.Get_Data_From_CSV_File.data['records']| replace('N/A', None)}}"
+                }
+              },
+              "status": null,
+              "top": "165",
+              "left": "125",
+              "stepType": "/api/3/workflow_step_types/0bfed618-0316-11e7-93ae-92361f002671",
+              "group": null,
+              "uuid": "ba048146-9dcb-4dfe-9a05-2275648fbd39"
+            },
+            {
+              "@type": "WorkflowStep",
+              "name": "Output",
+              "description": null,
+              "arguments": {
+                "@id": "{{vars.steps.Create_Assets_Record | json_query('[*][\"@id\"][]')}}"
+              },
+              "status": null,
+              "top": "435",
+              "left": "125",
+              "stepType": "/api/3/workflow_step_types/04d0cf46-b6a8-42c4-8683-60a7eaa69e8f",
+              "group": null,
+              "uuid": "5379bd53-5c8c-45cd-9563-e914a57cbd8b"
+            },
+            {
+              "@type": "WorkflowStep",
+              "name": "Start",
+              "description": null,
+              "arguments": {
+                "step_variables": {
+                  "input": {
+                    "params": []
+                  }
+                }
+              },
+              "status": null,
+              "top": "30",
+              "left": "125",
+              "stepType": "/api/3/workflow_step_types/b348f017-9a94-471f-87f8-ce88b6a7ad62",
+              "group": null,
+              "uuid": "f0b926e5-9a05-4c2c-a570-95da381d456a"
+            }
+          ],
+          "routes": [
+            {
+              "@type": "WorkflowRoute",
+              "name": "Create Assets Record -> Output",
+              "targetStep": "/api/3/workflow_steps/5379bd53-5c8c-45cd-9563-e914a57cbd8b",
+              "sourceStep": "/api/3/workflow_steps/6c1c16bb-8ae7-4978-90c0-0fcb5c82509d",
+              "label": null,
+              "isExecuted": false,
+              "group": null,
+              "uuid": "202c7f48-1a8a-4ac3-b70e-1e9743e36ff6"
+            },
+            {
+              "@type": "WorkflowRoute",
+              "name": "Get Data From CSV File -> Create Assets Record",
+              "targetStep": "/api/3/workflow_steps/6c1c16bb-8ae7-4978-90c0-0fcb5c82509d",
+              "sourceStep": "/api/3/workflow_steps/ba048146-9dcb-4dfe-9a05-2275648fbd39",
+              "label": null,
+              "isExecuted": false,
+              "group": null,
+              "uuid": "5e6742ee-e393-4bd2-b1d0-c824b8f5a72a"
+            },
+            {
+              "@type": "WorkflowRoute",
+              "name": "Start -> Get Data From CSV File",
+              "targetStep": "/api/3/workflow_steps/ba048146-9dcb-4dfe-9a05-2275648fbd39",
+              "sourceStep": "/api/3/workflow_steps/f0b926e5-9a05-4c2c-a570-95da381d456a",
+              "label": null,
+              "isExecuted": false,
+              "group": null,
+              "uuid": "80b491b6-2ced-438c-9e46-627573c686c3"
+            }
+          ],
+          "groups": [],
+          "priority": null,
+          "playbookOrigin": "/api/3/picklists/b6d710a9-a8ec-41ec-8817-fe9fa062fcdd",
+          "isEditable": false,
+          "uuid": "cfa2021b-379d-4b62-b388-5260652fe7b1",
+          "id": 1278,
+          "owners": [],
+          "isPrivate": false,
+          "deletedAt": null,
+          "importedBy": [
+            {
+              "apiName": "oT-AssetManagement",
+              "name": "OT - Asset Management",
+              "version": "2.0.0"
+            }
+          ],
+          "recordTags": [
+            "Assets",
+            "Import CSV",
+            "IT OT",
+            "Referenced",
+            "Scenario"
+          ]
+        },
+        {
+          "@type": "Workflow",
+          "triggerLimit": null,
+          "name": "> Create Assets Record",
+          "aliasName": null,
+          "tag": null,
+          "description": "Playbook create Asset record.",
+          "isActive": true,
+          "debug": false,
+          "singleRecordExecution": false,
+          "remoteExecutableFlag": false,
+          "parameters": [
+            "assetRecord"
+          ],
+          "synchronous": false,
+          "lastModifyDate": 1772273523,
+          "collection": "/api/3/workflow_collections/fb4aa534-4bfc-4196-b509-96ef02fb9270",
+          "versions": [],
+          "triggerStep": "/api/3/workflow_steps/3c82fe05-f620-42c5-9ff9-840fb026b892",
+          "steps": [
+            {
+              "@type": "WorkflowStep",
+              "name": "Create Assets Records",
+              "description": null,
+              "arguments": {
+                "resource": {
+                  "ip": "{{vars.record['IP Address']}}",
+                  "tag": "{{vars.record['Asset Tag']}}",
+                  "name": "{{vars.record['Display Name']}}",
+                  "zone": "{{\"AssetZone\" | picklist(vars.record.Zone, \"@id\")}}",
+                  "level": "{{\"AssetLevel\" | picklist(vars.record.Level, \"@id\")}}",
+                  "state": "{{\"AssetState\" | picklist(vars.record['Asset State'], \"@id\")}}",
+                  "status": "{{\"AssetStatus\" | picklist(vars.record['Asset Status'], \"@id\")}}",
+                  "subnet": "{{vars.record.Subnet}}",
+                  "vendor": "{{vars.record.Vendor}}",
+                  "eSPZone": "{{vars.record['ESP Zone']}}",
+                  "emailId": "{{vars.record['Email ID']}}",
+                  "network": "{{vars.record.Network}}",
+                  "product": "{{vars.record['Product']}}",
+                  "category": "{{\"AssetCategory\" | picklist(vars.record.Category, \"@id\")}}",
+                  "facility": "{{vars.record.Facility}}",
+                  "firmware": "{{vars.record['Firmware']}}",
+                  "hostname": "{{vars.record.Hostname}}",
+                  "location": "{{vars.record.Location}}",
+                  "protocol": "{{vars.protocolIRIs}}",
+                  "__replace": "true",
+                  "assetType": "{{\"AssetType\" | picklist(vars.record['Asset Type'], \"@id\")}}",
+                  "deviceUid": "{{vars.record['Device UID']}}",
+                  "managedBy": "{{vars.record.Owner}}",
+                  "assetClass": "{{\"AssetClass\" | picklist(vars.record.Class, \"@id\")}}",
+                  "macAddress": "{{vars.record['MAC Address']}}",
+                  "propertyOf": "{{vars.record['Property Of']}}",
+                  "recordTags": "{{vars.record.Tags}}",
+                  "criticality": "{{\"Criticality\" | picklist(vars.record['Asset Criticality'], \"@id\")}}",
+                  "description": "{{vars.record.Description}}",
+                  "serialNumber": "{{vars.record['Serial No']}}",
+                  "operatingSystem": "{{\"OperatingSystem\" | picklist(vars.record['Operating System'], \"@id\")}}"
+                },
+                "operation": "Overwrite",
+                "collection": "/api/3/upsert/assets",
+                "__recommend": [],
+                "fieldOperation": {
+                  "protocol": "Overwrite",
+                  "recordTags": "Overwrite",
+                  "securityLevel": "Overwrite"
+                },
+                "step_variables": []
+              },
+              "status": null,
+              "top": "300",
+              "left": "125",
+              "stepType": "/api/3/workflow_step_types/2597053c-e718-44b4-8394-4d40fe26d357",
+              "group": null,
+              "uuid": "7f52d399-ae92-48fc-9177-06cc67447503"
+            },
+            {
+              "@type": "WorkflowStep",
+              "name": "Get Values",
+              "description": null,
+              "arguments": {
+                "protocolIRIs": "{% if vars.record.Protocol != \"None\" %}{% set protocolList = (vars.record.Protocol | replace(\"'\",\"\\\"\") | from_json) %}{% set IRI = [] %}{% for num in range(protocolList | length) %}{% set _ = IRI.append(\"AssetProtocol\" | picklist(protocolList[num], \"@id\")) %}{% endfor %}{{IRI | flatten}}{% endif %}"
+              },
+              "status": null,
+              "top": "165",
+              "left": "125",
+              "stepType": "/api/3/workflow_step_types/04d0cf46-b6a8-42c4-8683-60a7eaa69e8f",
+              "group": null,
+              "uuid": "9b9fc397-1bee-42c8-8e79-db981afacb5d"
+            },
+            {
+              "@type": "WorkflowStep",
+              "name": "Start",
+              "description": null,
+              "arguments": {
+                "step_variables": {
+                  "input": {
+                    "params": []
+                  },
+                  "record": "{{vars.input.params['assetRecord']}}"
+                }
+              },
+              "status": null,
+              "top": "30",
+              "left": "125",
+              "stepType": "/api/3/workflow_step_types/b348f017-9a94-471f-87f8-ce88b6a7ad62",
+              "group": null,
+              "uuid": "3c82fe05-f620-42c5-9ff9-840fb026b892"
+            }
+          ],
+          "routes": [
+            {
+              "@type": "WorkflowRoute",
+              "name": "Get Values -> Copy of Create Assets Records",
+              "targetStep": "/api/3/workflow_steps/7f52d399-ae92-48fc-9177-06cc67447503",
+              "sourceStep": "/api/3/workflow_steps/9b9fc397-1bee-42c8-8e79-db981afacb5d",
+              "label": null,
+              "isExecuted": false,
+              "group": null,
+              "uuid": "0b8ae345-e44a-4113-be96-e3296d78140c"
+            },
+            {
+              "@type": "WorkflowRoute",
+              "name": "Start -> Get Values",
+              "targetStep": "/api/3/workflow_steps/9b9fc397-1bee-42c8-8e79-db981afacb5d",
+              "sourceStep": "/api/3/workflow_steps/3c82fe05-f620-42c5-9ff9-840fb026b892",
+              "label": null,
+              "isExecuted": false,
+              "group": null,
+              "uuid": "44ccda4a-bf34-4cde-a849-0d4060bdde2e"
+            }
+          ],
+          "groups": [],
+          "priority": "/api/3/picklists/2b563c61-ae2c-41c0-a85a-c9709585e3f2",
+          "playbookOrigin": "/api/3/picklists/b6d710a9-a8ec-41ec-8817-fe9fa062fcdd",
+          "isEditable": false,
+          "uuid": "d6017f29-92f5-464f-b41b-e55f0f4d0298",
+          "id": 1270,
+          "owners": [],
+          "isPrivate": false,
+          "deletedAt": null,
+          "importedBy": [
+            {
+              "apiName": "oT-AssetManagement",
+              "name": "OT - Asset Management",
+              "version": "2.0.0"
+            }
+          ],
+          "recordTags": [
+            "Assets",
+            "CSV Record",
+            "IT OT",
+            "Referenced",
+            "Scenario"
+          ]
+        },
+        {
+          "@type": "Workflow",
+          "triggerLimit": null,
+          "name": "Set Asset Icon",
+          "aliasName": null,
+          "tag": null,
+          "description": "Correlates asset with Icon (If found in Asset Resources) as per there category.",
+          "isActive": true,
+          "debug": false,
+          "singleRecordExecution": false,
+          "remoteExecutableFlag": false,
+          "parameters": [],
+          "synchronous": false,
+          "lastModifyDate": 1772273523,
+          "collection": "/api/3/workflow_collections/fb4aa534-4bfc-4196-b509-96ef02fb9270",
+          "versions": [],
+          "triggerStep": "/api/3/workflow_steps/61f83741-3690-4667-9ea5-42a9a3d7051f",
+          "steps": [
+            {
+              "@type": "WorkflowStep",
+              "name": "Get Asset Icon",
+              "description": null,
+              "arguments": {
+                "query": {
+                  "sort": [],
+                  "limit": 30,
+                  "logic": "AND",
+                  "filters": [
+                    {
+                      "type": "array",
+                      "field": "recordTags",
+                      "value": "{{vars.input.records[0].category.itemValue | replace('/', ' ')}}",
+                      "_value": "{{vars.input.records[0].category.itemValue | replace('/', ' ')}}",
+                      "operator": "in"
+                    }
+                  ]
+                },
+                "module": "asset_resources?$limit=30",
+                "step_variables": []
+              },
+              "status": null,
+              "top": "165",
+              "left": "125",
+              "stepType": "/api/3/workflow_step_types/b593663d-7d13-40ce-a3a3-96dece928770",
+              "group": null,
+              "uuid": "469447b3-e632-4261-9659-f339c089e1b8"
+            },
+            {
+              "@type": "WorkflowStep",
+              "name": "Start",
+              "description": null,
+              "arguments": {
+                "resource": "assets",
+                "resources": [
+                  "assets"
+                ],
+                "step_variables": {
+                  "input": {
+                    "params": [],
+                    "records": [
+                      "{{vars.input.records[0]}}"
+                    ]
+                  }
+                },
+                "fieldbasedtrigger": {
+                  "sort": [],
+                  "limit": 30,
+                  "logic": "AND",
+                  "filters": []
+                }
+              },
+              "status": null,
+              "top": "30",
+              "left": "125",
+              "stepType": "/api/3/workflow_step_types/ea155646-3821-4542-9702-b246da430a8d",
+              "group": null,
+              "uuid": "61f83741-3690-4667-9ea5-42a9a3d7051f"
+            },
+            {
+              "@type": "WorkflowStep",
+              "name": "Update Asset with Icon",
+              "description": null,
+              "arguments": {
+                "when": "{{vars.steps.Get_Asset_Icon | length > 0}}",
+                "resource": {
+                  "assetIcon": "{{vars.steps.Get_Asset_Icon[0]['@id']}}"
+                },
+                "operation": "Append",
+                "collection": "{{vars.input.records[0]['@id']}}",
+                "__recommend": [],
+                "collectionType": "/api/3/assets",
+                "fieldOperation": {
+                  "recordTags": "Append"
+                },
+                "step_variables": []
+              },
+              "status": null,
+              "top": "300",
+              "left": "125",
+              "stepType": "/api/3/workflow_step_types/b593663d-7d13-40ce-a3a3-96dece928722",
+              "group": null,
+              "uuid": "8d19bb46-e027-4c55-b55a-614814c6cc17"
+            }
+          ],
+          "routes": [
+            {
+              "@type": "WorkflowRoute",
+              "name": "Get Asset Icon -> Update Asset with Icon",
+              "targetStep": "/api/3/workflow_steps/8d19bb46-e027-4c55-b55a-614814c6cc17",
+              "sourceStep": "/api/3/workflow_steps/469447b3-e632-4261-9659-f339c089e1b8",
+              "label": null,
+              "isExecuted": false,
+              "group": null,
+              "uuid": "d2830297-42a3-4e39-b37c-fad48c1d322b"
+            },
+            {
+              "@type": "WorkflowRoute",
+              "name": "Start -> Find Printer Icon",
+              "targetStep": "/api/3/workflow_steps/469447b3-e632-4261-9659-f339c089e1b8",
+              "sourceStep": "/api/3/workflow_steps/61f83741-3690-4667-9ea5-42a9a3d7051f",
+              "label": null,
+              "isExecuted": false,
+              "group": null,
+              "uuid": "30e15859-6c47-4c8e-8f41-9e706dd880c9"
+            }
+          ],
+          "groups": [],
+          "priority": "/api/3/picklists/2b563c61-ae2c-41c0-a85a-c9709585e3f2",
+          "playbookOrigin": "/api/3/picklists/b6d710a9-a8ec-41ec-8817-fe9fa062fcdd",
+          "isEditable": false,
+          "uuid": "d64948b5-7075-4cea-b0cb-171acf9eeedd",
+          "id": 1280,
+          "owners": [],
+          "isPrivate": false,
+          "deletedAt": null,
+          "importedBy": [
+            {
+              "apiName": "oT-AssetManagement",
+              "name": "OT - Asset Management",
+              "version": "2.0.0"
+            }
+          ],
+          "recordTags": [
+            "Asset",
+            "Asset Resources",
+            "Icon",
+            "IT OT",
+            "PostCreate"
+          ]
+        },
+        {
+          "@type": "Workflow",
+          "triggerLimit": null,
+          "name": "Update Firewall Policy",
+          "aliasName": null,
+          "tag": null,
+          "description": "Update Firewall Policies To Restrict Communications",
+          "isActive": true,
+          "debug": false,
+          "singleRecordExecution": false,
+          "remoteExecutableFlag": false,
+          "parameters": [],
+          "synchronous": false,
+          "lastModifyDate": 1772273523,
+          "collection": "/api/3/workflow_collections/fb4aa534-4bfc-4196-b509-96ef02fb9270",
+          "versions": [],
+          "triggerStep": "/api/3/workflow_steps/bdd703bb-87e9-47d4-b439-fb95e1cc7631",
+          "steps": [
+            {
+              "@type": "WorkflowStep",
+              "name": "Configuration",
+              "description": null,
+              "arguments": {
+                "policyNumber": "",
+                "useMockOutput": "{{globalVars.Demo_mode}}"
+              },
+              "status": null,
+              "top": "165",
+              "left": "125",
+              "stepType": "/api/3/workflow_step_types/04d0cf46-b6a8-42c4-8683-60a7eaa69e8f",
+              "group": null,
+              "uuid": "7c4739c2-d5f2-4f68-9fb2-87bad12c07bb"
+            },
+            {
+              "@type": "WorkflowStep",
+              "name": "Start",
+              "description": null,
+              "arguments": {
+                "route": "6865e310-503a-4309-8bdf-c1bcea266dc0",
+                "title": "Update Firewall Policy",
+                "resources": [
+                  "warrooms"
+                ],
+                "inputVariables": [],
+                "step_variables": {
+                  "input": {
+                    "params": [],
+                    "records": "{{vars.input.records}}"
+                  }
+                },
+                "displayConditions": {
+                  "warrooms": {
+                    "sort": [],
+                    "limit": 30,
+                    "logic": "AND",
+                    "filters": []
+                  }
+                },
+                "executeButtonText": "Execute",
+                "noRecordExecution": false,
+                "singleRecordExecution": false
+              },
+              "status": null,
+              "top": "30",
+              "left": "125",
+              "stepType": "/api/3/workflow_step_types/f414d039-bb0d-4e59-9c39-a8f1e880b18a",
+              "group": null,
+              "uuid": "bdd703bb-87e9-47d4-b439-fb95e1cc7631"
+            },
+            {
+              "@type": "WorkflowStep",
+              "name": "Update Policy",
+              "description": null,
+              "arguments": {
+                "name": "Fortinet FortiGate",
+                "config": "fe87a666-f971-448b-91f0-4d85d1bf81e6",
+                "params": {
+                  "name": "",
+                  "vdom": "",
+                  "action": "",
+                  "status": "",
+                  "comment": "",
+                  "dstintf": "",
+                  "srcintf": "",
+                  "policyid": "{{vars.policyNumber}}",
+                  "schedule": "",
+                  "add_dstaddr": "",
+                  "add_service": "",
+                  "add_srcaddr": "",
+                  "remove_dstaddr": "",
+                  "remove_service": "",
+                  "remove_srcaddr": "",
+                  "additional_args": ""
+                },
+                "version": "5.2.1",
+                "connector": "fortigate-firewall",
+                "operation": "update_policy",
+                "mock_result": "{\"status\": \"finished\"}",
+                "operationTitle": "Update Policy",
+                "pickFromTenant": false,
+                "step_variables": []
+              },
+              "status": null,
+              "top": "300",
+              "left": "125",
+              "stepType": "/api/3/workflow_step_types/0bfed618-0316-11e7-93ae-92361f002671",
+              "group": null,
+              "uuid": "7debdcbe-d173-4eec-8215-cc93f77acb04"
+            }
+          ],
+          "routes": [
+            {
+              "@type": "WorkflowRoute",
+              "name": "Configuration -> Update Policy",
+              "targetStep": "/api/3/workflow_steps/7debdcbe-d173-4eec-8215-cc93f77acb04",
+              "sourceStep": "/api/3/workflow_steps/7c4739c2-d5f2-4f68-9fb2-87bad12c07bb",
+              "label": null,
+              "isExecuted": false,
+              "group": null,
+              "uuid": "6865fc60-260b-4cb0-af09-352704631915"
+            },
+            {
+              "@type": "WorkflowRoute",
+              "name": "Start -> Config",
+              "targetStep": "/api/3/workflow_steps/7c4739c2-d5f2-4f68-9fb2-87bad12c07bb",
+              "sourceStep": "/api/3/workflow_steps/bdd703bb-87e9-47d4-b439-fb95e1cc7631",
+              "label": null,
+              "isExecuted": false,
+              "group": null,
+              "uuid": "15b1f31d-e159-4de8-83fe-f39778ea6d43"
+            }
+          ],
+          "groups": [],
+          "priority": "/api/3/picklists/2b563c61-ae2c-41c0-a85a-c9709585e3f2",
+          "playbookOrigin": "/api/3/picklists/b6d710a9-a8ec-41ec-8817-fe9fa062fcdd",
+          "isEditable": false,
+          "uuid": "e2d4c6b8-53ac-4130-8ef4-46cfa7fe53ab",
+          "id": 1282,
+          "owners": [],
+          "isPrivate": false,
+          "deletedAt": null,
+          "importedBy": [
+            {
+              "apiName": "oT-AssetManagement",
+              "name": "OT - Asset Management",
+              "version": "2.0.0"
+            }
+          ],
+          "recordTags": [
+            "FortiGate",
+            "Isolate",
+            "IT OT",
+            "ManualTrigger",
+            "Policy"
+          ]
+        },
+        {
+          "@type": "Workflow",
+          "triggerLimit": null,
+          "name": "Tag as Most Essential Function (MEF)",
+          "aliasName": null,
+          "tag": null,
+          "description": "Playbook tags asset as Most Essential Function(MEF)",
+          "isActive": true,
+          "debug": false,
+          "singleRecordExecution": false,
+          "remoteExecutableFlag": false,
+          "parameters": [],
+          "synchronous": false,
+          "lastModifyDate": 1772273523,
+          "collection": "/api/3/workflow_collections/fb4aa534-4bfc-4196-b509-96ef02fb9270",
+          "versions": [],
+          "triggerStep": "/api/3/workflow_steps/776fae0b-0bce-459c-bc50-e2a98eceb372",
+          "steps": [
+            {
+              "@type": "WorkflowStep",
+              "name": "Reason",
+              "description": null,
+              "arguments": {
+                "type": "InputBased",
+                "input": {
+                  "schema": {
+                    "title": "Specify Reason",
+                    "description": "<h4>Please provide a justification for the designation of this asset as a Most Essential Function (MEF). </h4>",
+                    "inputVariables": [
+                      {
+                        "name": "reason",
+                        "type": "string",
+                        "label": "Reason",
+                        "title": "Text Area",
+                        "usable": false,
+                        "tooltip": "",
+                        "dataType": "text",
+                        "formType": "textarea",
+                        "required": true,
+                        "_expanded": true,
+                        "mmdUpdate": false,
+                        "collection": false,
+                        "searchable": false,
+                        "templateUrl": "app/components/form/fields/json.html",
+                        "defaultValue": null,
+                        "_previousName": "reason",
+                        "playbookField": true,
+                        "lengthConstraint": false,
+                        "allowedGridColumn": false,
+                        "jinjaExpressionView": true,
+                        "useRecordFieldDefault": false
+                      }
+                    ]
+                  }
+                },
+                "record": "",
+                "agent_id": null,
+                "resources": "assets",
+                "is_approval": false,
+                "owner_detail": {
+                  "isAssigned": false
+                },
+                "isRecordLinked": false,
+                "step_variables": [],
+                "response_mapping": {
+                  "options": [
+                    {
+                      "option": "Mark as MEF",
+                      "primary": true,
+                      "step_iri": "/api/3/workflow_steps/d3b7e6b8-0c01-4ef8-8e8a-d14705f5383d"
+                    }
+                  ],
+                  "duplicateOption": false
+                },
+                "email_notification": {
+                  "enabled": false,
+                  "smtpParameters": []
+                },
+                "inline_channel_list": [],
+                "external_channel_list": [],
+                "unauthenticated_input": false
+              },
+              "status": null,
+              "top": "165",
+              "left": "125",
+              "stepType": "/api/3/workflow_step_types/fc04082a-d7dc-4299-96fb-6837b1baa0fe",
+              "group": null,
+              "uuid": "c017b63f-fcc4-47c4-b07f-eb433659591c"
+            },
+            {
+              "@type": "WorkflowStep",
+              "name": "Set Tag",
+              "description": null,
+              "arguments": {
+                "message": {
+                  "tags": [],
+                  "type": "/api/3/picklists/ff599189-3eeb-4c86-acb0-a7915e85ac3b",
+                  "tenant": "",
+                  "thread": false,
+                  "content": "<h4>Asset is tagged as Most Essential Function (MEF)</h4>\n<h4><span style=\"color: red;\">Reason</span>:&nbsp;{{vars.steps.Reason.input.reason}}</h4>",
+                  "records": "{{vars.input.records | json_query('[*][\"@id\"][]')}}"
+                },
+                "for_each": {
+                  "item": "{{vars.input.records}}",
+                  "__bulk": true,
+                  "parallel": false,
+                  "condition": "",
+                  "batch_size": 100
+                },
+                "resource": {
+                  "__link": {
+                    "recordTags": [
+                      "/api/3/tags/Most Essential Function (MEF)"
+                    ]
+                  }
+                },
+                "operation": "Append",
+                "collection": "{{vars.item['@id']}}",
+                "__recommend": [],
+                "collectionType": "/api/3/assets",
+                "fieldOperation": {
+                  "protocol": "Append",
+                  "recordTags": "Append"
+                },
+                "step_variables": []
+              },
+              "status": null,
+              "top": "300",
+              "left": "125",
+              "stepType": "/api/3/workflow_step_types/b593663d-7d13-40ce-a3a3-96dece928722",
+              "group": null,
+              "uuid": "d3b7e6b8-0c01-4ef8-8e8a-d14705f5383d"
+            },
+            {
+              "@type": "WorkflowStep",
+              "name": "Start",
+              "description": null,
+              "arguments": {
+                "route": "deab3334-8e26-4c01-8c82-4973c68d1a91",
+                "resources": [
+                  "assets"
+                ],
+                "inputVariables": [],
+                "step_variables": {
+                  "input": {
+                    "params": [],
+                    "records": "{{vars.input.records}}"
+                  }
+                },
+                "displayConditions": {
+                  "assets": {
+                    "sort": [],
+                    "limit": 30,
+                    "logic": "AND",
+                    "filters": []
+                  }
+                },
+                "executeButtonText": "Execute",
+                "noRecordExecution": false,
+                "singleRecordExecution": false
+              },
+              "status": null,
+              "top": "30",
+              "left": "125",
+              "stepType": "/api/3/workflow_step_types/f414d039-bb0d-4e59-9c39-a8f1e880b18a",
+              "group": null,
+              "uuid": "776fae0b-0bce-459c-bc50-e2a98eceb372"
+            }
+          ],
+          "routes": [
+            {
+              "@type": "WorkflowRoute",
+              "name": "Reason -> Set Tag",
+              "targetStep": "/api/3/workflow_steps/d3b7e6b8-0c01-4ef8-8e8a-d14705f5383d",
+              "sourceStep": "/api/3/workflow_steps/c017b63f-fcc4-47c4-b07f-eb433659591c",
+              "label": "Mark as MEF",
+              "isExecuted": false,
+              "group": null,
+              "uuid": "712f59c8-a4fb-4c1d-9d73-c75bc28e9827"
+            },
+            {
+              "@type": "WorkflowRoute",
+              "name": "Start -> Reason",
+              "targetStep": "/api/3/workflow_steps/c017b63f-fcc4-47c4-b07f-eb433659591c",
+              "sourceStep": "/api/3/workflow_steps/776fae0b-0bce-459c-bc50-e2a98eceb372",
+              "label": null,
+              "isExecuted": false,
+              "group": null,
+              "uuid": "1c9d4c9d-3976-4ac5-b542-3962f448c6dd"
+            }
+          ],
+          "groups": [],
+          "priority": "/api/3/picklists/2b563c61-ae2c-41c0-a85a-c9709585e3f2",
+          "playbookOrigin": "/api/3/picklists/b6d710a9-a8ec-41ec-8817-fe9fa062fcdd",
+          "isEditable": false,
+          "uuid": "f2412db4-b07c-40aa-9b35-4b2be84aee93",
+          "id": 1281,
+          "owners": [],
+          "isPrivate": false,
+          "deletedAt": null,
+          "importedBy": [
+            {
+              "apiName": "oT-AssetManagement",
+              "name": "OT - Asset Management",
+              "version": "2.0.0"
+            }
+          ],
+          "recordTags": [
+            "Assets",
+            "IT OT",
+            "ManualTrigger",
+            "Most Essential Function (MEF)"
+          ]
+        },
+        {
+          "@type": "Workflow",
+          "triggerLimit": null,
+          "name": "Scenario - OT - Create Alerts Record",
+          "aliasName": null,
+          "tag": null,
+          "description": "Playbook reads CSV file and create Alerts records",
+          "isActive": true,
+          "debug": false,
+          "singleRecordExecution": false,
+          "remoteExecutableFlag": false,
+          "parameters": [],
+          "synchronous": false,
+          "lastModifyDate": 1772273523,
+          "collection": "/api/3/workflow_collections/fb4aa534-4bfc-4196-b509-96ef02fb9270",
+          "versions": [],
+          "triggerStep": "/api/3/workflow_steps/7013344b-f0c6-4a93-bc32-3c86cd386773",
+          "steps": [
+            {
+              "@type": "WorkflowStep",
+              "name": "Check OT Asset Simulation",
+              "description": null,
+              "arguments": {
+                "query": {
+                  "sort": [],
+                  "limit": 30,
+                  "logic": "AND",
+                  "filters": [
+                    {
+                      "type": "primitive",
+                      "field": "title",
+                      "value": "OT - Add Sample Assets",
+                      "operator": "eq",
+                      "_operator": "eq"
+                    }
+                  ]
+                },
+                "module": "scenario?$limit=30",
+                "step_variables": []
+              },
+              "status": null,
+              "top": "300",
+              "left": "218",
+              "stepType": "/api/3/workflow_step_types/b593663d-7d13-40ce-a3a3-96dece928770",
+              "group": null,
+              "uuid": "b8c39060-7bae-45bd-b3df-7944a945d22d"
+            },
+            {
+              "@type": "WorkflowStep",
+              "name": "Configuration",
+              "description": null,
+              "arguments": {
+                "recordIRI": "[]"
+              },
+              "status": null,
+              "top": "165",
+              "left": "218",
+              "stepType": "/api/3/workflow_step_types/04d0cf46-b6a8-42c4-8683-60a7eaa69e8f",
+              "group": null,
+              "uuid": "a3e375b8-e7e8-45e1-8ff7-3f9e256bdeec"
+            },
+            {
+              "@type": "WorkflowStep",
+              "name": "Create Alerts Record",
+              "description": null,
+              "arguments": {
+                "for_each": {
+                  "item": "{{vars.alertList}}",
+                  "__bulk": true,
+                  "parallel": false,
+                  "condition": "",
+                  "batch_size": 100
+                },
+                "resource": {
+                  "name": "{{vars.item['Name']}}",
+                  "type": "{{\"AlertType\" | picklist(vars.item['Type'], \"@id\")}}",
+                  "state": "/api/3/picklists/a1bac09b-1441-45aa-ad1b-c88744e48e72",
+                  "source": "{{vars.item['Source']}}",
+                  "status": "{{\"AlertStatus\" | picklist(vars.item['Status'], \"@id\")}}",
+                  "severity": "{{\"Severity\" | picklist(vars.item['Severity'], \"@id\")}}",
+                  "sourceId": "{{vars.item['Id']}}",
+                  "sourceIp": "{{vars.item['Source IP']}}",
+                  "__replace": "true",
+                  "assignedTo": "/api/3/people/3451141c-bac6-467c-8d72-85e0fab569ce",
+                  "recordTags": "{{vars.item['Tags']}}",
+                  "sourcePort": "{{vars.item['Source Port']}}",
+                  "description": "{{vars.item['Description']}}",
+                  "ackSlaStatus": "/api/3/picklists/72979f64-e8b9-4888-a965-957e0ec24818",
+                  "destinationIp": "{{vars.item['Destination IP']}}",
+                  "mitreattackid": "{{vars.item['MITRE ATT&CK ID']}}",
+                  "respSlaStatus": "/api/3/picklists/72979f64-e8b9-4888-a965-957e0ec24818",
+                  "priorityWeight": 1,
+                  "escalatedtoincident": "/api/3/picklists/2128a09c-153d-4db3-985d-de6be33deae5",
+                  "resolvedAutomatedly": false,
+                  "alertRemainingAckSLA": 0
+                },
+                "_showJson": false,
+                "operation": "Overwrite",
+                "collection": "/api/3/upsert/alerts",
+                "__recommend": [],
+                "fieldOperation": {
+                  "recordTags": "Overwrite"
+                },
+                "step_variables": {
+                  "__dummy": "{{vars.recordIRI.extend(vars.steps.Create_Alerts_Record | json_query('[*][\"@id\"][]'))}}"
+                }
+              },
+              "status": null,
+              "top": "975",
+              "left": "218",
+              "stepType": "/api/3/workflow_step_types/2597053c-e718-44b4-8394-4d40fe26d357",
+              "group": null,
+              "uuid": "940b63b8-a1fe-4504-8bc7-d1195c1ec733"
+            },
+            {
+              "@type": "WorkflowStep",
+              "name": "Create Assets Record",
+              "description": null,
+              "arguments": {
+                "for_each": {
+                  "item": "{{vars.assetList}}",
+                  "parallel": false,
+                  "condition": ""
+                },
+                "arguments": {
+                  "assetRecord": "{{vars.item}}"
+                },
+                "apply_async": false,
+                "step_variables": {
+                  "recordIRI": "{{vars.steps.Create_Assets_Record| json_query('[*][\"@id\"][]')}}"
+                },
+                "pass_parent_env": false,
+                "pass_input_record": false,
+                "workflowReference": "/api/3/workflows/d6017f29-92f5-464f-b41b-e55f0f4d0298"
+              },
+              "status": null,
+              "top": "860",
+              "left": "540",
+              "stepType": "/api/3/workflow_step_types/74932bdc-b8b6-4d24-88c4-1a4dfbc524f3",
+              "group": null,
+              "uuid": "faae9f57-541b-4bce-8c70-15df3441808b"
+            },
+            {
+              "@type": "WorkflowStep",
+              "name": "Get Asset Data From CSV File",
+              "description": null,
+              "arguments": {
+                "name": "CSV Data Management",
+                "params": {
+                  "input": "Attachment IRI",
+                  "value": "/api/3/attachments/27e7ad03-7746-46c4-9580-81b9842cbe91",
+                  "filter": "{{vars.item}}",
+                  "columnNames": "",
+                  "filterInput": "On Specified Values",
+                  "recordBatch": "",
+                  "deDupValuesOn": "",
+                  "filterColumnName": "IP Address",
+                  "saveAsAttachment": "",
+                  "numberOfRowsToSkip": ""
+                },
+                "version": "1.2.0",
+                "for_each": {
+                  "item": "{{vars.ipList}}",
+                  "parallel": false,
+                  "condition": ""
+                },
+                "connector": "csv-data-management",
+                "operation": "extract_data_from_csv",
+                "operationTitle": "Extract Data from Single CSV",
+                "pickFromTenant": false,
+                "step_variables": {
+                  "data": "{{vars.steps.Get_Data_From_CSV_File.data['records']| replace('N/A', None)}}",
+                  "assetList": "{{vars.steps.Get_Asset_Data_From_CSV_File | json_query('[*][data][][records][][]') | replace('N/A', None)}}"
+                }
+              },
+              "status": null,
+              "top": "700",
+              "left": "540",
+              "stepType": "/api/3/workflow_step_types/0bfed618-0316-11e7-93ae-92361f002671",
+              "group": null,
+              "uuid": "6c4c0862-cde4-428e-93f9-5005e4007ff9"
+            },
+            {
+              "@type": "WorkflowStep",
+              "name": "Get Data From CSV File",
+              "description": null,
+              "arguments": {
+                "name": "CSV Data Management",
+                "params": {
+                  "input": "Attachment IRI",
+                  "value": "/api/3/attachments/32fc291a-9afe-46b2-8f67-3b4d4837e2d7",
+                  "columnNames": "",
+                  "filterInput": "",
+                  "recordBatch": "",
+                  "deDupValuesOn": "",
+                  "saveAsAttachment": "",
+                  "numberOfRowsToSkip": ""
+                },
+                "version": "1.2.0",
+                "connector": "csv-data-management",
+                "operation": "extract_data_from_csv",
+                "operationTitle": "Extract Data from Single CSV",
+                "pickFromTenant": false,
+                "step_variables": {
+                  "ipList": "{% set ipList = [] %}{% set _ = ipList.extend(vars.steps.Get_Data_From_CSV_File.data['records'] | json_query('[*][\"Source IP\"][]')) %}{% set _ = ipList.extend(vars.steps.Get_Data_From_CSV_File.data['records'] | json_query('[*][\"Destination IP\"][]')) %}{{ipList | unique}}",
+                  "alertList": "{{vars.steps.Get_Data_From_CSV_File.data['records'] | replace('N/A', None)}}"
+                }
+              },
+              "status": null,
+              "top": "435",
+              "left": "218",
+              "stepType": "/api/3/workflow_step_types/0bfed618-0316-11e7-93ae-92361f002671",
+              "group": null,
+              "uuid": "d99ffe10-d946-4085-8f57-2b32b684e8ec"
+            },
+            {
+              "@type": "WorkflowStep",
+              "name": "Is OT Asset Simulated",
+              "description": null,
+              "arguments": {
+                "conditions": [
+                  {
+                    "option": "No",
+                    "default": true,
+                    "step_iri": "/api/3/workflow_steps/6c4c0862-cde4-428e-93f9-5005e4007ff9",
+                    "step_name": "Get Asset Data From CSV File"
+                  },
+                  {
+                    "option": "Yes",
+                    "step_iri": "/api/3/workflow_steps/940b63b8-a1fe-4504-8bc7-d1195c1ec733",
+                    "condition": "{{ vars.steps.Check_OT_Asset_Simulation[0].createdAlertsID != None }}",
+                    "step_name": "Create Alerts Record"
+                  }
+                ],
+                "step_variables": []
+              },
+              "status": null,
+              "top": "570",
+              "left": "218",
+              "stepType": "/api/3/workflow_step_types/12254cf5-5db7-4b1a-8cb1-3af081924b28",
+              "group": null,
+              "uuid": "af8e2289-7b62-4d58-9197-cf39c72d9285"
+            },
+            {
+              "@type": "WorkflowStep",
+              "name": "Output",
+              "description": null,
+              "arguments": {
+                "@id": "{{vars.recordIRI}}"
+              },
+              "status": null,
+              "top": "1110",
+              "left": "218",
+              "stepType": "/api/3/workflow_step_types/04d0cf46-b6a8-42c4-8683-60a7eaa69e8f",
+              "group": null,
+              "uuid": "1b5f8b31-4ee4-4f93-a325-2853c00430a0"
+            },
+            {
+              "@type": "WorkflowStep",
+              "name": "Start",
+              "description": null,
+              "arguments": {
+                "step_variables": {
+                  "input": {
+                    "params": []
+                  }
+                }
+              },
+              "status": null,
+              "top": "30",
+              "left": "218",
+              "stepType": "/api/3/workflow_step_types/b348f017-9a94-471f-87f8-ce88b6a7ad62",
+              "group": null,
+              "uuid": "7013344b-f0c6-4a93-bc32-3c86cd386773"
+            }
+          ],
+          "routes": [
+            {
+              "@type": "WorkflowRoute",
+              "name": "Check OT Asset Simulation -> Get Data From CSV File",
+              "targetStep": "/api/3/workflow_steps/d99ffe10-d946-4085-8f57-2b32b684e8ec",
+              "sourceStep": "/api/3/workflow_steps/b8c39060-7bae-45bd-b3df-7944a945d22d",
+              "label": null,
+              "isExecuted": false,
+              "group": null,
+              "uuid": "6b7468b7-8c0c-4f64-831d-a752ca153fd3"
+            },
+            {
+              "@type": "WorkflowRoute",
+              "name": "Configuration -> Check OT Asset Simulation",
+              "targetStep": "/api/3/workflow_steps/b8c39060-7bae-45bd-b3df-7944a945d22d",
+              "sourceStep": "/api/3/workflow_steps/a3e375b8-e7e8-45e1-8ff7-3f9e256bdeec",
+              "label": null,
+              "isExecuted": false,
+              "group": null,
+              "uuid": "d4b5316b-aaa8-40ed-aa7b-7b1362d2cecf"
+            },
+            {
+              "@type": "WorkflowRoute",
+              "name": "Create Alert -> Output",
+              "targetStep": "/api/3/workflow_steps/1b5f8b31-4ee4-4f93-a325-2853c00430a0",
+              "sourceStep": "/api/3/workflow_steps/940b63b8-a1fe-4504-8bc7-d1195c1ec733",
+              "label": null,
+              "isExecuted": false,
+              "group": null,
+              "uuid": "fa0e39a1-e6cf-459d-9904-e010ba6616d0"
+            },
+            {
+              "@type": "WorkflowRoute",
+              "name": "Create Assets Record -> Create Alerts Record",
+              "targetStep": "/api/3/workflow_steps/940b63b8-a1fe-4504-8bc7-d1195c1ec733",
+              "sourceStep": "/api/3/workflow_steps/faae9f57-541b-4bce-8c70-15df3441808b",
+              "label": null,
+              "isExecuted": false,
+              "group": null,
+              "uuid": "a3d51711-f672-4fba-8dc5-402de6b55764"
+            },
+            {
+              "@type": "WorkflowRoute",
+              "name": "Get Asset Data From CSV File -> Create Assets Record",
+              "targetStep": "/api/3/workflow_steps/faae9f57-541b-4bce-8c70-15df3441808b",
+              "sourceStep": "/api/3/workflow_steps/6c4c0862-cde4-428e-93f9-5005e4007ff9",
+              "label": null,
+              "isExecuted": false,
+              "group": null,
+              "uuid": "8182cd09-8cc4-472b-b97a-e35e54f9aadf"
+            },
+            {
+              "@type": "WorkflowRoute",
+              "name": "Get Data From CSV File -> Is OT Asset Simulated",
+              "targetStep": "/api/3/workflow_steps/af8e2289-7b62-4d58-9197-cf39c72d9285",
+              "sourceStep": "/api/3/workflow_steps/d99ffe10-d946-4085-8f57-2b32b684e8ec",
+              "label": null,
+              "isExecuted": false,
+              "group": null,
+              "uuid": "ba033e5c-cc4a-44e5-901b-6c31c93c82b0"
+            },
+            {
+              "@type": "WorkflowRoute",
+              "name": "Is OT Asset Simulated -> Create Alerts Record",
+              "targetStep": "/api/3/workflow_steps/940b63b8-a1fe-4504-8bc7-d1195c1ec733",
+              "sourceStep": "/api/3/workflow_steps/af8e2289-7b62-4d58-9197-cf39c72d9285",
+              "label": "Yes",
+              "isExecuted": false,
+              "group": null,
+              "uuid": "ee69ae76-e8b9-4f32-a598-2536073aec07"
+            },
+            {
+              "@type": "WorkflowRoute",
+              "name": "Is OT Asset Simulated -> Get Asset Data From CSV File",
+              "targetStep": "/api/3/workflow_steps/6c4c0862-cde4-428e-93f9-5005e4007ff9",
+              "sourceStep": "/api/3/workflow_steps/af8e2289-7b62-4d58-9197-cf39c72d9285",
+              "label": "No",
+              "isExecuted": false,
+              "group": null,
+              "uuid": "014f9ab0-e32f-4e46-8f12-f29131f7f24f"
+            },
+            {
+              "@type": "WorkflowRoute",
+              "name": "Start -> Configuration",
+              "targetStep": "/api/3/workflow_steps/a3e375b8-e7e8-45e1-8ff7-3f9e256bdeec",
+              "sourceStep": "/api/3/workflow_steps/7013344b-f0c6-4a93-bc32-3c86cd386773",
+              "label": null,
+              "isExecuted": false,
+              "group": null,
+              "uuid": "e3c7a72f-48a8-4e44-8573-96c8a20c08dd"
+            }
+          ],
+          "groups": [],
+          "priority": "/api/3/picklists/2b563c61-ae2c-41c0-a85a-c9709585e3f2",
+          "playbookOrigin": "/api/3/picklists/b6d710a9-a8ec-41ec-8817-fe9fa062fcdd",
+          "isEditable": false,
+          "uuid": "f6af9205-18c3-4fc3-8117-3ded76231867",
+          "id": 1277,
+          "owners": [],
+          "isPrivate": false,
+          "deletedAt": null,
+          "importedBy": [
+            {
+              "apiName": "oT-AssetManagement",
+              "name": "OT - Asset Management",
+              "version": "2.0.0"
+            }
+          ],
+          "recordTags": [
+            "Alerts",
+            "Import CSV",
+            "IT OT",
+            "Referenced",
+            "Scenario"
+          ]
+        },
+        {
+          "@type": "Workflow",
+          "triggerLimit": null,
+          "name": "Scenario - OT - Stuxnet Attack Scenario",
+          "aliasName": null,
+          "tag": null,
+          "description": "Generate Alert for Stuxnet worm that targets Siemens S7 PLCs connected to Engineering Stations",
+          "isActive": true,
+          "debug": false,
+          "singleRecordExecution": false,
+          "remoteExecutableFlag": false,
+          "parameters": [],
+          "synchronous": false,
+          "lastModifyDate": 1772273523,
+          "collection": "/api/3/workflow_collections/fb4aa534-4bfc-4196-b509-96ef02fb9270",
+          "versions": [],
+          "triggerStep": "/api/3/workflow_steps/b5d2c66a-c38e-4e07-8485-52afd0ac3cc0",
+          "steps": [
+            {
+              "@type": "WorkflowStep",
+              "name": "Configuration",
+              "description": null,
+              "arguments": {
+                "recordIRI": "[]"
+              },
+              "status": null,
+              "top": "165",
+              "left": "125",
+              "stepType": "/api/3/workflow_step_types/04d0cf46-b6a8-42c4-8683-60a7eaa69e8f",
+              "group": null,
+              "uuid": "918fb4b1-6fc3-41b8-b2c5-d690b162c570"
+            },
+            {
+              "@type": "WorkflowStep",
+              "name": "Create a Replication Through Removable Media_T0847 Alert",
+              "description": null,
+              "arguments": {
+                "resource": {
+                  "name": "Stuxnet peer to peer communication attempt",
+                  "type": "/api/3/picklists/0cbc2c31-c360-4770-b1e7-3653a8c24ead",
+                  "state": "/api/3/picklists/a1bac09b-1441-45aa-ad1b-c88744e48e72",
+                  "source": "FortiSIEM",
+                  "status": "/api/3/picklists/7de816ff-7140-4ee5-bd05-93ce22002146",
+                  "severity": "/api/3/picklists/58d0753f-f7e4-403b-953c-b0f521eab759",
+                  "sourceIp": "110.132.30.51",
+                  "__replace": "false",
+                  "assignedTo": "/api/3/people/3451141c-bac6-467c-8d72-85e0fab569ce",
+                  "recordTags": [
+                    "/api/3/tags/Sample",
+                    "/api/3/tags/IT OT"
+                  ],
+                  "sourcePort": "1434",
+                  "description": "A machine infected by Stuxnet has attempted to establish a communication with other potentially stuxnet infected machine via a malware-specific RPC-based peer to peer control. If the protocol negotiation is successful, also the other machine is infected by Stuxnet. It is advised to immediately quarantine and clean the Stuxnet infected machine.",
+                  "ackSlaStatus": "/api/3/picklists/72979f64-e8b9-4888-a965-957e0ec24818",
+                  "destinationIp": "110.132.30.63",
+                  "mitreattackid": "T0847",
+                  "respSlaStatus": "/api/3/picklists/72979f64-e8b9-4888-a965-957e0ec24818",
+                  "priorityWeight": 1,
+                  "destinationPort": "423",
+                  "escalatedtoincident": "/api/3/picklists/2128a09c-153d-4db3-985d-de6be33deae5",
+                  "resolvedAutomatedly": false,
+                  "alertRemainingAckSLA": 0
+                },
+                "operation": "Overwrite",
+                "collection": "/api/3/upsert/alerts",
+                "__recommend": [],
+                "fieldOperation": {
+                  "recordTags": "Overwrite"
+                },
+                "step_variables": {
+                  "__dummy": "{{vars.recordIRI.append(vars.result['@id'])}}",
+                  "sourceDestinationIP": "{% set ip = [] %}{% set _ = ip.append(vars.result.sourceIp) %}{% set _ = ip.append(vars.result.destinationIp) %}{{ip}}"
+                }
+              },
+              "status": null,
+              "top": "300",
+              "left": "125",
+              "stepType": "/api/3/workflow_step_types/2597053c-e718-44b4-8394-4d40fe26d357",
+              "group": null,
+              "uuid": "8853063e-66d6-4fc0-a990-a1cbe659f6f8"
+            },
+            {
+              "@type": "WorkflowStep",
+              "name": "Create Commonly Used Port_T0885 Alert",
+              "description": null,
+              "arguments": {
+                "resource": {
+                  "name": "Communication between public and private networks",
+                  "type": "/api/3/picklists/382b0435-e517-4760-867a-d662048fe292",
+                  "state": "/api/3/picklists/a1bac09b-1441-45aa-ad1b-c88744e48e72",
+                  "source": "FortiSIEM",
+                  "status": "/api/3/picklists/7de816ff-7140-4ee5-bd05-93ce22002146",
+                  "severity": "/api/3/picklists/58d0753f-f7e4-403b-953c-b0f521eab759",
+                  "sourceIp": "110.132.30.63",
+                  "__replace": "true",
+                  "assignedTo": "/api/3/people/3451141c-bac6-467c-8d72-85e0fab569ce",
+                  "recordTags": [
+                    "/api/3/tags/IT OT",
+                    "/api/3/tags/Sample"
+                  ],
+                  "sourcePort": "5234",
+                  "description": "A host with a public IP address has communicated with a host with a private IP address, and vice versa. Public IP addresses are typically used by devices that can be accessed via the internet and are not expected to communicate with private networks. Please confirm that this is a legitimate communication.",
+                  "ackSlaStatus": "/api/3/picklists/72979f64-e8b9-4888-a965-957e0ec24818",
+                  "destinationIp": "103.224.182.249",
+                  "mitreattackid": "T0885",
+                  "respSlaStatus": "/api/3/picklists/72979f64-e8b9-4888-a965-957e0ec24818",
+                  "priorityWeight": 1,
+                  "destinationPort": "73",
+                  "escalatedtoincident": "/api/3/picklists/2128a09c-153d-4db3-985d-de6be33deae5",
+                  "resolvedAutomatedly": false,
+                  "alertRemainingAckSLA": 0
+                },
+                "operation": "Overwrite",
+                "collection": "/api/3/upsert/alerts",
+                "__recommend": [],
+                "fieldOperation": {
+                  "recordTags": "Overwrite"
+                },
+                "step_variables": {
+                  "__dummy": "{{vars.recordIRI.append(vars.result['@id'])}}"
+                }
+              },
+              "status": null,
+              "top": "220",
+              "left": "920",
+              "stepType": "/api/3/workflow_step_types/2597053c-e718-44b4-8394-4d40fe26d357",
+              "group": null,
+              "uuid": "939b1127-5d69-4cac-85c8-5288c0fda7c4"
+            },
+            {
+              "@type": "WorkflowStep",
+              "name": "Create EWS 42E6",
+              "description": null,
+              "arguments": {
+                "when": "{{vars.steps.Get_T0846_Assets['sourceAsset'] == \"\"}}",
+                "resource": {
+                  "ip": "110.132.30.72",
+                  "name": "Dell - 5490-42E6",
+                  "zone": "/api/3/picklists/1f6a2248-0d8d-4233-9764-5d641a257ba7",
+                  "level": "/api/3/picklists/3eb967b4-ceca-473b-9a05-f3b8b5dac837",
+                  "state": "/api/3/picklists/b31da3b9-6f87-469e-a1bf-2517c48a7001",
+                  "status": "/api/3/picklists/421c20cd-e63d-4e32-9a25-774b2155cd24",
+                  "vendor": "Dell",
+                  "product": "Latitude 5490",
+                  "category": "/api/3/picklists/373f6e62-4229-4fbe-9a68-085ec266ff69",
+                  "hostname": "Dell - 5490-42E6",
+                  "protocol": [
+                    "/api/3/picklists/7d8bb656-a176-41ca-ae2e-499691ac7432",
+                    "/api/3/picklists/fb4eaae0-248a-4c0c-ba81-47d5e374f552"
+                  ],
+                  "__replace": "false",
+                  "assetType": "/api/3/picklists/7630b182-4930-4f97-beec-3c3a5372cb3b",
+                  "assetClass": "/api/3/picklists/3864918a-79b9-412d-a09e-3f6f13aae2f9",
+                  "macAddress": "00:04:23:B6:44:F3",
+                  "recordTags": [
+                    "/api/3/tags/IT OT",
+                    "/api/3/tags/Sample"
+                  ],
+                  "criticality": "/api/3/picklists/f734dfbb-fd61-425e-8a14-ebd560289fac",
+                  "operatingSystem": "/api/3/picklists/d3cb9dcc-e6e3-4a57-beeb-141d24a39fd7"
+                },
+                "operation": "Overwrite",
+                "collection": "/api/3/upsert/assets",
+                "__recommend": [],
+                "fieldOperation": {
+                  "protocol": "Overwrite",
+                  "recordTags": "Overwrite"
+                },
+                "step_variables": {
+                  "__dummy": "{{vars.recordIRI.append(vars.result['@id'])}}",
+                  "sourceAsset": "{{vars.result['@id']}}"
+                }
+              },
+              "status": null,
+              "top": "480",
+              "left": "560",
+              "stepType": "/api/3/workflow_step_types/2597053c-e718-44b4-8394-4d40fe26d357",
+              "group": null,
+              "uuid": "aa1fa61b-b1b8-4f59-9bda-702f2a2ff0e3"
+            },
+            {
+              "@type": "WorkflowStep",
+              "name": "Create HP PB7181 Asset",
+              "description": null,
+              "arguments": {
+                "when": "{{vars.steps.Get_T0847_Assets['sourceAsset'] == \"\"}}",
+                "resource": {
+                  "ip": "110.132.30.51",
+                  "name": "HP - PB7181",
+                  "zone": "/api/3/picklists/1f6a2248-0d8d-4233-9764-5d641a257ba7",
+                  "level": "/api/3/picklists/3eb967b4-ceca-473b-9a05-f3b8b5dac837",
+                  "state": "/api/3/picklists/b31da3b9-6f87-469e-a1bf-2517c48a7001",
+                  "status": "/api/3/picklists/421c20cd-e63d-4e32-9a25-774b2155cd24",
+                  "vendor": "Hewlett Packard(HP)",
+                  "product": "Hewlett Packard(HP) ProBook",
+                  "category": "/api/3/picklists/20fe5586-6c9e-4a4f-ac1a-15df7bbafe0e",
+                  "hostname": "HP - PB7181",
+                  "protocol": [
+                    "/api/3/picklists/24a46b26-3ca3-4455-a5d1-cee4a79d3a59"
+                  ],
+                  "__replace": "false",
+                  "assetType": "/api/3/picklists/7630b182-4930-4f97-beec-3c3a5372cb3b",
+                  "assetClass": "/api/3/picklists/00cb224e-4198-4547-bbcb-a90bb9a60806",
+                  "macAddress": "00:A0:24:E7:B8:A3",
+                  "recordTags": [
+                    "/api/3/tags/Sample",
+                    "/api/3/tags/IT OT"
+                  ],
+                  "criticality": "/api/3/picklists/f734dfbb-fd61-425e-8a14-ebd560289fac",
+                  "operatingSystem": "/api/3/picklists/f0fc6b95-965f-4b65-9b3c-bb3c7f790c1d"
+                },
+                "operation": "Overwrite",
+                "collection": "/api/3/upsert/assets",
+                "__recommend": [],
+                "fieldOperation": {
+                  "protocol": "Overwrite",
+                  "recordTags": "Overwrite"
+                },
+                "step_variables": {
+                  "__dummy": "{{vars.recordIRI.append(vars.result['@id'])}}",
+                  "sourceAsset": "{{vars.result['@id']}}"
+                }
+              },
+              "status": null,
+              "top": "570",
+              "left": "125",
+              "stepType": "/api/3/workflow_step_types/2597053c-e718-44b4-8394-4d40fe26d357",
+              "group": null,
+              "uuid": "57b1ce70-c34b-4463-ac23-4fe5d99aedea"
+            },
+            {
+              "@type": "WorkflowStep",
+              "name": "Create Program Download_T0843 Alert",
+              "description": null,
+              "arguments": {
+                "resource": {
+                  "name": "STEP7 configuration download command",
+                  "type": "/api/3/picklists/574a6ee2-7265-4701-815e-cff83b053bce",
+                  "state": "/api/3/picklists/a1bac09b-1441-45aa-ad1b-c88744e48e72",
+                  "source": "FortiSIEM",
+                  "status": "/api/3/picklists/7de816ff-7140-4ee5-bd05-93ce22002146",
+                  "severity": "/api/3/picklists/58d0753f-f7e4-403b-953c-b0f521eab759",
+                  "sourceIp": "110.132.30.51",
+                  "__replace": "false",
+                  "assignedTo": "/api/3/people/3451141c-bac6-467c-8d72-85e0fab569ce",
+                  "recordTags": [
+                    "/api/3/tags/Sample",
+                    "/api/3/tags/IT OT"
+                  ],
+                  "sourcePort": "5213",
+                  "description": "Potentially dangerous STEP7 operation: the STEP7 master or an operator is downloading the software and/or hardware configuration into a PLC. This operation may be part of regular maintance, but can also be used in a cyber attack.",
+                  "ackSlaStatus": "/api/3/picklists/72979f64-e8b9-4888-a965-957e0ec24818",
+                  "destinationIp": "110.132.25.43",
+                  "mitreattackid": "T0843",
+                  "respSlaStatus": "/api/3/picklists/72979f64-e8b9-4888-a965-957e0ec24818",
+                  "priorityWeight": 1,
+                  "destinationPort": "124",
+                  "escalatedtoincident": "/api/3/picklists/2128a09c-153d-4db3-985d-de6be33deae5",
+                  "resolvedAutomatedly": false,
+                  "alertRemainingAckSLA": 0
+                },
+                "operation": "Overwrite",
+                "collection": "/api/3/upsert/alerts",
+                "__recommend": [],
+                "fieldOperation": {
+                  "recordTags": "Overwrite"
+                },
+                "step_variables": {
+                  "__dummy": "{{vars.recordIRI.append(vars.result['@id'])}}"
+                }
+              },
+              "status": null,
+              "top": "220",
+              "left": "1280",
+              "stepType": "/api/3/workflow_step_types/2597053c-e718-44b4-8394-4d40fe26d357",
+              "group": null,
+              "uuid": "a80eb6c0-906f-4811-98ab-f21d801346cc"
+            },
+            {
+              "@type": "WorkflowStep",
+              "name": "Create Remote System Discovery_T0846 Alert",
+              "description": null,
+              "arguments": {
+                "resource": {
+                  "name": "Anomalous communication between two Windows XP machines",
+                  "type": "/api/3/picklists/d282a627-a16e-4a8e-9b80-fce1636dfcfc",
+                  "state": "/api/3/picklists/a1bac09b-1441-45aa-ad1b-c88744e48e72",
+                  "source": "FortiSIEM",
+                  "status": "/api/3/picklists/7de816ff-7140-4ee5-bd05-93ce22002146",
+                  "severity": "/api/3/picklists/58d0753f-f7e4-403b-953c-b0f521eab759",
+                  "sourceIp": "110.132.30.72",
+                  "__replace": "false",
+                  "assignedTo": "/api/3/people/3451141c-bac6-467c-8d72-85e0fab569ce",
+                  "recordTags": [
+                    "/api/3/tags/Sample",
+                    "/api/3/tags/IT OT"
+                  ],
+                  "sourcePort": "4912",
+                  "ackSlaStatus": "/api/3/picklists/72979f64-e8b9-4888-a965-957e0ec24818",
+                  "destinationIp": "110.132.30.51",
+                  "mitreattackid": "T0846",
+                  "respSlaStatus": "/api/3/picklists/72979f64-e8b9-4888-a965-957e0ec24818",
+                  "priorityWeight": 1,
+                  "destinationPort": "1141",
+                  "escalatedtoincident": "/api/3/picklists/2128a09c-153d-4db3-985d-de6be33deae5",
+                  "resolvedAutomatedly": false,
+                  "alertRemainingAckSLA": 0
+                },
+                "operation": "Overwrite",
+                "collection": "/api/3/upsert/alerts",
+                "__recommend": [],
+                "fieldOperation": {
+                  "recordTags": "Overwrite"
+                },
+                "step_variables": {
+                  "__dummy": "{{vars.recordIRI.append(vars.result['@id'])}}"
+                }
+              },
+              "status": null,
+              "top": "200",
+              "left": "560",
+              "stepType": "/api/3/workflow_step_types/2597053c-e718-44b4-8394-4d40fe26d357",
+              "group": null,
+              "uuid": "3fe9bf8d-26b1-45ca-a619-fbb4e2842e0f"
+            },
+            {
+              "@type": "WorkflowStep",
+              "name": "Create S7 400 PLC",
+              "description": null,
+              "arguments": {
+                "when": "{{vars.steps.Get_T0843_Assets['destinationAsset'] == \"\"}}",
+                "resource": {
+                  "ip": "110.132.25.43",
+                  "name": "PLC S7-400-324",
+                  "zone": "/api/3/picklists/66dc774d-1f2b-44c7-b1d3-d17eda9febba",
+                  "level": "/api/3/picklists/adc8d997-3da5-4516-b112-42c6fdb74c3b",
+                  "state": "/api/3/picklists/b31da3b9-6f87-469e-a1bf-2517c48a7001",
+                  "status": "/api/3/picklists/421c20cd-e63d-4e32-9a25-774b2155cd24",
+                  "vendor": "Siemens",
+                  "product": "S7 400",
+                  "category": "/api/3/picklists/b7a653a4-4840-44cc-b116-fa618d8ddcd5",
+                  "hostname": "PLC S7-400-324",
+                  "__replace": "false",
+                  "assetType": "/api/3/picklists/f36137a5-aa8f-4532-aab5-e57a8d7420a1",
+                  "assetClass": "/api/3/picklists/3864918a-79b9-412d-a09e-3f6f13aae2f9",
+                  "macAddress": "08:00:06:94:D3:01",
+                  "recordTags": [
+                    "/api/3/tags/IT OT",
+                    "/api/3/tags/Sample"
+                  ],
+                  "criticality": "/api/3/picklists/873268b5-6751-4eac-a61c-0295f68baa9e"
+                },
+                "operation": "Overwrite",
+                "collection": "/api/3/upsert/assets",
+                "__recommend": [],
+                "fieldOperation": {
+                  "protocol": "Overwrite",
+                  "recordTags": "Overwrite"
+                },
+                "step_variables": {
+                  "__dummy": "{{vars.recordIRI.append(vars.result['@id'])}}",
+                  "destinationAsset": "{{vars.result['@id']}}"
+                }
+              },
+              "status": null,
+              "top": "500",
+              "left": "1280",
+              "stepType": "/api/3/workflow_step_types/2597053c-e718-44b4-8394-4d40fe26d357",
+              "group": null,
+              "uuid": "44f0e423-57fe-4595-bef2-84c961670aed"
+            },
+            {
+              "@type": "WorkflowStep",
+              "name": "Create ThinkCentre M910s 1181 Asset",
+              "description": null,
+              "arguments": {
+                "when": "{{vars.steps.Get_T0847_Assets['destinationAsset'] == \"\"}}",
+                "resource": {
+                  "ip": "110.132.30.63",
+                  "name": "ThinkCentre M910s-1181",
+                  "zone": "/api/3/picklists/4104499e-f231-42e3-98f9-888af67e0555",
+                  "level": "/api/3/picklists/adb317f0-56e4-4ffe-976e-ceb0ac9b6e75",
+                  "state": "/api/3/picklists/b31da3b9-6f87-469e-a1bf-2517c48a7001",
+                  "status": "/api/3/picklists/421c20cd-e63d-4e32-9a25-774b2155cd24",
+                  "vendor": "Lenovo",
+                  "product": "ThinkCentre M910s",
+                  "category": "/api/3/picklists/373f6e62-4229-4fbe-9a68-085ec266ff69",
+                  "hostname": "ThinkCentre M910s-1181",
+                  "protocol": [
+                    "/api/3/picklists/24a46b26-3ca3-4455-a5d1-cee4a79d3a59"
+                  ],
+                  "__replace": "false",
+                  "assetType": "/api/3/picklists/7630b182-4930-4f97-beec-3c3a5372cb3b",
+                  "macAddress": "08:00:27:85:C5:CD",
+                  "recordTags": [
+                    "/api/3/tags/IT OT",
+                    "/api/3/tags/Sample"
+                  ],
+                  "criticality": "/api/3/picklists/f734dfbb-fd61-425e-8a14-ebd560289fac",
+                  "operatingSystem": "/api/3/picklists/f0fc6b95-965f-4b65-9b3c-bb3c7f790c1d"
+                },
+                "operation": "Overwrite",
+                "collection": "/api/3/upsert/assets",
+                "__recommend": [],
+                "fieldOperation": {
+                  "protocol": "Overwrite",
+                  "recordTags": "Overwrite"
+                },
+                "step_variables": {
+                  "__dummy": "{{vars.recordIRI.append(vars.result['@id'])}}",
+                  "destinationAsset": "{{vars.result['@id']}}"
+                }
+              },
+              "status": null,
+              "top": "705",
+              "left": "125",
+              "stepType": "/api/3/workflow_step_types/2597053c-e718-44b4-8394-4d40fe26d357",
+              "group": null,
+              "uuid": "2a8f398d-949c-4ab6-8de3-4efc33eb76d0"
+            },
+            {
+              "@type": "WorkflowStep",
+              "name": "Get T0843 Assets",
+              "description": null,
+              "arguments": {
+                "arguments": {
+                  "sourceIPAddress": "{{vars.steps.Create_Program_Download_T0843_Alert.sourceIp}}",
+                  "destinationIPAddress": "{{vars.steps.Create_Program_Download_T0843_Alert.destinationIp}}"
+                },
+                "apply_async": false,
+                "step_variables": {
+                  "sourceAsset": "{{vars.result['sourceAsset']}}",
+                  "destinationAsset": "{{vars.result['destinationAsset']}}"
+                },
+                "pass_input_record": false,
+                "workflowReference": "/api/3/workflows/9a71aada-d52d-414a-af6a-8e14e3877907"
+              },
+              "status": null,
+              "top": "360",
+              "left": "1280",
+              "stepType": "/api/3/workflow_step_types/74932bdc-b8b6-4d24-88c4-1a4dfbc524f3",
+              "group": null,
+              "uuid": "ddc8229d-4b23-47f6-8457-86c9bafe9a62"
+            },
+            {
+              "@type": "WorkflowStep",
+              "name": "Get T0846 Assets",
+              "description": null,
+              "arguments": {
+                "arguments": {
+                  "sourceIPAddress": "{{vars.steps.Create_Remote_System_Discovery_T0846_Alert.sourceIp}}",
+                  "destinationIPAddress": "{{vars.steps.Create_Remote_System_Discovery_T0846_Alert.destinationIp}}"
+                },
+                "apply_async": false,
+                "step_variables": {
+                  "sourceAsset": "{{vars.result['sourceAsset']}}",
+                  "destinationAsset": "{{vars.result['destinationAsset']}}"
+                },
+                "pass_input_record": false,
+                "workflowReference": "/api/3/workflows/9a71aada-d52d-414a-af6a-8e14e3877907"
+              },
+              "status": null,
+              "top": "340",
+              "left": "560",
+              "stepType": "/api/3/workflow_step_types/74932bdc-b8b6-4d24-88c4-1a4dfbc524f3",
+              "group": null,
+              "uuid": "ca41c034-5593-4853-863e-2d242f9394ef"
+            },
+            {
+              "@type": "WorkflowStep",
+              "name": "Get T0847 Assets",
+              "description": null,
+              "arguments": {
+                "arguments": {
+                  "sourceIPAddress": "{{vars.steps.Create_a_Replication_Through_Removable_Media_T0847_Alert.sourceIp}}",
+                  "destinationIPAddress": "{{vars.steps.Create_a_Replication_Through_Removable_Media_T0847_Alert.destinationIp}}"
+                },
+                "apply_async": false,
+                "step_variables": {
+                  "sourceAsset": "{{vars.result['sourceAsset']}}",
+                  "destinationAsset": "{{vars.result['destinationAsset']}}"
+                },
+                "pass_input_record": false,
+                "workflowReference": "/api/3/workflows/9a71aada-d52d-414a-af6a-8e14e3877907"
+              },
+              "status": null,
+              "top": "435",
+              "left": "125",
+              "stepType": "/api/3/workflow_step_types/74932bdc-b8b6-4d24-88c4-1a4dfbc524f3",
+              "group": null,
+              "uuid": "3992472c-a903-49b1-b132-5fa5eeed3ae3"
+            },
+            {
+              "@type": "WorkflowStep",
+              "name": "Get T0885 Assets",
+              "description": null,
+              "arguments": {
+                "arguments": {
+                  "sourceIPAddress": "{{vars.steps.Create_Commonly_Used_Port_T0885_Alert.sourceIp}}",
+                  "destinationIPAddress": "{{vars.steps.Create_Commonly_Used_Port_T0885_Alert.destinationIp}}"
+                },
+                "apply_async": false,
+                "step_variables": {
+                  "sourceAsset": "{{vars.result['sourceAsset']}}",
+                  "destinationAsset": "{{vars.result['destinationAsset']}}"
+                },
+                "pass_input_record": false,
+                "workflowReference": "/api/3/workflows/9a71aada-d52d-414a-af6a-8e14e3877907"
+              },
+              "status": null,
+              "top": "360",
+              "left": "920",
+              "stepType": "/api/3/workflow_step_types/74932bdc-b8b6-4d24-88c4-1a4dfbc524f3",
+              "group": null,
+              "uuid": "bef3cfec-869a-464b-8f62-2defff3d5f5b"
+            },
+            {
+              "@type": "WorkflowStep",
+              "name": "Output",
+              "description": null,
+              "arguments": {
+                "@id": "{{vars.recordIRI}}"
+              },
+              "status": null,
+              "top": "620",
+              "left": "1580",
+              "stepType": "/api/3/workflow_step_types/04d0cf46-b6a8-42c4-8683-60a7eaa69e8f",
+              "group": null,
+              "uuid": "f549712c-b842-4521-b75f-0130a90501c4"
+            },
+            {
+              "@type": "WorkflowStep",
+              "name": "Start",
+              "description": null,
+              "arguments": {
+                "step_variables": {
+                  "input": {
+                    "params": []
+                  }
+                }
+              },
+              "status": null,
+              "top": "30",
+              "left": "125",
+              "stepType": "/api/3/workflow_step_types/b348f017-9a94-471f-87f8-ce88b6a7ad62",
+              "group": null,
+              "uuid": "b5d2c66a-c38e-4e07-8485-52afd0ac3cc0"
+            },
+            {
+              "@type": "WorkflowStep",
+              "name": "Update T0843 Alert",
+              "description": null,
+              "arguments": {
+                "resource": {
+                  "__link": {
+                    "assets": "{{vars.sourceAsset, vars.destinationAsset}}"
+                  }
+                },
+                "operation": "Append",
+                "collection": "{{vars.steps.Create_Program_Download_T0843_Alert['@id']}}",
+                "__recommend": [],
+                "collectionType": "/api/3/alerts",
+                "fieldOperation": [],
+                "step_variables": []
+              },
+              "status": null,
+              "top": "620",
+              "left": "1280",
+              "stepType": "/api/3/workflow_step_types/b593663d-7d13-40ce-a3a3-96dece928722",
+              "group": null,
+              "uuid": "d7e79de8-109d-459e-abaf-7dc0d2d04a37"
+            },
+            {
+              "@type": "WorkflowStep",
+              "name": "Update T0846 Alert",
+              "description": null,
+              "arguments": {
+                "resource": {
+                  "__link": {
+                    "assets": "{{vars.sourceAsset, vars.destinationAsset}}"
+                  }
+                },
+                "operation": "Append",
+                "collection": "{{vars.steps.Create_Remote_System_Discovery_T0846_Alert['@id']}}",
+                "__recommend": [],
+                "collectionType": "/api/3/alerts",
+                "fieldOperation": [],
+                "step_variables": []
+              },
+              "status": null,
+              "top": "620",
+              "left": "560",
+              "stepType": "/api/3/workflow_step_types/b593663d-7d13-40ce-a3a3-96dece928722",
+              "group": null,
+              "uuid": "e7c3a6ea-251d-461c-b421-440cb29702c9"
+            },
+            {
+              "@type": "WorkflowStep",
+              "name": "Update T0847 Alert",
+              "description": null,
+              "arguments": {
+                "resource": {
+                  "__link": {
+                    "assets": "{{vars.sourceAsset, vars.destinationAsset}}"
+                  }
+                },
+                "operation": "Append",
+                "collection": "{{vars.steps.Create_a_Replication_Through_Removable_Media_T0847_Alert['@id']}}",
+                "__recommend": [],
+                "collectionType": "/api/3/alerts",
+                "fieldOperation": [],
+                "step_variables": []
+              },
+              "status": null,
+              "top": "840",
+              "left": "125",
+              "stepType": "/api/3/workflow_step_types/b593663d-7d13-40ce-a3a3-96dece928722",
+              "group": null,
+              "uuid": "250aea00-eb13-4f9f-92fd-4276407d1149"
+            },
+            {
+              "@type": "WorkflowStep",
+              "name": "Update T0885 Alert",
+              "description": null,
+              "arguments": {
+                "resource": {
+                  "__link": {
+                    "assets": "{{vars.sourceAsset}}"
+                  }
+                },
+                "operation": "Append",
+                "collection": "{{vars.steps.Create_Commonly_Used_Port_T0885_Alert['@id']}}",
+                "__recommend": [],
+                "collectionType": "/api/3/alerts",
+                "fieldOperation": [],
+                "step_variables": []
+              },
+              "status": null,
+              "top": "500",
+              "left": "920",
+              "stepType": "/api/3/workflow_step_types/b593663d-7d13-40ce-a3a3-96dece928722",
+              "group": null,
+              "uuid": "37b08e61-592d-45c4-ad0e-a0f2b28d74ef"
+            },
+            {
+              "@type": "WorkflowStep",
+              "name": "Wait for second",
+              "description": null,
+              "arguments": {
+                "rule": {
+                  "actions": [
+                    {
+                      "type": "resume_playbook",
+                      "enabled": true,
+                      "channel_uuid": "e2ce87c2-c55a-11ec-9d64-0242ac120002"
+                    }
+                  ],
+                  "is_active": true,
+                  "event_source": "crudhub"
+                },
+                "type": "TimeBased",
+                "delay": {
+                  "days": 0,
+                  "hours": 0,
+                  "weeks": 0,
+                  "minutes": 0,
+                  "seconds": 2
+                }
+              },
+              "status": null,
+              "top": "80",
+              "left": "560",
+              "stepType": "/api/3/workflow_step_types/6832e556-b9c7-497a-babe-feda3bd27dbf",
+              "group": null,
+              "uuid": "7e9e20f8-65d3-455d-b644-3ade03f07282"
+            },
+            {
+              "@type": "WorkflowStep",
+              "name": "Wait for seconds",
+              "description": null,
+              "arguments": {
+                "rule": {
+                  "actions": [
+                    {
+                      "type": "resume_playbook",
+                      "enabled": true,
+                      "channel_uuid": "e2ce87c2-c55a-11ec-9d64-0242ac120002"
+                    }
+                  ],
+                  "is_active": true,
+                  "event_source": "crudhub"
+                },
+                "type": "TimeBased",
+                "delay": {
+                  "days": 0,
+                  "hours": 0,
+                  "weeks": 0,
+                  "minutes": 0,
+                  "seconds": 2
+                }
+              },
+              "status": null,
+              "top": "80",
+              "left": "920",
+              "stepType": "/api/3/workflow_step_types/6832e556-b9c7-497a-babe-feda3bd27dbf",
+              "group": null,
+              "uuid": "b28eb604-c2a0-4a40-8aef-29e19b57d96c"
+            },
+            {
+              "@type": "WorkflowStep",
+              "name": "Wait for secondss",
+              "description": null,
+              "arguments": {
+                "rule": {
+                  "actions": [
+                    {
+                      "type": "resume_playbook",
+                      "enabled": true,
+                      "channel_uuid": "e2ce87c2-c55a-11ec-9d64-0242ac120002"
+                    }
+                  ],
+                  "is_active": true,
+                  "event_source": "crudhub"
+                },
+                "type": "TimeBased",
+                "delay": {
+                  "days": 0,
+                  "hours": 0,
+                  "weeks": 0,
+                  "minutes": 0,
+                  "seconds": 2
+                }
+              },
+              "status": null,
+              "top": "80",
+              "left": "1280",
+              "stepType": "/api/3/workflow_step_types/6832e556-b9c7-497a-babe-feda3bd27dbf",
+              "group": null,
+              "uuid": "973e6915-6789-4f62-b641-f0ec7f8cf5ce"
+            }
+          ],
+          "routes": [
+            {
+              "@type": "WorkflowRoute",
+              "name": "Configuration -> Create a Replication Through Removable Media_T0847 Alert",
+              "targetStep": "/api/3/workflow_steps/8853063e-66d6-4fc0-a990-a1cbe659f6f8",
+              "sourceStep": "/api/3/workflow_steps/918fb4b1-6fc3-41b8-b2c5-d690b162c570",
+              "label": null,
+              "isExecuted": false,
+              "group": null,
+              "uuid": "02411685-860a-4092-8d3d-11b070a7c39a"
+            },
+            {
+              "@type": "WorkflowRoute",
+              "name": "Copy 1 of Wait for second -> Create T0843 Alert",
+              "targetStep": "/api/3/workflow_steps/a80eb6c0-906f-4811-98ab-f21d801346cc",
+              "sourceStep": "/api/3/workflow_steps/973e6915-6789-4f62-b641-f0ec7f8cf5ce",
+              "label": null,
+              "isExecuted": false,
+              "group": null,
+              "uuid": "c718ed7c-987b-4e91-8038-aded2ab41e69"
+            },
+            {
+              "@type": "WorkflowRoute",
+              "name": "Copy of Wait for second -> Create T0885 Alert",
+              "targetStep": "/api/3/workflow_steps/939b1127-5d69-4cac-85c8-5288c0fda7c4",
+              "sourceStep": "/api/3/workflow_steps/b28eb604-c2a0-4a40-8aef-29e19b57d96c",
+              "label": null,
+              "isExecuted": false,
+              "group": null,
+              "uuid": "e60f100b-0689-41fb-a0f7-ab0046c3a258"
+            },
+            {
+              "@type": "WorkflowRoute",
+              "name": "Create a Replication Through Removable Media_T0847 Alert -> Get Assets",
+              "targetStep": "/api/3/workflow_steps/3992472c-a903-49b1-b132-5fa5eeed3ae3",
+              "sourceStep": "/api/3/workflow_steps/8853063e-66d6-4fc0-a990-a1cbe659f6f8",
+              "label": null,
+              "isExecuted": false,
+              "group": null,
+              "uuid": "40c478b4-1531-47e4-826c-71315217c97c"
+            },
+            {
+              "@type": "WorkflowRoute",
+              "name": "Create Commonly Used Port_T0885 Alert -> Copy of Get T0846 Assets",
+              "targetStep": "/api/3/workflow_steps/bef3cfec-869a-464b-8f62-2defff3d5f5b",
+              "sourceStep": "/api/3/workflow_steps/939b1127-5d69-4cac-85c8-5288c0fda7c4",
+              "label": null,
+              "isExecuted": false,
+              "group": null,
+              "uuid": "1cd0542e-3642-4dda-88ad-55103aa93857"
+            },
+            {
+              "@type": "WorkflowRoute",
+              "name": "Create EWS 01Q3 Asset -> Create IE11Win7 Asset",
+              "targetStep": "/api/3/workflow_steps/2a8f398d-949c-4ab6-8de3-4efc33eb76d0",
+              "sourceStep": "/api/3/workflow_steps/57b1ce70-c34b-4463-ac23-4fe5d99aedea",
+              "label": null,
+              "isExecuted": false,
+              "group": null,
+              "uuid": "f759c972-48a6-4484-a25f-e227119e84aa"
+            },
+            {
+              "@type": "WorkflowRoute",
+              "name": "Create EWS 42E6 -> Update T0846 Alert",
+              "targetStep": "/api/3/workflow_steps/e7c3a6ea-251d-461c-b421-440cb29702c9",
+              "sourceStep": "/api/3/workflow_steps/aa1fa61b-b1b8-4f59-9bda-702f2a2ff0e3",
+              "label": null,
+              "isExecuted": false,
+              "group": null,
+              "uuid": "fba36c24-2fb1-45c9-b3bf-4a3750dad8d6"
+            },
+            {
+              "@type": "WorkflowRoute",
+              "name": "Create IE11Win7 Asset -> Update",
+              "targetStep": "/api/3/workflow_steps/250aea00-eb13-4f9f-92fd-4276407d1149",
+              "sourceStep": "/api/3/workflow_steps/2a8f398d-949c-4ab6-8de3-4efc33eb76d0",
+              "label": null,
+              "isExecuted": false,
+              "group": null,
+              "uuid": "e019378c-e6d4-4980-98ac-f36018ac76ec"
+            },
+            {
+              "@type": "WorkflowRoute",
+              "name": "Create PLC 04 S7 400 -> Update T0843 Alert",
+              "targetStep": "/api/3/workflow_steps/d7e79de8-109d-459e-abaf-7dc0d2d04a37",
+              "sourceStep": "/api/3/workflow_steps/44f0e423-57fe-4595-bef2-84c961670aed",
+              "label": null,
+              "isExecuted": false,
+              "group": null,
+              "uuid": "2d1498e9-ce1b-40f2-9b5b-4fd54af3c382"
+            },
+            {
+              "@type": "WorkflowRoute",
+              "name": "Create Program Download_T0843 Alert -> Copy of Get T0885 Assets",
+              "targetStep": "/api/3/workflow_steps/ddc8229d-4b23-47f6-8457-86c9bafe9a62",
+              "sourceStep": "/api/3/workflow_steps/a80eb6c0-906f-4811-98ab-f21d801346cc",
+              "label": null,
+              "isExecuted": false,
+              "group": null,
+              "uuid": "9e5a5a2d-0c48-4c5f-9c1a-487cbdcf50fc"
+            },
+            {
+              "@type": "WorkflowRoute",
+              "name": "Create Remote System Discovery_T0846 Alert -> Copy of Get T0847 Assets",
+              "targetStep": "/api/3/workflow_steps/ca41c034-5593-4853-863e-2d242f9394ef",
+              "sourceStep": "/api/3/workflow_steps/3fe9bf8d-26b1-45ca-a619-fbb4e2842e0f",
+              "label": null,
+              "isExecuted": false,
+              "group": null,
+              "uuid": "b2b026dd-0f17-4ba5-b778-290391aaedef"
+            },
+            {
+              "@type": "WorkflowRoute",
+              "name": "Get Assets -> Create EWS 01Q3 Asset",
+              "targetStep": "/api/3/workflow_steps/57b1ce70-c34b-4463-ac23-4fe5d99aedea",
+              "sourceStep": "/api/3/workflow_steps/3992472c-a903-49b1-b132-5fa5eeed3ae3",
+              "label": null,
+              "isExecuted": false,
+              "group": null,
+              "uuid": "33656824-c03b-45f3-bf4d-4077d34e36ee"
+            },
+            {
+              "@type": "WorkflowRoute",
+              "name": "Get T0843 Assets -> Create PLC 04 S7 400",
+              "targetStep": "/api/3/workflow_steps/44f0e423-57fe-4595-bef2-84c961670aed",
+              "sourceStep": "/api/3/workflow_steps/ddc8229d-4b23-47f6-8457-86c9bafe9a62",
+              "label": null,
+              "isExecuted": false,
+              "group": null,
+              "uuid": "97303979-d058-41c2-8377-041a2d806cce"
+            },
+            {
+              "@type": "WorkflowRoute",
+              "name": "Get T0846 Assets -> Create EWS 42E6",
+              "targetStep": "/api/3/workflow_steps/aa1fa61b-b1b8-4f59-9bda-702f2a2ff0e3",
+              "sourceStep": "/api/3/workflow_steps/ca41c034-5593-4853-863e-2d242f9394ef",
+              "label": null,
+              "isExecuted": false,
+              "group": null,
+              "uuid": "48ab64e1-6837-4551-8636-e6f3ea5cb4d7"
+            },
+            {
+              "@type": "WorkflowRoute",
+              "name": "Get T0885 Assets -> Update T0885 Alert",
+              "targetStep": "/api/3/workflow_steps/37b08e61-592d-45c4-ad0e-a0f2b28d74ef",
+              "sourceStep": "/api/3/workflow_steps/bef3cfec-869a-464b-8f62-2defff3d5f5b",
+              "label": null,
+              "isExecuted": false,
+              "group": null,
+              "uuid": "be6f5903-4279-4e97-91a7-8a7d0a7d3e6f"
+            },
+            {
+              "@type": "WorkflowRoute",
+              "name": "Start -> Configuration",
+              "targetStep": "/api/3/workflow_steps/918fb4b1-6fc3-41b8-b2c5-d690b162c570",
+              "sourceStep": "/api/3/workflow_steps/b5d2c66a-c38e-4e07-8485-52afd0ac3cc0",
+              "label": null,
+              "isExecuted": false,
+              "group": null,
+              "uuid": "004fdfe2-657e-49f3-ac3f-1c87beedf6ab"
+            },
+            {
+              "@type": "WorkflowRoute",
+              "name": "Update T0843 Alert -> Output",
+              "targetStep": "/api/3/workflow_steps/f549712c-b842-4521-b75f-0130a90501c4",
+              "sourceStep": "/api/3/workflow_steps/d7e79de8-109d-459e-abaf-7dc0d2d04a37",
+              "label": null,
+              "isExecuted": false,
+              "group": null,
+              "uuid": "18660083-dde6-4a29-a77c-d5be1898ec9b"
+            },
+            {
+              "@type": "WorkflowRoute",
+              "name": "Update T0846 Alert -> Copy of Wait for second",
+              "targetStep": "/api/3/workflow_steps/b28eb604-c2a0-4a40-8aef-29e19b57d96c",
+              "sourceStep": "/api/3/workflow_steps/e7c3a6ea-251d-461c-b421-440cb29702c9",
+              "label": null,
+              "isExecuted": false,
+              "group": null,
+              "uuid": "c4bff605-7cdc-43b8-889c-b3b9b666325a"
+            },
+            {
+              "@type": "WorkflowRoute",
+              "name": "Update T0885 Alert -> Copy 1 of Wait for second",
+              "targetStep": "/api/3/workflow_steps/973e6915-6789-4f62-b641-f0ec7f8cf5ce",
+              "sourceStep": "/api/3/workflow_steps/37b08e61-592d-45c4-ad0e-a0f2b28d74ef",
+              "label": null,
+              "isExecuted": false,
+              "group": null,
+              "uuid": "dbb4054a-8dfa-4aba-ad49-74064cd4d39a"
+            },
+            {
+              "@type": "WorkflowRoute",
+              "name": "Update -> Wait for second",
+              "targetStep": "/api/3/workflow_steps/7e9e20f8-65d3-455d-b644-3ade03f07282",
+              "sourceStep": "/api/3/workflow_steps/250aea00-eb13-4f9f-92fd-4276407d1149",
+              "label": null,
+              "isExecuted": false,
+              "group": null,
+              "uuid": "f84c75fe-427b-4b9d-a2d7-73b258614383"
+            },
+            {
+              "@type": "WorkflowRoute",
+              "name": "Wait for second -> Create T0846 Alert",
+              "targetStep": "/api/3/workflow_steps/3fe9bf8d-26b1-45ca-a619-fbb4e2842e0f",
+              "sourceStep": "/api/3/workflow_steps/7e9e20f8-65d3-455d-b644-3ade03f07282",
+              "label": null,
+              "isExecuted": false,
+              "group": null,
+              "uuid": "be5f48ac-5595-4294-bc49-eaa66fdbc68a"
+            }
+          ],
+          "groups": [],
+          "priority": "/api/3/picklists/2b563c61-ae2c-41c0-a85a-c9709585e3f2",
+          "playbookOrigin": "/api/3/picklists/b6d710a9-a8ec-41ec-8817-fe9fa062fcdd",
+          "isEditable": false,
+          "uuid": "fc6ade35-4b83-492d-8592-7aa1f95588e6",
+          "id": 1279,
+          "owners": [],
+          "isPrivate": false,
+          "deletedAt": null,
+          "importedBy": [
+            {
+              "apiName": "oT-AssetManagement",
+              "name": "OT - Asset Management",
+              "version": "2.0.0"
+            }
+          ],
+          "recordTags": [
+            "Alerts",
+            "Assets",
+            "IT OT",
+            "Referenced",
+            "Scenario"
+          ]
+        }
+      ]
+    }
+  ],
+  "macros": [
+    {
+      "name": "Demo_mode",
+      "value": "false",
+      "default_value": "false"
+    }
+  ],
+  "exported_tags": [
+    "IT OT",
+    "FortiGate",
+    "Isolate",
+    "ManualTrigger",
+    "War Room",
+    "FortiEDR",
+    "Incident",
+    "Quarantine",
+    "Raise Ticket",
+    "ServiceNow",
+    "Alerts",
+    "Assets",
+    "PostCreate",
+    "Comment",
+    "Referenced",
+    "Qualys",
+    "IP Address",
+    "Import CSV",
+    "Scenario",
+    "CSV Record",
+    "Asset",
+    "Asset Resources",
+    "Icon",
+    "Policy",
+    "Most Essential Function (MEF)"
+  ]
+}
