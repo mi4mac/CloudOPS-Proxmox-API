@@ -26,6 +26,7 @@ This repository contains a **FortiSOAR solution pack** and a **native Proxmox co
   - `proxmox-api/playbooks/Proxmox API Samples/README.md` – Sample playbooks for each connector operation.
   - `docs/internal/PROJEKT_STATUS.md` – Internal project status for this migration.
   - `docs/internal/IMPLEMENTIERUNGS_CHECKLISTE.md` – Internal implementation checklist (SSH → API migration).
+  - `docs/FAZ_ASSET_INGEST_PRODUCTION_RUNBOOK.md` – Production hardening checklist for FAZ asset ingest and duplicate cleanup playbooks.
 
 ## Installation (high level)
 

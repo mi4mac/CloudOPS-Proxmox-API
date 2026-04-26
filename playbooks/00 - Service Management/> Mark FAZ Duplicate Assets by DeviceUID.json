@@ -1,0 +1,280 @@
+{
+  "type": "workflow_collections",
+  "data": [
+    {
+      "uuid": "04ee731b-278b-455b-a6c9-4744038c42e7",
+      "@type": "WorkflowCollection",
+      "name": "00 - Service Management",
+      "description": null,
+      "visible": true,
+      "image": null,
+      "recordTags": [],
+      "workflows": [
+        {
+          "@context": "/api/3/contexts/Workflow",
+          "@type": "Workflow",
+          "triggerLimit": null,
+          "name": "Mark FAZ Duplicate Assets by DeviceUID",
+          "aliasName": null,
+          "tag": null,
+          "description": "One-time helper: marks duplicate FortiAnalyzer assets (same deviceUid) with 'duplicate-candidate' tag for manual review.",
+          "isActive": true,
+          "debug": false,
+          "singleRecordExecution": false,
+          "remoteExecutableFlag": false,
+          "parameters": [],
+          "synchronous": false,
+          "collection": "/api/3/workflow_collections/04ee731b-278b-455b-a6c9-4744038c42e7",
+          "versions": [],
+          "triggerStep": "/api/3/workflow_steps/cb10ebee-6588-4a92-97a1-cfe244413c81",
+          "steps": [
+            {
+              "@type": "WorkflowStep",
+              "name": "Start",
+              "description": null,
+              "arguments": {
+                "route": "bb5a21cd-7c92-4662-943a-9c034737bc5f",
+                "title": "Mark FAZ Duplicate Assets by DeviceUID",
+                "resources": [
+                  "assets"
+                ],
+                "inputVariables": [],
+                "step_variables": {
+                  "input": {
+                    "params": [],
+                    "records": "{{vars.input.records}}"
+                  }
+                },
+                "executeButtonText": "Execute",
+                "noRecordExecution": true,
+                "singleRecordExecution": false
+              },
+              "status": null,
+              "top": "40",
+              "left": "60",
+              "stepType": "/api/3/workflow_step_types/f414d039-bb0d-4e59-9c39-a8f1e880b18a",
+              "group": null,
+              "uuid": "cb10ebee-6588-4a92-97a1-cfe244413c81"
+            },
+            {
+              "@type": "WorkflowStep",
+              "name": "Get Assets",
+              "description": "Fetches assets in bulk for duplicate scan.",
+              "arguments": {
+                "params": {
+                  "iri": "/api/3/assets?$limit=5000",
+                  "body": "",
+                  "method": "GET"
+                },
+                "version": "3.7.0",
+                "connector": "cyops_utilities",
+                "operation": "make_cyops_request",
+                "operationTitle": "FSR: Make FortiSOAR API Call",
+                "step_variables": []
+              },
+              "status": null,
+              "top": "180",
+              "left": "60",
+              "stepType": "/api/3/workflow_step_types/0109f35d-090b-4a2b-bd8a-94cbc3508562",
+              "group": null,
+              "uuid": "1e8daeba-67dd-487e-9357-a587e887f9d4"
+            },
+            {
+              "@type": "WorkflowStep",
+              "name": "Compute Duplicate Asset IDs",
+              "description": "Keeps first asset per deviceUid and marks subsequent duplicates.",
+              "arguments": {
+                "duplicate_asset_ids": "{% set ns = namespace(seen=[], dup=[]) %}{% for a in (vars.steps.Get_Assets.data.data | default([])) %}{% set uid = a.deviceUid | default('') %}{% if uid and uid.startswith('FortiAnalyzer|') %}{% if uid in ns.seen %}{% set _ = ns.dup.append(a['@id']) %}{% else %}{% set _ = ns.seen.append(uid) %}{% endif %}{% endif %}{% endfor %}{{ ns.dup }}"
+              },
+              "status": null,
+              "top": "320",
+              "left": "60",
+              "stepType": "/api/3/workflow_step_types/04d0cf46-b6a8-42c4-8683-60a7eaa69e8f",
+              "group": null,
+              "uuid": "f915462c-9cc3-47ef-a23b-0eadda225b8a"
+            },
+            {
+              "@type": "WorkflowStep",
+              "name": "Has Duplicates",
+              "description": null,
+              "arguments": {
+                "conditions": [
+                  {
+                    "option": "yes",
+                    "step_iri": "/api/3/workflow_steps/6d28c569-ec35-4652-9809-27c65e19de42",
+                    "condition": "{{ (vars.duplicate_asset_ids | default([]) | length) > 0 }}",
+                    "step_name": "Mark Duplicate Candidates"
+                  },
+                  {
+                    "option": "no",
+                    "default": true,
+                    "step_iri": "/api/3/workflow_steps/b0e710f2-a7e3-4758-908b-0689b9703ce8",
+                    "step_name": "No Duplicates"
+                  }
+                ],
+                "step_variables": []
+              },
+              "status": null,
+              "top": "460",
+              "left": "60",
+              "stepType": "/api/3/workflow_step_types/12254cf5-5db7-4b1a-8cb1-3af081924b28",
+              "group": null,
+              "uuid": "f4f152e0-0077-476c-bede-f6d655b06d5a"
+            },
+            {
+              "@type": "WorkflowStep",
+              "name": "Mark Duplicate Candidates",
+              "description": "Appends review tags on duplicate assets for manual merge/deletion.",
+              "arguments": {
+                "for_each": {
+                  "item": "{{ vars.duplicate_asset_ids | default([]) }}",
+                  "__bulk": true,
+                  "parallel": false,
+                  "condition": "",
+                  "batch_size": 100
+                },
+                "resource": {
+                  "recordTags": [
+                    "duplicate-candidate",
+                    "faz-review"
+                  ]
+                },
+                "operation": "Append",
+                "collection": "{{ fsr_loop_item }}",
+                "__recommend": [],
+                "collectionType": "/api/3/assets",
+                "fieldOperation": {
+                  "recordTags": "Append"
+                },
+                "step_variables": []
+              },
+              "status": null,
+              "top": "600",
+              "left": "60",
+              "stepType": "/api/3/workflow_step_types/b593663d-7d13-40ce-a3a3-96dece928722",
+              "group": null,
+              "uuid": "6d28c569-ec35-4652-9809-27c65e19de42"
+            },
+            {
+              "@type": "WorkflowStep",
+              "name": "No Duplicates",
+              "description": "No duplicate candidates found.",
+              "arguments": {
+                "params": [],
+                "version": "3.6.0",
+                "connector": "cyops_utilities",
+                "operation": "no_op",
+                "operationTitle": "Utils: No Operation",
+                "step_variables": []
+              },
+              "status": null,
+              "top": "600",
+              "left": "330",
+              "stepType": "/api/3/workflow_step_types/0109f35d-090b-4a2b-bd8a-94cbc3508562",
+              "group": null,
+              "uuid": "b0e710f2-a7e3-4758-908b-0689b9703ce8"
+            },
+            {
+              "@type": "WorkflowStep",
+              "name": "Set Summary",
+              "description": null,
+              "arguments": {
+                "summary_message": "Marked {{ vars.duplicate_asset_ids | default([]) | length }} duplicate FAZ assets with tags duplicate-candidate,faz-review."
+              },
+              "status": null,
+              "top": "740",
+              "left": "60",
+              "stepType": "/api/3/workflow_step_types/04d0cf46-b6a8-42c4-8683-60a7eaa69e8f",
+              "group": null,
+              "uuid": "928fbb91-22e6-4bec-97ab-844d23d05d11"
+            }
+          ],
+          "routes": [
+            {
+              "@type": "WorkflowRoute",
+              "name": "Start -> Get Assets",
+              "targetStep": "/api/3/workflow_steps/1e8daeba-67dd-487e-9357-a587e887f9d4",
+              "sourceStep": "/api/3/workflow_steps/cb10ebee-6588-4a92-97a1-cfe244413c81",
+              "label": null,
+              "isExecuted": false,
+              "group": null,
+              "uuid": "6201d991-6e8c-4232-b672-6f9ab9542abe"
+            },
+            {
+              "@type": "WorkflowRoute",
+              "name": "Get Assets -> Compute Duplicate Asset IDs",
+              "targetStep": "/api/3/workflow_steps/f915462c-9cc3-47ef-a23b-0eadda225b8a",
+              "sourceStep": "/api/3/workflow_steps/1e8daeba-67dd-487e-9357-a587e887f9d4",
+              "label": null,
+              "isExecuted": false,
+              "group": null,
+              "uuid": "0aa02b93-9da9-4d4a-b14c-8235dfc591fb"
+            },
+            {
+              "@type": "WorkflowRoute",
+              "name": "Compute Duplicate Asset IDs -> Has Duplicates",
+              "targetStep": "/api/3/workflow_steps/f4f152e0-0077-476c-bede-f6d655b06d5a",
+              "sourceStep": "/api/3/workflow_steps/f915462c-9cc3-47ef-a23b-0eadda225b8a",
+              "label": null,
+              "isExecuted": false,
+              "group": null,
+              "uuid": "240af30c-2b36-4f6d-b6bd-fbc3e3bbae1d"
+            },
+            {
+              "@type": "WorkflowRoute",
+              "name": "Has Duplicates -> Mark Duplicate Candidates",
+              "targetStep": "/api/3/workflow_steps/6d28c569-ec35-4652-9809-27c65e19de42",
+              "sourceStep": "/api/3/workflow_steps/f4f152e0-0077-476c-bede-f6d655b06d5a",
+              "label": "yes",
+              "isExecuted": false,
+              "group": null,
+              "uuid": "d9f8bc71-7ef6-41cf-9b98-1a27759302c0"
+            },
+            {
+              "@type": "WorkflowRoute",
+              "name": "Has Duplicates -> No Duplicates",
+              "targetStep": "/api/3/workflow_steps/b0e710f2-a7e3-4758-908b-0689b9703ce8",
+              "sourceStep": "/api/3/workflow_steps/f4f152e0-0077-476c-bede-f6d655b06d5a",
+              "label": "no",
+              "isExecuted": false,
+              "group": null,
+              "uuid": "8bc897db-dd65-4f85-80ef-d4dbfe883ed7"
+            },
+            {
+              "@type": "WorkflowRoute",
+              "name": "Mark Duplicate Candidates -> Set Summary",
+              "targetStep": "/api/3/workflow_steps/928fbb91-22e6-4bec-97ab-844d23d05d11",
+              "sourceStep": "/api/3/workflow_steps/6d28c569-ec35-4652-9809-27c65e19de42",
+              "label": null,
+              "isExecuted": false,
+              "group": null,
+              "uuid": "2e40fc89-eba0-4dd3-849f-c5e5f2bb6450"
+            },
+            {
+              "@type": "WorkflowRoute",
+              "name": "No Duplicates -> Set Summary",
+              "targetStep": "/api/3/workflow_steps/928fbb91-22e6-4bec-97ab-844d23d05d11",
+              "sourceStep": "/api/3/workflow_steps/b0e710f2-a7e3-4758-908b-0689b9703ce8",
+              "label": null,
+              "isExecuted": false,
+              "group": null,
+              "uuid": "c65b0d01-934e-4308-90b1-5f250e39b31e"
+            }
+          ],
+          "groups": [],
+          "priority": "/api/3/picklists/2b563c61-ae2c-41c0-a85a-c9709585e3f2",
+          "playbookOrigin": "/api/3/picklists/15c1e8c9-22bf-4e66-8fbb-0a502d4a4a3f",
+          "isEditable": true,
+          "uuid": "bb5a21cd-7c92-4662-943a-9c034737bc5f",
+          "owners": [],
+          "isPrivate": false,
+          "deletedAt": null,
+          "recordTags": [
+            "faz",
+            "cleanup"
+          ]
+        }
+      ]
+    }
+  ]
+}
