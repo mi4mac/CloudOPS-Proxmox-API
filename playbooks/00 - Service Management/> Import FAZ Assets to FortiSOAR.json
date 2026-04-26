@@ -313,11 +313,25 @@
             },
             {
               "@type": "WorkflowStep",
+              "name": "Deduplicate Traffic Rows",
+              "description": "Keeps one row per computed deviceUid per run, preferring rows with srcname.",
+              "arguments": {
+                "deduped_traffic_rows": "{% set ns = namespace(seen=[], out=[]) %}{% for a in (vars.traffic_rows | default([])) %}{% set uid = ('FortiAnalyzer|' ~ (vars.faz_adom | default('root')) ~ '|' ~ (a.devid | default('')) ~ '|' ~ (a.vd | default('root')) ~ '|' ~ ((a.srcmac | default(a.mastersrcmac | default(a.srcname | default(a.srcip | default('unknown'))))) | lower)) %}{% if (a.srcmac is defined and a.srcmac != '') and (a.srcname | default('') != '') and (uid not in ns.seen) %}{% set _ = ns.seen.append(uid) %}{% set _ = ns.out.append(a) %}{% endif %}{% endfor %}{% for a in (vars.traffic_rows | default([])) %}{% set uid = ('FortiAnalyzer|' ~ (vars.faz_adom | default('root')) ~ '|' ~ (a.devid | default('')) ~ '|' ~ (a.vd | default('root')) ~ '|' ~ ((a.srcmac | default(a.mastersrcmac | default(a.srcname | default(a.srcip | default('unknown'))))) | lower)) %}{% if (a.srcmac is defined and a.srcmac != '') and (uid not in ns.seen) %}{% set _ = ns.seen.append(uid) %}{% set _ = ns.out.append(a) %}{% endif %}{% endfor %}{{ ns.out }}"
+              },
+              "status": null,
+              "top": "1090",
+              "left": "80",
+              "stepType": "/api/3/workflow_step_types/04d0cf46-b6a8-42c4-8683-60a7eaa69e8f",
+              "group": null,
+              "uuid": "0ec3da5e-7f1e-4d2e-9b76-3298f56a2341"
+            },
+            {
+              "@type": "WorkflowStep",
               "name": "Upsert Observed Hosts",
               "description": "Upserts hosts observed in traffic logs including MAC addresses. Host labels are normalized to lowercase to prevent case-only duplicates.",
               "arguments": {
                 "for_each": {
-                  "item": "{{ vars.traffic_rows or [] }}",
+                  "item": "{{ vars.deduped_traffic_rows or [] }}",
                   "__bulk": true,
                   "parallel": false,
                   "condition": "{{ vars.item.srcmac is defined and vars.item.srcmac != '' }}",
@@ -499,9 +513,19 @@
             },
             {
               "@type": "WorkflowRoute",
-              "name": "Set Traffic Rows -> Upsert Observed Hosts",
-              "targetStep": "/api/3/workflow_steps/5fa4626a-6c99-4f1d-b006-cbd899eeef19",
+              "name": "Set Traffic Rows -> Deduplicate Traffic Rows",
+              "targetStep": "/api/3/workflow_steps/0ec3da5e-7f1e-4d2e-9b76-3298f56a2341",
               "sourceStep": "/api/3/workflow_steps/52098a92-40db-4ae3-b0ba-f690e0f2938d",
+              "label": null,
+              "isExecuted": false,
+              "group": null,
+              "uuid": "bb5e240e-c116-486b-b3c4-95362f6ad1bd"
+            },
+            {
+              "@type": "WorkflowRoute",
+              "name": "Deduplicate Traffic Rows -> Upsert Observed Hosts",
+              "targetStep": "/api/3/workflow_steps/5fa4626a-6c99-4f1d-b006-cbd899eeef19",
+              "sourceStep": "/api/3/workflow_steps/0ec3da5e-7f1e-4d2e-9b76-3298f56a2341",
               "label": null,
               "isExecuted": false,
               "group": null,
