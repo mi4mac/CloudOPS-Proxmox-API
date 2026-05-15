@@ -20,7 +20,7 @@
                     "host": "192.168.222.222",
                     "node": "pve",
                     "port": 8006,
-                    "api_token": "EXJ0ULGdr.0x699ffb0c.eTMjRMFGeR9O707wrpmbj9n7j9GTXd7h9zltOz1nW+Rbw8Z6zCc5Aov8Y8oBcNhBfIkIBtkPIHA3CyoZvXBKtiPbnhnfg7R5TIBmdhyL1oXLsA==A0VnY0kEMlWBm4Vs7",
+                    "api_token": "EXJ0ULGdr.0x699ffb0c.QU5g82L3MJNIe8cIzhsE8D+eo6eRo5gXYb5kTJRGnVLcFVZ2xO2yoalyu2bQBpOx7tJ7C+zbClkvMaflzZbJrVZIE4qgUfdFQEdQt+yA7Pzo+w==UH3J5h9BQ6CygwIdO",
                     "verify_ssl": false
                 },
                 "remote_status": [],
@@ -59,7 +59,7 @@
                     "port": "2375",
                     "timeout": 60,
                     "key_path": "",
-                    "password": "EXJ0ULGdr.0x699ffb0c.V\/9t24UR39VScLBt8aKJ2u2sfnF+YmOuQ87OHUuwCsAdOFAQp",
+                    "password": "EXJ0ULGdr.0x699ffb0c.lyxnO2WwMIUDpcYsJ4Z86gI+\/FoSRYmIqZKZ9D1OxKsjAInfV",
                     "protocol": "HTTP",
                     "username": "root",
                     "cert_path": "",
@@ -111,7 +111,7 @@
                     "port": 4443,
                     "vdom": "",
                     "address": "192.168.222.254",
-                    "api_key": "EXJ0ULGdr.0x699ffb0c.MHVETK7bYivjt5oACHMmyHhul7a72od+TLY2d9RGmGJ5zxRM7fxJ5FDfdCgBXg==HpP0qdtI1qRYlxmwg",
+                    "api_key": "EXJ0ULGdr.0x699ffb0c.awZ6Pvbi0koui4XJ0pwaIgOKogMeZF+A27kxYDTzYagjL3lO+Bm2Gq9a09gheQ==dktDkq0uyd0oxyFH1",
                     "verify_ssl": false,
                     "app_block_policy": "default",
                     "url_block_policy": "LAN"
