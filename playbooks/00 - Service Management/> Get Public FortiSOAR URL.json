@@ -1,5 +1,4 @@
 {
-    "@context": "\/api\/3\/contexts\/Workflow",
     "@type": "Workflow",
     "triggerLimit": null,
     "name": "> Get Public FortiSOAR URL",
@@ -12,9 +11,10 @@
     "remoteExecutableFlag": false,
     "parameters": [],
     "synchronous": false,
-    "collection": "\/api\/3\/workflow_collections\/04ee731b-278b-455b-a6c9-4744038c42e7",
+    "lastModifyDate": 1777027244,
+    "collection": "/api/3/workflow_collections/04ee731b-278b-455b-a6c9-4744038c42e7",
     "versions": [],
-    "triggerStep": "\/api\/3\/workflow_steps\/e146a1a5-c49d-4178-8527-01f06fafe2de",
+    "triggerStep": "/api/3/workflow_steps/e146a1a5-c49d-4178-8527-01f06fafe2de",
     "steps": [
         {
             "@type": "WorkflowStep",
@@ -27,7 +27,7 @@
             "status": null,
             "top": "160",
             "left": "120",
-            "stepType": "\/api\/3\/workflow_step_types\/04d0cf46-b6a8-42c4-8683-60a7eaa69e8f",
+            "stepType": "/api/3/workflow_step_types/04d0cf46-b6a8-42c4-8683-60a7eaa69e8f",
             "group": null,
             "uuid": "9e30eacc-7cea-4d2d-83ca-96d22a471cb3"
         },
@@ -41,7 +41,7 @@
             "status": null,
             "top": "300",
             "left": "560",
-            "stepType": "\/api\/3\/workflow_step_types\/04d0cf46-b6a8-42c4-8683-60a7eaa69e8f",
+            "stepType": "/api/3/workflow_step_types/04d0cf46-b6a8-42c4-8683-60a7eaa69e8f",
             "group": null,
             "uuid": "25e69dcd-8899-42df-9bb5-50a7dd761579"
         },
@@ -50,13 +50,13 @@
             "name": "Get Base URl",
             "description": null,
             "arguments": {
-                "fqdn": "{{vars.uri|regex_search('(?<=^https:\/\/)([^\/:]+)')}}",
-                "fortisoar_url": "{{vars.uri|regex_search('(?<=^https:\/\/)[a-zA-Z0-9.-]+(?:\\:[0-9]+)?')}}"
+                "fqdn": "{{vars.uri|regex_search('(?<=^https://)([^/:]+)')}}",
+                "fortisoar_url": "{{vars.uri|regex_search('(?<=^https://)[a-zA-Z0-9.-]+(?:\\:[0-9]+)?')}}"
             },
             "status": null,
             "top": "300",
             "left": "120",
-            "stepType": "\/api\/3\/workflow_step_types\/04d0cf46-b6a8-42c4-8683-60a7eaa69e8f",
+            "stepType": "/api/3/workflow_step_types/04d0cf46-b6a8-42c4-8683-60a7eaa69e8f",
             "group": null,
             "uuid": "4e872419-eb69-4c6d-82cf-73b6cf5f4c30"
         },
@@ -66,7 +66,7 @@
             "description": null,
             "arguments": {
                 "params": {
-                    "url": "https:\/\/ifconfig.me",
+                    "url": "https://ifconfig.me",
                     "body": "",
                     "method": "GET",
                     "params": "",
@@ -86,7 +86,7 @@
             "status": null,
             "top": "580",
             "left": "560",
-            "stepType": "\/api\/3\/workflow_step_types\/0109f35d-090b-4a2b-bd8a-94cbc3508562",
+            "stepType": "/api/3/workflow_step_types/0109f35d-090b-4a2b-bd8a-94cbc3508562",
             "group": null,
             "uuid": "b9d1c51c-e7db-41c0-91a2-c5bc0411c182"
         },
@@ -105,14 +105,14 @@
                 "version": "1.0.0",
                 "connector": "dns",
                 "operation": "lookup_domain",
-                "operationTitle": "Lookup FQDN\/Domain",
+                "operationTitle": "Lookup FQDN/Domain",
                 "pickFromTenant": false,
                 "step_variables": []
             },
             "status": null,
             "top": "440",
             "left": "560",
-            "stepType": "\/api\/3\/workflow_step_types\/0bfed618-0316-11e7-93ae-92361f002671",
+            "stepType": "/api/3/workflow_step_types/0bfed618-0316-11e7-93ae-92361f002671",
             "group": null,
             "uuid": "ae27b4ed-5c04-46bb-8e97-c816e0d67a0b"
         },
@@ -133,7 +133,7 @@
             "status": null,
             "top": "20",
             "left": "120",
-            "stepType": "\/api\/3\/workflow_step_types\/b348f017-9a94-471f-87f8-ce88b6a7ad62",
+            "stepType": "/api/3/workflow_step_types/b348f017-9a94-471f-87f8-ce88b6a7ad62",
             "group": null,
             "uuid": "e146a1a5-c49d-4178-8527-01f06fafe2de"
         },
@@ -149,13 +149,13 @@
                 "version": "3.7.0",
                 "connector": "cyops_utilities",
                 "operation": "updatemacro",
-                "operationTitle": "FSR: Create\/Update Global Variables",
+                "operationTitle": "FSR: Create/Update Global Variables",
                 "step_variables": []
             },
             "status": null,
             "top": "440",
             "left": "120",
-            "stepType": "\/api\/3\/workflow_step_types\/0109f35d-090b-4a2b-bd8a-94cbc3508562",
+            "stepType": "/api/3/workflow_step_types/0109f35d-090b-4a2b-bd8a-94cbc3508562",
             "group": null,
             "uuid": "5b33d27c-a543-4dc4-aa90-72a21980cacb"
         }
@@ -164,8 +164,8 @@
         {
             "@type": "WorkflowRoute",
             "name": "Configuration -> Copy of Configuration",
-            "targetStep": "\/api\/3\/workflow_steps\/4e872419-eb69-4c6d-82cf-73b6cf5f4c30",
-            "sourceStep": "\/api\/3\/workflow_steps\/9e30eacc-7cea-4d2d-83ca-96d22a471cb3",
+            "targetStep": "/api/3/workflow_steps/4e872419-eb69-4c6d-82cf-73b6cf5f4c30",
+            "sourceStep": "/api/3/workflow_steps/9e30eacc-7cea-4d2d-83ca-96d22a471cb3",
             "label": null,
             "isExecuted": false,
             "group": null,
@@ -174,8 +174,8 @@
         {
             "@type": "WorkflowRoute",
             "name": "FQDN or IP Address -> Resolve FQDN",
-            "targetStep": "\/api\/3\/workflow_steps\/ae27b4ed-5c04-46bb-8e97-c816e0d67a0b",
-            "sourceStep": "\/api\/3\/workflow_steps\/25e69dcd-8899-42df-9bb5-50a7dd761579",
+            "targetStep": "/api/3/workflow_steps/ae27b4ed-5c04-46bb-8e97-c816e0d67a0b",
+            "sourceStep": "/api/3/workflow_steps/25e69dcd-8899-42df-9bb5-50a7dd761579",
             "label": null,
             "isExecuted": false,
             "group": null,
@@ -184,8 +184,8 @@
         {
             "@type": "WorkflowRoute",
             "name": "Get Base URl -> FQDN or IP Address",
-            "targetStep": "\/api\/3\/workflow_steps\/25e69dcd-8899-42df-9bb5-50a7dd761579",
-            "sourceStep": "\/api\/3\/workflow_steps\/4e872419-eb69-4c6d-82cf-73b6cf5f4c30",
+            "targetStep": "/api/3/workflow_steps/25e69dcd-8899-42df-9bb5-50a7dd761579",
+            "sourceStep": "/api/3/workflow_steps/4e872419-eb69-4c6d-82cf-73b6cf5f4c30",
             "label": null,
             "isExecuted": false,
             "group": null,
@@ -194,8 +194,8 @@
         {
             "@type": "WorkflowRoute",
             "name": "Get Base URl -> Update FortiSOAR FQDN",
-            "targetStep": "\/api\/3\/workflow_steps\/5b33d27c-a543-4dc4-aa90-72a21980cacb",
-            "sourceStep": "\/api\/3\/workflow_steps\/4e872419-eb69-4c6d-82cf-73b6cf5f4c30",
+            "targetStep": "/api/3/workflow_steps/5b33d27c-a543-4dc4-aa90-72a21980cacb",
+            "sourceStep": "/api/3/workflow_steps/4e872419-eb69-4c6d-82cf-73b6cf5f4c30",
             "label": null,
             "isExecuted": false,
             "group": null,
@@ -204,8 +204,8 @@
         {
             "@type": "WorkflowRoute",
             "name": "Resolve FQDN -> Get FortiSOAR SNAT IP",
-            "targetStep": "\/api\/3\/workflow_steps\/b9d1c51c-e7db-41c0-91a2-c5bc0411c182",
-            "sourceStep": "\/api\/3\/workflow_steps\/ae27b4ed-5c04-46bb-8e97-c816e0d67a0b",
+            "targetStep": "/api/3/workflow_steps/b9d1c51c-e7db-41c0-91a2-c5bc0411c182",
+            "sourceStep": "/api/3/workflow_steps/ae27b4ed-5c04-46bb-8e97-c816e0d67a0b",
             "label": null,
             "isExecuted": false,
             "group": null,
@@ -214,8 +214,8 @@
         {
             "@type": "WorkflowRoute",
             "name": "Start -> Configuration",
-            "targetStep": "\/api\/3\/workflow_steps\/9e30eacc-7cea-4d2d-83ca-96d22a471cb3",
-            "sourceStep": "\/api\/3\/workflow_steps\/e146a1a5-c49d-4178-8527-01f06fafe2de",
+            "targetStep": "/api/3/workflow_steps/9e30eacc-7cea-4d2d-83ca-96d22a471cb3",
+            "sourceStep": "/api/3/workflow_steps/e146a1a5-c49d-4178-8527-01f06fafe2de",
             "label": null,
             "isExecuted": false,
             "group": null,
@@ -241,13 +241,15 @@
             "recordTags": []
         }
     ],
-    "priority": "\/api\/3\/picklists\/2b563c61-ae2c-41c0-a85a-c9709585e3f2",
-    "playbookOrigin": "\/api\/3\/picklists\/15c1e8c9-22bf-4e66-8fbb-0a502d4a4a3f",
+    "priority": "/api/3/picklists/2b563c61-ae2c-41c0-a85a-c9709585e3f2",
+    "playbookOrigin": "/api/3/picklists/15c1e8c9-22bf-4e66-8fbb-0a502d4a4a3f",
     "isEditable": true,
     "uuid": "46da0f61-df16-4f4e-873e-21313974ad87",
+    "id": 1711,
     "owners": [],
     "isPrivate": false,
     "deletedAt": null,
+    "importedBy": [],
     "recordTags": [
         "Utility"
     ]

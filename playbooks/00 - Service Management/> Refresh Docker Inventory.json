@@ -1,5 +1,4 @@
 {
-    "@context": "\/api\/3\/contexts\/Workflow",
     "@type": "Workflow",
     "triggerLimit": null,
     "name": "> Refresh Docker Inventory",
@@ -12,9 +11,10 @@
     "remoteExecutableFlag": false,
     "parameters": [],
     "synchronous": false,
-    "collection": "\/api\/3\/workflow_collections\/04ee731b-278b-455b-a6c9-4744038c42e7",
+    "lastModifyDate": 1777027231,
+    "collection": "/api/3/workflow_collections/04ee731b-278b-455b-a6c9-4744038c42e7",
     "versions": [],
-    "triggerStep": "\/api\/3\/workflow_steps\/9f387629-0460-4bdc-ab98-4b35e99f716d",
+    "triggerStep": "/api/3/workflow_steps/9f387629-0460-4bdc-ab98-4b35e99f716d",
     "steps": [
         {
             "@type": "WorkflowStep",
@@ -36,7 +36,7 @@
             "status": null,
             "top": "165",
             "left": "125",
-            "stepType": "\/api\/3\/workflow_step_types\/0bfed618-0316-11e7-93ae-92361f002671",
+            "stepType": "/api/3/workflow_step_types/0bfed618-0316-11e7-93ae-92361f002671",
             "group": null,
             "uuid": "42ae3e9e-1139-4330-b3b7-2a7811f84b4f"
         },
@@ -71,7 +71,7 @@
             "status": null,
             "top": "30",
             "left": "125",
-            "stepType": "\/api\/3\/workflow_step_types\/f414d039-bb0d-4e59-9c39-a8f1e880b18a",
+            "stepType": "/api/3/workflow_step_types/f414d039-bb0d-4e59-9c39-a8f1e880b18a",
             "group": null,
             "uuid": "9f387629-0460-4bdc-ab98-4b35e99f716d"
         },
@@ -88,7 +88,7 @@
                     "batch_size": 100
                 },
                 "resource": {
-                    "name": "{{ ((vars.item.Names | default([]) | first) | default('')) | replace('\/', '', 1) }}",
+                    "name": "{{ ((vars.item.Names | default([]) | first) | default('')) | replace('/', '', 1) }}",
                     "image": "{{ vars.item.Image | default('') }}",
                     "status": "{{ vars.item.State | default(vars.item.Status | default('')) }}",
                     "swapMB": "{{ 0 }}",
@@ -97,10 +97,10 @@
                     "lastSeen": "{{ arrow.utcnow().int_timestamp }}",
                     "memoryMB": "{{ 0 }}",
                     "__replace": "true",
-                    "imageSizeMB": "{{ ((vars.item.SizeRootFs | default(0) | int) \/ 1048576) | int }}"
+                    "imageSizeMB": "{{ ((vars.item.SizeRootFs | default(0) | int) / 1048576) | int }}"
                 },
                 "operation": "Overwrite",
-                "collection": "\/api\/3\/upsert\/docker_containers",
+                "collection": "/api/3/upsert/docker_containers",
                 "__recommend": [],
                 "fieldOperation": {
                     "recordTags": "Overwrite"
@@ -110,7 +110,7 @@
             "status": null,
             "top": "300",
             "left": "125",
-            "stepType": "\/api\/3\/workflow_step_types\/2597053c-e718-44b4-8394-4d40fe26d357",
+            "stepType": "/api/3/workflow_step_types/2597053c-e718-44b4-8394-4d40fe26d357",
             "group": null,
             "uuid": "ff8e1dda-e97b-43a1-9469-fdd1c092e0cf"
         }
@@ -119,8 +119,8 @@
         {
             "@type": "WorkflowRoute",
             "name": "List Containers -> Upsert Docker Containers",
-            "targetStep": "\/api\/3\/workflow_steps\/ff8e1dda-e97b-43a1-9469-fdd1c092e0cf",
-            "sourceStep": "\/api\/3\/workflow_steps\/42ae3e9e-1139-4330-b3b7-2a7811f84b4f",
+            "targetStep": "/api/3/workflow_steps/ff8e1dda-e97b-43a1-9469-fdd1c092e0cf",
+            "sourceStep": "/api/3/workflow_steps/42ae3e9e-1139-4330-b3b7-2a7811f84b4f",
             "label": null,
             "isExecuted": false,
             "group": null,
@@ -129,8 +129,8 @@
         {
             "@type": "WorkflowRoute",
             "name": "Start -> List Containers",
-            "targetStep": "\/api\/3\/workflow_steps\/42ae3e9e-1139-4330-b3b7-2a7811f84b4f",
-            "sourceStep": "\/api\/3\/workflow_steps\/9f387629-0460-4bdc-ab98-4b35e99f716d",
+            "targetStep": "/api/3/workflow_steps/42ae3e9e-1139-4330-b3b7-2a7811f84b4f",
+            "sourceStep": "/api/3/workflow_steps/9f387629-0460-4bdc-ab98-4b35e99f716d",
             "label": null,
             "isExecuted": false,
             "group": null,
@@ -138,13 +138,15 @@
         }
     ],
     "groups": [],
-    "priority": "\/api\/3\/picklists\/2b563c61-ae2c-41c0-a85a-c9709585e3f2",
-    "playbookOrigin": "\/api\/3\/picklists\/15c1e8c9-22bf-4e66-8fbb-0a502d4a4a3f",
+    "priority": "/api/3/picklists/2b563c61-ae2c-41c0-a85a-c9709585e3f2",
+    "playbookOrigin": "/api/3/picklists/15c1e8c9-22bf-4e66-8fbb-0a502d4a4a3f",
     "isEditable": true,
     "uuid": "157fce18-4bff-458a-8b1d-81370e0135f5",
+    "id": 1713,
     "owners": [],
     "isPrivate": false,
     "deletedAt": null,
+    "importedBy": [],
     "recordTags": [
         "Inventory"
     ]

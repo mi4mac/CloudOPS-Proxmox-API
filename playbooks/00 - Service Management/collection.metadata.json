@@ -1,5 +1,5 @@
 {
-    "@context": "\/api\/3\/contexts\/WorkflowCollection",
+    "@context": "/api/3/contexts/WorkflowCollection",
     "@type": "WorkflowCollection",
     "name": "00 - Service Management",
     "description": null,

@@ -1,5 +1,4 @@
 {
-    "@context": "\/api\/3\/contexts\/Workflow",
     "@type": "Workflow",
     "triggerLimit": null,
     "name": "> Find Assets Related To Alert",
@@ -17,9 +16,10 @@
         "firewallSerial"
     ],
     "synchronous": false,
-    "collection": "\/api\/3\/workflow_collections\/04ee731b-278b-455b-a6c9-4744038c42e7",
+    "lastModifyDate": 1777983578,
+    "collection": "/api/3/workflow_collections/04ee731b-278b-455b-a6c9-4744038c42e7",
     "versions": [],
-    "triggerStep": "\/api\/3\/workflow_steps\/0250f3bd-fe57-4cd8-9cc7-8b2c6c2acc05",
+    "triggerStep": "/api/3/workflow_steps/0250f3bd-fe57-4cd8-9cc7-8b2c6c2acc05",
     "steps": [
         {
             "@type": "WorkflowStep",
@@ -46,7 +46,7 @@
             "status": null,
             "top": "840",
             "left": "800",
-            "stepType": "\/api\/3\/workflow_step_types\/b593663d-7d13-40ce-a3a3-96dece928770",
+            "stepType": "/api/3/workflow_step_types/b593663d-7d13-40ce-a3a3-96dece928770",
             "group": null,
             "uuid": "ea6248b9-95a0-44f9-ab0c-6d061260a213"
         },
@@ -75,7 +75,7 @@
             "status": null,
             "top": "165",
             "left": "310",
-            "stepType": "\/api\/3\/workflow_step_types\/b593663d-7d13-40ce-a3a3-96dece928770",
+            "stepType": "/api/3/workflow_step_types/b593663d-7d13-40ce-a3a3-96dece928770",
             "group": null,
             "uuid": "66f692f1-70e9-46a1-a1ed-9f1ccc4a9e65"
         },
@@ -104,7 +104,7 @@
             "status": null,
             "top": "720",
             "left": "200",
-            "stepType": "\/api\/3\/workflow_step_types\/b593663d-7d13-40ce-a3a3-96dece928770",
+            "stepType": "/api/3/workflow_step_types/b593663d-7d13-40ce-a3a3-96dece928770",
             "group": null,
             "uuid": "49ecc46d-ae8c-475f-a7ed-79beaf9bef86"
         },
@@ -140,7 +140,7 @@
             "status": null,
             "top": "440",
             "left": "200",
-            "stepType": "\/api\/3\/workflow_step_types\/b593663d-7d13-40ce-a3a3-96dece928770",
+            "stepType": "/api/3/workflow_step_types/b593663d-7d13-40ce-a3a3-96dece928770",
             "group": null,
             "uuid": "b58722db-2c0f-4606-86c6-92267356f435"
         },
@@ -152,14 +152,14 @@
                 "conditions": [
                     {
                         "option": "yes",
-                        "step_iri": "\/api\/3\/workflow_steps\/ea6248b9-95a0-44f9-ab0c-6d061260a213",
+                        "step_iri": "/api/3/workflow_steps/ea6248b9-95a0-44f9-ab0c-6d061260a213",
                         "condition": "{{vars.steps.Find_Source_Asset_by_Host_Name and (vars.steps.Find_Source_Asset_by_Host_Name|length) > 0}}",
                         "step_name": "Find Destination Asset"
                     },
                     {
                         "option": "no",
                         "default": true,
-                        "step_iri": "\/api\/3\/workflow_steps\/49ecc46d-ae8c-475f-a7ed-79beaf9bef86",
+                        "step_iri": "/api/3/workflow_steps/49ecc46d-ae8c-475f-a7ed-79beaf9bef86",
                         "step_name": "Find Source Asset by Firewall Serial"
                     }
                 ],
@@ -168,7 +168,7 @@
             "status": null,
             "top": "580",
             "left": "200",
-            "stepType": "\/api\/3\/workflow_step_types\/12254cf5-5db7-4b1a-8cb1-3af081924b28",
+            "stepType": "/api/3/workflow_step_types/12254cf5-5db7-4b1a-8cb1-3af081924b28",
             "group": null,
             "uuid": "21b7069e-57c1-4474-9623-c202cd45c275"
         },
@@ -180,14 +180,14 @@
                 "conditions": [
                     {
                         "option": "yes",
-                        "step_iri": "\/api\/3\/workflow_steps\/ea6248b9-95a0-44f9-ab0c-6d061260a213",
+                        "step_iri": "/api/3/workflow_steps/ea6248b9-95a0-44f9-ab0c-6d061260a213",
                         "condition": "{{vars.steps.Find_Source_Asset and (vars.steps.Find_Source_Asset|length) > 0}}",
                         "step_name": "Find Destination Asset"
                     },
                     {
                         "option": "no",
                         "default": true,
-                        "step_iri": "\/api\/3\/workflow_steps\/b58722db-2c0f-4606-86c6-92267356f435",
+                        "step_iri": "/api/3/workflow_steps/b58722db-2c0f-4606-86c6-92267356f435",
                         "step_name": "Find Source Asset by Host Name"
                     }
                 ],
@@ -196,7 +196,7 @@
             "status": null,
             "top": "300",
             "left": "310",
-            "stepType": "\/api\/3\/workflow_step_types\/12254cf5-5db7-4b1a-8cb1-3af081924b28",
+            "stepType": "/api/3/workflow_step_types/12254cf5-5db7-4b1a-8cb1-3af081924b28",
             "group": null,
             "uuid": "30b7e3c5-fa08-48ce-bfa4-bc483169bbcf"
         },
@@ -211,7 +211,7 @@
             "status": null,
             "top": "1120",
             "left": "800",
-            "stepType": "\/api\/3\/workflow_step_types\/04d0cf46-b6a8-42c4-8683-60a7eaa69e8f",
+            "stepType": "/api/3/workflow_step_types/04d0cf46-b6a8-42c4-8683-60a7eaa69e8f",
             "group": null,
             "uuid": "d154ec7d-f52f-46b3-81cc-aef6aeeaa49c"
         },
@@ -225,7 +225,7 @@
             "status": null,
             "top": "980",
             "left": "800",
-            "stepType": "\/api\/3\/workflow_step_types\/04d0cf46-b6a8-42c4-8683-60a7eaa69e8f",
+            "stepType": "/api/3/workflow_step_types/04d0cf46-b6a8-42c4-8683-60a7eaa69e8f",
             "group": null,
             "uuid": "ef47b3dd-ab72-4e97-8f63-0423763670e6"
         },
@@ -243,7 +243,7 @@
             "status": null,
             "top": "30",
             "left": "310",
-            "stepType": "\/api\/3\/workflow_step_types\/b348f017-9a94-471f-87f8-ce88b6a7ad62",
+            "stepType": "/api/3/workflow_step_types/b348f017-9a94-471f-87f8-ce88b6a7ad62",
             "group": null,
             "uuid": "0250f3bd-fe57-4cd8-9cc7-8b2c6c2acc05"
         }
@@ -252,8 +252,8 @@
         {
             "@type": "WorkflowRoute",
             "name": "Find Destination Asset -> Set Source Asset Match",
-            "targetStep": "\/api\/3\/workflow_steps\/ef47b3dd-ab72-4e97-8f63-0423763670e6",
-            "sourceStep": "\/api\/3\/workflow_steps\/ea6248b9-95a0-44f9-ab0c-6d061260a213",
+            "targetStep": "/api/3/workflow_steps/ef47b3dd-ab72-4e97-8f63-0423763670e6",
+            "sourceStep": "/api/3/workflow_steps/ea6248b9-95a0-44f9-ab0c-6d061260a213",
             "label": null,
             "isExecuted": false,
             "group": null,
@@ -262,8 +262,8 @@
         {
             "@type": "WorkflowRoute",
             "name": "Find Source Asset by Firewall Serial -> Find Destination Asset",
-            "targetStep": "\/api\/3\/workflow_steps\/ea6248b9-95a0-44f9-ab0c-6d061260a213",
-            "sourceStep": "\/api\/3\/workflow_steps\/49ecc46d-ae8c-475f-a7ed-79beaf9bef86",
+            "targetStep": "/api/3/workflow_steps/ea6248b9-95a0-44f9-ab0c-6d061260a213",
+            "sourceStep": "/api/3/workflow_steps/49ecc46d-ae8c-475f-a7ed-79beaf9bef86",
             "label": null,
             "isExecuted": false,
             "group": null,
@@ -272,8 +272,8 @@
         {
             "@type": "WorkflowRoute",
             "name": "Find Source Asset by Host Name -> Has Source Host Name Match",
-            "targetStep": "\/api\/3\/workflow_steps\/21b7069e-57c1-4474-9623-c202cd45c275",
-            "sourceStep": "\/api\/3\/workflow_steps\/b58722db-2c0f-4606-86c6-92267356f435",
+            "targetStep": "/api/3/workflow_steps/21b7069e-57c1-4474-9623-c202cd45c275",
+            "sourceStep": "/api/3/workflow_steps/b58722db-2c0f-4606-86c6-92267356f435",
             "label": null,
             "isExecuted": false,
             "group": null,
@@ -282,8 +282,8 @@
         {
             "@type": "WorkflowRoute",
             "name": "Find Source Asset -> Has Source IP Match",
-            "targetStep": "\/api\/3\/workflow_steps\/30b7e3c5-fa08-48ce-bfa4-bc483169bbcf",
-            "sourceStep": "\/api\/3\/workflow_steps\/66f692f1-70e9-46a1-a1ed-9f1ccc4a9e65",
+            "targetStep": "/api/3/workflow_steps/30b7e3c5-fa08-48ce-bfa4-bc483169bbcf",
+            "sourceStep": "/api/3/workflow_steps/66f692f1-70e9-46a1-a1ed-9f1ccc4a9e65",
             "label": null,
             "isExecuted": false,
             "group": null,
@@ -292,8 +292,8 @@
         {
             "@type": "WorkflowRoute",
             "name": "Has Source Host Name Match -> Find Destination Asset",
-            "targetStep": "\/api\/3\/workflow_steps\/ea6248b9-95a0-44f9-ab0c-6d061260a213",
-            "sourceStep": "\/api\/3\/workflow_steps\/21b7069e-57c1-4474-9623-c202cd45c275",
+            "targetStep": "/api/3/workflow_steps/ea6248b9-95a0-44f9-ab0c-6d061260a213",
+            "sourceStep": "/api/3/workflow_steps/21b7069e-57c1-4474-9623-c202cd45c275",
             "label": "yes",
             "isExecuted": false,
             "group": null,
@@ -302,8 +302,8 @@
         {
             "@type": "WorkflowRoute",
             "name": "Has Source Host Name Match -> Find Source Asset by Firewall Serial",
-            "targetStep": "\/api\/3\/workflow_steps\/49ecc46d-ae8c-475f-a7ed-79beaf9bef86",
-            "sourceStep": "\/api\/3\/workflow_steps\/21b7069e-57c1-4474-9623-c202cd45c275",
+            "targetStep": "/api/3/workflow_steps/49ecc46d-ae8c-475f-a7ed-79beaf9bef86",
+            "sourceStep": "/api/3/workflow_steps/21b7069e-57c1-4474-9623-c202cd45c275",
             "label": "no",
             "isExecuted": false,
             "group": null,
@@ -312,8 +312,8 @@
         {
             "@type": "WorkflowRoute",
             "name": "Has Source IP Match -> Find Destination Asset",
-            "targetStep": "\/api\/3\/workflow_steps\/ea6248b9-95a0-44f9-ab0c-6d061260a213",
-            "sourceStep": "\/api\/3\/workflow_steps\/30b7e3c5-fa08-48ce-bfa4-bc483169bbcf",
+            "targetStep": "/api/3/workflow_steps/ea6248b9-95a0-44f9-ab0c-6d061260a213",
+            "sourceStep": "/api/3/workflow_steps/30b7e3c5-fa08-48ce-bfa4-bc483169bbcf",
             "label": "yes",
             "isExecuted": false,
             "group": null,
@@ -322,8 +322,8 @@
         {
             "@type": "WorkflowRoute",
             "name": "Has Source IP Match -> Find Source Asset by Host Name",
-            "targetStep": "\/api\/3\/workflow_steps\/b58722db-2c0f-4606-86c6-92267356f435",
-            "sourceStep": "\/api\/3\/workflow_steps\/30b7e3c5-fa08-48ce-bfa4-bc483169bbcf",
+            "targetStep": "/api/3/workflow_steps/b58722db-2c0f-4606-86c6-92267356f435",
+            "sourceStep": "/api/3/workflow_steps/30b7e3c5-fa08-48ce-bfa4-bc483169bbcf",
             "label": "no",
             "isExecuted": false,
             "group": null,
@@ -332,8 +332,8 @@
         {
             "@type": "WorkflowRoute",
             "name": "Set Source Asset Match -> Output",
-            "targetStep": "\/api\/3\/workflow_steps\/d154ec7d-f52f-46b3-81cc-aef6aeeaa49c",
-            "sourceStep": "\/api\/3\/workflow_steps\/ef47b3dd-ab72-4e97-8f63-0423763670e6",
+            "targetStep": "/api/3/workflow_steps/d154ec7d-f52f-46b3-81cc-aef6aeeaa49c",
+            "sourceStep": "/api/3/workflow_steps/ef47b3dd-ab72-4e97-8f63-0423763670e6",
             "label": null,
             "isExecuted": false,
             "group": null,
@@ -342,8 +342,8 @@
         {
             "@type": "WorkflowRoute",
             "name": "Start -> Find Source",
-            "targetStep": "\/api\/3\/workflow_steps\/66f692f1-70e9-46a1-a1ed-9f1ccc4a9e65",
-            "sourceStep": "\/api\/3\/workflow_steps\/0250f3bd-fe57-4cd8-9cc7-8b2c6c2acc05",
+            "targetStep": "/api/3/workflow_steps/66f692f1-70e9-46a1-a1ed-9f1ccc4a9e65",
+            "sourceStep": "/api/3/workflow_steps/0250f3bd-fe57-4cd8-9cc7-8b2c6c2acc05",
             "label": null,
             "isExecuted": false,
             "group": null,
@@ -351,13 +351,21 @@
         }
     ],
     "groups": [],
-    "priority": "\/api\/3\/picklists\/2b563c61-ae2c-41c0-a85a-c9709585e3f2",
-    "playbookOrigin": "\/api\/3\/picklists\/15c1e8c9-22bf-4e66-8fbb-0a502d4a4a3f",
+    "priority": "/api/3/picklists/2b563c61-ae2c-41c0-a85a-c9709585e3f2",
+    "playbookOrigin": "/api/3/picklists/15c1e8c9-22bf-4e66-8fbb-0a502d4a4a3f",
     "isEditable": true,
     "uuid": "5084c821-a01b-4d72-84f9-8e335a35ba6a",
+    "id": 1923,
     "owners": [],
     "isPrivate": false,
     "deletedAt": null,
+    "importedBy": [
+        {
+            "apiName": "oT-AssetManagement",
+            "name": "OT - Asset Management",
+            "version": "2.0.0"
+        }
+    ],
     "recordTags": [
         "Assets",
         "IP Address",

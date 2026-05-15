@@ -1,5 +1,4 @@
 {
-    "@context": "\/api\/3\/contexts\/Workflow",
     "@type": "Workflow",
     "triggerLimit": null,
     "name": "Import Fortigate Policies",
@@ -12,9 +11,10 @@
     "remoteExecutableFlag": false,
     "parameters": [],
     "synchronous": false,
-    "collection": "\/api\/3\/workflow_collections\/04ee731b-278b-455b-a6c9-4744038c42e7",
+    "lastModifyDate": 1777027274,
+    "collection": "/api/3/workflow_collections/04ee731b-278b-455b-a6c9-4744038c42e7",
     "versions": [],
-    "triggerStep": "\/api\/3\/workflow_steps\/9a5a1ef4-15e2-4520-a6f0-76b74bdc55f0",
+    "triggerStep": "/api/3/workflow_steps/9a5a1ef4-15e2-4520-a6f0-76b74bdc55f0",
     "steps": [
         {
             "@type": "WorkflowStep",
@@ -36,7 +36,7 @@
                     "lastSeenAt": "{{arrow.get().int_timestamp}}",
                     "nATEnabled": "{{true if vars.item.nat == \"enable\" else false}}",
                     "sourcedata": "{{vars.item | toJSON}}",
-                    "auditStatus": "\/api\/3\/picklists\/f64c4652-7d1a-46b6-9415-5176da6867a1",
+                    "auditStatus": "/api/3/picklists/f64c4652-7d1a-46b6-9415-5176da6867a1",
                     "description": "{{vars.item | json_query('{srcaddr:srcaddr |[].name | join(`, `, @), srcintf:srcintf |[].name | join(`, `, @), dstaddr:dstaddr|[].name | join(`, `, @), dstintf : dstintf |[].name | join(`, `, @), service:service |[].name | join(`, `, @), status: status, nat:nat, comments: comments}') | json2html(row_fields= [\"srcaddr\",\"srcintf\",\"dstaddr\",\"dstintf\",\"service\",\"status\",\"nat\",\"comments\"], template=\"Stylized with row selection\", display=\"Vertical\")}}",
                     "policyStatus": "{{vars.item.status | title}}",
                     "reviewComplete": false,
@@ -53,7 +53,7 @@
                     ]
                 },
                 "operation": "Overwrite",
-                "collection": "\/api\/3\/upsert\/policies",
+                "collection": "/api/3/upsert/policies",
                 "__recommend": [],
                 "fieldOperation": {
                     "recordTags": "Overwrite"
@@ -63,7 +63,7 @@
             "status": null,
             "top": "511",
             "left": "604",
-            "stepType": "\/api\/3\/workflow_step_types\/2597053c-e718-44b4-8394-4d40fe26d357",
+            "stepType": "/api/3/workflow_step_types/2597053c-e718-44b4-8394-4d40fe26d357",
             "group": null,
             "uuid": "94eabf86-ee04-4f49-bf1a-3c234196107a"
         },
@@ -78,15 +78,15 @@
                     "condition": ""
                 },
                 "resource": {
-                    "auditStatus": "\/api\/3\/picklists\/05f8b475-f9d1-4297-9440-c32758f15daa",
+                    "auditStatus": "/api/3/picklists/05f8b475-f9d1-4297-9440-c32758f15daa",
                     "policyStatus": "DeletedOnFirewall",
                     "deletedDetectedAt": "{{arrow.get().int_timestamp}}",
                     "isDeletedOnFirewall": true
                 },
                 "operation": "Append",
-                "collection": "\/api\/3\/policies\/{{vars.item.deleted_policy_uuid}}",
+                "collection": "/api/3/policies/{{vars.item.deleted_policy_uuid}}",
                 "__recommend": [],
-                "collectionType": "\/api\/3\/policies",
+                "collectionType": "/api/3/policies",
                 "fieldOperation": {
                     "recordTags": "Append"
                 },
@@ -95,7 +95,7 @@
             "status": null,
             "top": "1051",
             "left": "604",
-            "stepType": "\/api\/3\/workflow_step_types\/b593663d-7d13-40ce-a3a3-96dece928722",
+            "stepType": "/api/3/workflow_step_types/b593663d-7d13-40ce-a3a3-96dece928722",
             "group": null,
             "uuid": "9c80d74e-bd9d-4a2d-87f9-34a2b70e22d9"
         },
@@ -130,7 +130,7 @@
             "status": null,
             "top": "781",
             "left": "604",
-            "stepType": "\/api\/3\/workflow_step_types\/b593663d-7d13-40ce-a3a3-96dece928770",
+            "stepType": "/api/3/workflow_step_types/b593663d-7d13-40ce-a3a3-96dece928770",
             "group": null,
             "uuid": "a4703244-c144-4d6e-aad4-efdf613a9580"
         },
@@ -152,7 +152,7 @@
             "status": null,
             "top": "241",
             "left": "604",
-            "stepType": "\/api\/3\/workflow_step_types\/0bfed618-0316-11e7-93ae-92361f002671",
+            "stepType": "/api/3/workflow_step_types/0bfed618-0316-11e7-93ae-92361f002671",
             "group": null,
             "uuid": "906e990e-f050-47fd-a6b0-eaa2e893cb70"
         },
@@ -166,12 +166,12 @@
                 "step_variables": [],
                 "pass_parent_env": true,
                 "pass_input_record": false,
-                "workflowReference": "\/api\/3\/workflows\/520512cc-56ee-4d78-a5a8-637f88458841"
+                "workflowReference": "/api/3/workflows/520512cc-56ee-4d78-a5a8-637f88458841"
             },
             "status": null,
             "top": "646",
             "left": "604",
-            "stepType": "\/api\/3\/workflow_step_types\/74932bdc-b8b6-4d24-88c4-1a4dfbc524f3",
+            "stepType": "/api/3/workflow_step_types/74932bdc-b8b6-4d24-88c4-1a4dfbc524f3",
             "group": null,
             "uuid": "8a89b80a-d2a4-4c03-8e8d-a82e0f0197a3"
         },
@@ -192,7 +192,7 @@
             "status": null,
             "top": "916",
             "left": "604",
-            "stepType": "\/api\/3\/workflow_step_types\/04d0cf46-b6a8-42c4-8683-60a7eaa69e8f",
+            "stepType": "/api/3/workflow_step_types/04d0cf46-b6a8-42c4-8683-60a7eaa69e8f",
             "group": null,
             "uuid": "f90d0a38-ff4c-4fde-9813-cf9a414edde0"
         },
@@ -208,7 +208,7 @@
             "status": null,
             "top": "376",
             "left": "604",
-            "stepType": "\/api\/3\/workflow_step_types\/04d0cf46-b6a8-42c4-8683-60a7eaa69e8f",
+            "stepType": "/api/3/workflow_step_types/04d0cf46-b6a8-42c4-8683-60a7eaa69e8f",
             "group": null,
             "uuid": "b6665b50-8089-446d-a3eb-ba8f77bd777d"
         },
@@ -236,7 +236,7 @@
             "status": null,
             "top": "68",
             "left": "604",
-            "stepType": "\/api\/3\/workflow_step_types\/f414d039-bb0d-4e59-9c39-a8f1e880b18a",
+            "stepType": "/api/3/workflow_step_types/f414d039-bb0d-4e59-9c39-a8f1e880b18a",
             "group": null,
             "uuid": "9a5a1ef4-15e2-4520-a6f0-76b74bdc55f0"
         }
@@ -245,8 +245,8 @@
         {
             "@type": "WorkflowRoute",
             "name": "Create Policy Records -> Link Policies to Firewall Assets (by Serial)",
-            "targetStep": "\/api\/3\/workflow_steps\/8a89b80a-d2a4-4c03-8e8d-a82e0f0197a3",
-            "sourceStep": "\/api\/3\/workflow_steps\/94eabf86-ee04-4f49-bf1a-3c234196107a",
+            "targetStep": "/api/3/workflow_steps/8a89b80a-d2a4-4c03-8e8d-a82e0f0197a3",
+            "sourceStep": "/api/3/workflow_steps/94eabf86-ee04-4f49-bf1a-3c234196107a",
             "label": null,
             "isExecuted": false,
             "group": null,
@@ -255,8 +255,8 @@
         {
             "@type": "WorkflowRoute",
             "name": "Get Existing Policies by Serial -> Prepare Stale Policy Delete List",
-            "targetStep": "\/api\/3\/workflow_steps\/f90d0a38-ff4c-4fde-9813-cf9a414edde0",
-            "sourceStep": "\/api\/3\/workflow_steps\/a4703244-c144-4d6e-aad4-efdf613a9580",
+            "targetStep": "/api/3/workflow_steps/f90d0a38-ff4c-4fde-9813-cf9a414edde0",
+            "sourceStep": "/api/3/workflow_steps/a4703244-c144-4d6e-aad4-efdf613a9580",
             "label": null,
             "isExecuted": false,
             "group": null,
@@ -265,8 +265,8 @@
         {
             "@type": "WorkflowRoute",
             "name": "Get Policies -> Set policies",
-            "targetStep": "\/api\/3\/workflow_steps\/b6665b50-8089-446d-a3eb-ba8f77bd777d",
-            "sourceStep": "\/api\/3\/workflow_steps\/906e990e-f050-47fd-a6b0-eaa2e893cb70",
+            "targetStep": "/api/3/workflow_steps/b6665b50-8089-446d-a3eb-ba8f77bd777d",
+            "sourceStep": "/api/3/workflow_steps/906e990e-f050-47fd-a6b0-eaa2e893cb70",
             "label": null,
             "isExecuted": false,
             "group": null,
@@ -275,8 +275,8 @@
         {
             "@type": "WorkflowRoute",
             "name": "Link Policies to Firewall Assets by Serial -> Get Existing Policies by Serial",
-            "targetStep": "\/api\/3\/workflow_steps\/a4703244-c144-4d6e-aad4-efdf613a9580",
-            "sourceStep": "\/api\/3\/workflow_steps\/8a89b80a-d2a4-4c03-8e8d-a82e0f0197a3",
+            "targetStep": "/api/3/workflow_steps/a4703244-c144-4d6e-aad4-efdf613a9580",
+            "sourceStep": "/api/3/workflow_steps/8a89b80a-d2a4-4c03-8e8d-a82e0f0197a3",
             "label": null,
             "isExecuted": false,
             "group": null,
@@ -285,8 +285,8 @@
         {
             "@type": "WorkflowRoute",
             "name": "Prepare Stale Policy Delete List -> Delete Stale Policies",
-            "targetStep": "\/api\/3\/workflow_steps\/9c80d74e-bd9d-4a2d-87f9-34a2b70e22d9",
-            "sourceStep": "\/api\/3\/workflow_steps\/f90d0a38-ff4c-4fde-9813-cf9a414edde0",
+            "targetStep": "/api/3/workflow_steps/9c80d74e-bd9d-4a2d-87f9-34a2b70e22d9",
+            "sourceStep": "/api/3/workflow_steps/f90d0a38-ff4c-4fde-9813-cf9a414edde0",
             "label": null,
             "isExecuted": false,
             "group": null,
@@ -295,8 +295,8 @@
         {
             "@type": "WorkflowRoute",
             "name": "Set policies -> Create Policy Records",
-            "targetStep": "\/api\/3\/workflow_steps\/94eabf86-ee04-4f49-bf1a-3c234196107a",
-            "sourceStep": "\/api\/3\/workflow_steps\/b6665b50-8089-446d-a3eb-ba8f77bd777d",
+            "targetStep": "/api/3/workflow_steps/94eabf86-ee04-4f49-bf1a-3c234196107a",
+            "sourceStep": "/api/3/workflow_steps/b6665b50-8089-446d-a3eb-ba8f77bd777d",
             "label": null,
             "isExecuted": false,
             "group": null,
@@ -305,8 +305,8 @@
         {
             "@type": "WorkflowRoute",
             "name": "Start -> Get Policies",
-            "targetStep": "\/api\/3\/workflow_steps\/906e990e-f050-47fd-a6b0-eaa2e893cb70",
-            "sourceStep": "\/api\/3\/workflow_steps\/9a5a1ef4-15e2-4520-a6f0-76b74bdc55f0",
+            "targetStep": "/api/3/workflow_steps/906e990e-f050-47fd-a6b0-eaa2e893cb70",
+            "sourceStep": "/api/3/workflow_steps/9a5a1ef4-15e2-4520-a6f0-76b74bdc55f0",
             "label": null,
             "isExecuted": false,
             "group": null,
@@ -332,13 +332,15 @@
             "recordTags": []
         }
     ],
-    "priority": "\/api\/3\/picklists\/2b563c61-ae2c-41c0-a85a-c9709585e3f2",
-    "playbookOrigin": "\/api\/3\/picklists\/15c1e8c9-22bf-4e66-8fbb-0a502d4a4a3f",
+    "priority": "/api/3/picklists/2b563c61-ae2c-41c0-a85a-c9709585e3f2",
+    "playbookOrigin": "/api/3/picklists/15c1e8c9-22bf-4e66-8fbb-0a502d4a4a3f",
     "isEditable": true,
     "uuid": "a5c7a48e-6030-4547-a5d2-265740a2002f",
+    "id": 1771,
     "owners": [],
     "isPrivate": false,
     "deletedAt": null,
+    "importedBy": [],
     "recordTags": [
         "dataingestion",
         "Manual Trigger"
