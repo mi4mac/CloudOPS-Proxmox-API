@@ -1,0 +1,367 @@
+{
+    "@context": "\/api\/3\/contexts\/Workflow",
+    "@type": "Workflow",
+    "triggerLimit": null,
+    "name": "> Find Assets Related To Alert",
+    "aliasName": null,
+    "tag": null,
+    "description": "Finds source and destination assets using source IP, source host name, and firewall serial fallback.",
+    "isActive": true,
+    "debug": false,
+    "singleRecordExecution": false,
+    "remoteExecutableFlag": false,
+    "parameters": [
+        "sourceIPAddress",
+        "destinationIPAddress",
+        "sourceHostName",
+        "firewallSerial"
+    ],
+    "synchronous": false,
+    "collection": "\/api\/3\/workflow_collections\/04ee731b-278b-455b-a6c9-4744038c42e7",
+    "versions": [],
+    "triggerStep": "\/api\/3\/workflow_steps\/0250f3bd-fe57-4cd8-9cc7-8b2c6c2acc05",
+    "steps": [
+        {
+            "@type": "WorkflowStep",
+            "name": "Find Destination Asset",
+            "description": null,
+            "arguments": {
+                "query": {
+                    "sort": [],
+                    "limit": 30,
+                    "logic": "AND",
+                    "filters": [
+                        {
+                            "type": "primitive",
+                            "field": "ip",
+                            "value": "{{vars.input.params.destinationIPAddress}}",
+                            "operator": "eq",
+                            "_operator": "eq"
+                        }
+                    ]
+                },
+                "module": "assets?$limit=30",
+                "step_variables": []
+            },
+            "status": null,
+            "top": "840",
+            "left": "800",
+            "stepType": "\/api\/3\/workflow_step_types\/b593663d-7d13-40ce-a3a3-96dece928770",
+            "group": null,
+            "uuid": "ea6248b9-95a0-44f9-ab0c-6d061260a213"
+        },
+        {
+            "@type": "WorkflowStep",
+            "name": "Find Source Asset",
+            "description": null,
+            "arguments": {
+                "query": {
+                    "sort": [],
+                    "limit": 30,
+                    "logic": "AND",
+                    "filters": [
+                        {
+                            "type": "primitive",
+                            "field": "ip",
+                            "value": "{{vars.input.params.sourceIPAddress}}",
+                            "operator": "eq",
+                            "_operator": "eq"
+                        }
+                    ]
+                },
+                "module": "assets?$limit=30",
+                "step_variables": []
+            },
+            "status": null,
+            "top": "165",
+            "left": "310",
+            "stepType": "\/api\/3\/workflow_step_types\/b593663d-7d13-40ce-a3a3-96dece928770",
+            "group": null,
+            "uuid": "66f692f1-70e9-46a1-a1ed-9f1ccc4a9e65"
+        },
+        {
+            "@type": "WorkflowStep",
+            "name": "Find Source Asset by Firewall Serial",
+            "description": null,
+            "arguments": {
+                "query": {
+                    "sort": [],
+                    "limit": 30,
+                    "logic": "AND",
+                    "filters": [
+                        {
+                            "type": "primitive",
+                            "field": "serialNumber",
+                            "value": "{{vars.input.params.firewallSerial}}",
+                            "operator": "eq",
+                            "_operator": "eq"
+                        }
+                    ]
+                },
+                "module": "assets?$limit=30",
+                "step_variables": []
+            },
+            "status": null,
+            "top": "720",
+            "left": "200",
+            "stepType": "\/api\/3\/workflow_step_types\/b593663d-7d13-40ce-a3a3-96dece928770",
+            "group": null,
+            "uuid": "49ecc46d-ae8c-475f-a7ed-79beaf9bef86"
+        },
+        {
+            "@type": "WorkflowStep",
+            "name": "Find Source Asset by Host Name",
+            "description": null,
+            "arguments": {
+                "query": {
+                    "sort": [],
+                    "limit": 30,
+                    "logic": "OR",
+                    "filters": [
+                        {
+                            "type": "primitive",
+                            "field": "hostname",
+                            "value": "{{vars.input.params.sourceHostName}}",
+                            "operator": "eq",
+                            "_operator": "eq"
+                        },
+                        {
+                            "type": "primitive",
+                            "field": "name",
+                            "value": "{{vars.input.params.sourceHostName}}",
+                            "operator": "eq",
+                            "_operator": "eq"
+                        }
+                    ]
+                },
+                "module": "assets?$limit=30",
+                "step_variables": []
+            },
+            "status": null,
+            "top": "440",
+            "left": "200",
+            "stepType": "\/api\/3\/workflow_step_types\/b593663d-7d13-40ce-a3a3-96dece928770",
+            "group": null,
+            "uuid": "b58722db-2c0f-4606-86c6-92267356f435"
+        },
+        {
+            "@type": "WorkflowStep",
+            "name": "Has Source Host Name Match",
+            "description": null,
+            "arguments": {
+                "conditions": [
+                    {
+                        "option": "yes",
+                        "step_iri": "\/api\/3\/workflow_steps\/ea6248b9-95a0-44f9-ab0c-6d061260a213",
+                        "condition": "{{vars.steps.Find_Source_Asset_by_Host_Name and (vars.steps.Find_Source_Asset_by_Host_Name|length) > 0}}",
+                        "step_name": "Find Destination Asset"
+                    },
+                    {
+                        "option": "no",
+                        "default": true,
+                        "step_iri": "\/api\/3\/workflow_steps\/49ecc46d-ae8c-475f-a7ed-79beaf9bef86",
+                        "step_name": "Find Source Asset by Firewall Serial"
+                    }
+                ],
+                "step_variables": []
+            },
+            "status": null,
+            "top": "580",
+            "left": "200",
+            "stepType": "\/api\/3\/workflow_step_types\/12254cf5-5db7-4b1a-8cb1-3af081924b28",
+            "group": null,
+            "uuid": "21b7069e-57c1-4474-9623-c202cd45c275"
+        },
+        {
+            "@type": "WorkflowStep",
+            "name": "Has Source IP Match",
+            "description": null,
+            "arguments": {
+                "conditions": [
+                    {
+                        "option": "yes",
+                        "step_iri": "\/api\/3\/workflow_steps\/ea6248b9-95a0-44f9-ab0c-6d061260a213",
+                        "condition": "{{vars.steps.Find_Source_Asset and (vars.steps.Find_Source_Asset|length) > 0}}",
+                        "step_name": "Find Destination Asset"
+                    },
+                    {
+                        "option": "no",
+                        "default": true,
+                        "step_iri": "\/api\/3\/workflow_steps\/b58722db-2c0f-4606-86c6-92267356f435",
+                        "step_name": "Find Source Asset by Host Name"
+                    }
+                ],
+                "step_variables": []
+            },
+            "status": null,
+            "top": "300",
+            "left": "310",
+            "stepType": "\/api\/3\/workflow_step_types\/12254cf5-5db7-4b1a-8cb1-3af081924b28",
+            "group": null,
+            "uuid": "30b7e3c5-fa08-48ce-bfa4-bc483169bbcf"
+        },
+        {
+            "@type": "WorkflowStep",
+            "name": "Output",
+            "description": null,
+            "arguments": {
+                "sourceAsset": "{{vars.sourceAsset | default('')}}",
+                "destinationAsset": "{{vars.steps.Find_Destination_Asset[0]['@id'] if vars.steps.Find_Destination_Asset and (vars.steps.Find_Destination_Asset|length) > 0 else ''}}"
+            },
+            "status": null,
+            "top": "1120",
+            "left": "800",
+            "stepType": "\/api\/3\/workflow_step_types\/04d0cf46-b6a8-42c4-8683-60a7eaa69e8f",
+            "group": null,
+            "uuid": "d154ec7d-f52f-46b3-81cc-aef6aeeaa49c"
+        },
+        {
+            "@type": "WorkflowStep",
+            "name": "Set Source Asset Match",
+            "description": null,
+            "arguments": {
+                "sourceAsset": "{% if vars.steps.Find_Source_Asset and (vars.steps.Find_Source_Asset|length) > 0 %}{{vars.steps.Find_Source_Asset[0]['@id']}}{% elif vars.steps.Find_Source_Asset_by_Host_Name and (vars.steps.Find_Source_Asset_by_Host_Name|length) > 0 %}{{vars.steps.Find_Source_Asset_by_Host_Name[0]['@id']}}{% elif vars.steps.Find_Source_Asset_by_Firewall_Serial and (vars.steps.Find_Source_Asset_by_Firewall_Serial|length) > 0 %}{{vars.steps.Find_Source_Asset_by_Firewall_Serial[0]['@id']}}{% else %}{% endif %}"
+            },
+            "status": null,
+            "top": "980",
+            "left": "800",
+            "stepType": "\/api\/3\/workflow_step_types\/04d0cf46-b6a8-42c4-8683-60a7eaa69e8f",
+            "group": null,
+            "uuid": "ef47b3dd-ab72-4e97-8f63-0423763670e6"
+        },
+        {
+            "@type": "WorkflowStep",
+            "name": "Start",
+            "description": null,
+            "arguments": {
+                "step_variables": {
+                    "input": {
+                        "params": []
+                    }
+                }
+            },
+            "status": null,
+            "top": "30",
+            "left": "310",
+            "stepType": "\/api\/3\/workflow_step_types\/b348f017-9a94-471f-87f8-ce88b6a7ad62",
+            "group": null,
+            "uuid": "0250f3bd-fe57-4cd8-9cc7-8b2c6c2acc05"
+        }
+    ],
+    "routes": [
+        {
+            "@type": "WorkflowRoute",
+            "name": "Find Destination Asset -> Set Source Asset Match",
+            "targetStep": "\/api\/3\/workflow_steps\/ef47b3dd-ab72-4e97-8f63-0423763670e6",
+            "sourceStep": "\/api\/3\/workflow_steps\/ea6248b9-95a0-44f9-ab0c-6d061260a213",
+            "label": null,
+            "isExecuted": false,
+            "group": null,
+            "uuid": "70519c14-734f-47ca-9a3f-9b04d0afdc51"
+        },
+        {
+            "@type": "WorkflowRoute",
+            "name": "Find Source Asset by Firewall Serial -> Find Destination Asset",
+            "targetStep": "\/api\/3\/workflow_steps\/ea6248b9-95a0-44f9-ab0c-6d061260a213",
+            "sourceStep": "\/api\/3\/workflow_steps\/49ecc46d-ae8c-475f-a7ed-79beaf9bef86",
+            "label": null,
+            "isExecuted": false,
+            "group": null,
+            "uuid": "8aeeb093-869a-4f06-8489-91f58e294448"
+        },
+        {
+            "@type": "WorkflowRoute",
+            "name": "Find Source Asset by Host Name -> Has Source Host Name Match",
+            "targetStep": "\/api\/3\/workflow_steps\/21b7069e-57c1-4474-9623-c202cd45c275",
+            "sourceStep": "\/api\/3\/workflow_steps\/b58722db-2c0f-4606-86c6-92267356f435",
+            "label": null,
+            "isExecuted": false,
+            "group": null,
+            "uuid": "c5b3f2df-1136-4990-aa33-873c42ac5d8b"
+        },
+        {
+            "@type": "WorkflowRoute",
+            "name": "Find Source Asset -> Has Source IP Match",
+            "targetStep": "\/api\/3\/workflow_steps\/30b7e3c5-fa08-48ce-bfa4-bc483169bbcf",
+            "sourceStep": "\/api\/3\/workflow_steps\/66f692f1-70e9-46a1-a1ed-9f1ccc4a9e65",
+            "label": null,
+            "isExecuted": false,
+            "group": null,
+            "uuid": "a89889f3-beca-4e47-a081-a4042e9aa894"
+        },
+        {
+            "@type": "WorkflowRoute",
+            "name": "Has Source Host Name Match -> Find Destination Asset",
+            "targetStep": "\/api\/3\/workflow_steps\/ea6248b9-95a0-44f9-ab0c-6d061260a213",
+            "sourceStep": "\/api\/3\/workflow_steps\/21b7069e-57c1-4474-9623-c202cd45c275",
+            "label": "yes",
+            "isExecuted": false,
+            "group": null,
+            "uuid": "4c31b454-555d-46fb-8a41-d28f840820ef"
+        },
+        {
+            "@type": "WorkflowRoute",
+            "name": "Has Source Host Name Match -> Find Source Asset by Firewall Serial",
+            "targetStep": "\/api\/3\/workflow_steps\/49ecc46d-ae8c-475f-a7ed-79beaf9bef86",
+            "sourceStep": "\/api\/3\/workflow_steps\/21b7069e-57c1-4474-9623-c202cd45c275",
+            "label": "no",
+            "isExecuted": false,
+            "group": null,
+            "uuid": "8367679d-c3ef-4290-b105-1b584796b2a3"
+        },
+        {
+            "@type": "WorkflowRoute",
+            "name": "Has Source IP Match -> Find Destination Asset",
+            "targetStep": "\/api\/3\/workflow_steps\/ea6248b9-95a0-44f9-ab0c-6d061260a213",
+            "sourceStep": "\/api\/3\/workflow_steps\/30b7e3c5-fa08-48ce-bfa4-bc483169bbcf",
+            "label": "yes",
+            "isExecuted": false,
+            "group": null,
+            "uuid": "88d52110-2cd2-4c75-993e-5d088811b4d6"
+        },
+        {
+            "@type": "WorkflowRoute",
+            "name": "Has Source IP Match -> Find Source Asset by Host Name",
+            "targetStep": "\/api\/3\/workflow_steps\/b58722db-2c0f-4606-86c6-92267356f435",
+            "sourceStep": "\/api\/3\/workflow_steps\/30b7e3c5-fa08-48ce-bfa4-bc483169bbcf",
+            "label": "no",
+            "isExecuted": false,
+            "group": null,
+            "uuid": "0f730355-786a-4fb9-bdf4-620972f4bc06"
+        },
+        {
+            "@type": "WorkflowRoute",
+            "name": "Set Source Asset Match -> Output",
+            "targetStep": "\/api\/3\/workflow_steps\/d154ec7d-f52f-46b3-81cc-aef6aeeaa49c",
+            "sourceStep": "\/api\/3\/workflow_steps\/ef47b3dd-ab72-4e97-8f63-0423763670e6",
+            "label": null,
+            "isExecuted": false,
+            "group": null,
+            "uuid": "28dbbe88-deb3-4170-8f8d-a4cf8b2a4818"
+        },
+        {
+            "@type": "WorkflowRoute",
+            "name": "Start -> Find Source",
+            "targetStep": "\/api\/3\/workflow_steps\/66f692f1-70e9-46a1-a1ed-9f1ccc4a9e65",
+            "sourceStep": "\/api\/3\/workflow_steps\/0250f3bd-fe57-4cd8-9cc7-8b2c6c2acc05",
+            "label": null,
+            "isExecuted": false,
+            "group": null,
+            "uuid": "b312917e-a723-4592-9237-53fdf253536d"
+        }
+    ],
+    "groups": [],
+    "priority": "\/api\/3\/picklists\/2b563c61-ae2c-41c0-a85a-c9709585e3f2",
+    "playbookOrigin": "\/api\/3\/picklists\/15c1e8c9-22bf-4e66-8fbb-0a502d4a4a3f",
+    "isEditable": true,
+    "uuid": "5084c821-a01b-4d72-84f9-8e335a35ba6a",
+    "owners": [],
+    "isPrivate": false,
+    "deletedAt": null,
+    "recordTags": [
+        "Assets",
+        "IP Address",
+        "IT OT",
+        "Referenced"
+    ]
+}

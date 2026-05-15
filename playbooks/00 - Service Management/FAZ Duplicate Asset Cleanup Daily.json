@@ -1,0 +1,401 @@
+{
+    "@context": "\/api\/3\/contexts\/Workflow",
+    "@type": "Workflow",
+    "triggerLimit": null,
+    "name": "FAZ Duplicate Asset Cleanup Daily",
+    "aliasName": null,
+    "tag": null,
+    "description": "Delete FAZ assets marked duplicate-old when older than 24 hours; supports dry-run.",
+    "isActive": true,
+    "debug": false,
+    "singleRecordExecution": false,
+    "remoteExecutableFlag": false,
+    "parameters": [
+        "retentionDays",
+        "dryRun",
+        "batchSize"
+    ],
+    "synchronous": false,
+    "collection": "\/api\/3\/workflow_collections\/04ee731b-278b-455b-a6c9-4744038c42e7",
+    "versions": [],
+    "triggerStep": "\/api\/3\/workflow_steps\/c6157f16-5b15-45c3-9cf7-68772324fac1",
+    "steps": [
+        {
+            "@type": "WorkflowStep",
+            "name": "Delete Stale Assets",
+            "description": "Delete stale duplicate-old assets by UUID.",
+            "arguments": {
+                "params": {
+                    "iri": "\/api\/3\/assets\/{{vars.item.uuid}}",
+                    "body": "",
+                    "method": "DELETE"
+                },
+                "version": "3.7.0",
+                "for_each": {
+                    "item": "{{ vars.steps.Find_Stale_Assets.data['hydra:member'] | default([]) | selectattr('duplicateStatus','equalto','duplicate-old') | selectattr('modifyDate','le',(vars.cutoffTs | int)) | list }}",
+                    "parallel": false,
+                    "condition": ""
+                },
+                "connector": "cyops_utilities",
+                "operation": "make_cyops_request",
+                "operationTitle": "FSR: Make FortiSOAR API Call",
+                "step_variables": []
+            },
+            "status": null,
+            "top": "560",
+            "left": "600",
+            "stepType": "\/api\/3\/workflow_step_types\/0109f35d-090b-4a2b-bd8a-94cbc3508562",
+            "group": null,
+            "uuid": "d542562d-4203-4d7c-8aa4-0521fde584a3"
+        },
+        {
+            "@type": "WorkflowStep",
+            "name": "Dry Run?",
+            "description": null,
+            "arguments": {
+                "conditions": [
+                    {
+                        "option": "yes",
+                        "step_iri": "\/api\/3\/workflow_steps\/d268ace9-d218-49ad-9a6f-58907f06cc22",
+                        "condition": "{{ vars.input.params.dryRun | default(true) }}",
+                        "step_name": "Set Summary"
+                    },
+                    {
+                        "option": "no",
+                        "default": true,
+                        "step_iri": "\/api\/3\/workflow_steps\/d542562d-4203-4d7c-8aa4-0521fde584a3",
+                        "step_name": "Delete Stale Assets"
+                    }
+                ],
+                "step_variables": []
+            },
+            "status": null,
+            "top": "560",
+            "left": "1260",
+            "stepType": "\/api\/3\/workflow_step_types\/12254cf5-5db7-4b1a-8cb1-3af081924b28",
+            "group": null,
+            "uuid": "cef2516a-b237-4f0d-ae84-ca3cbf74f4ce"
+        },
+        {
+            "@type": "WorkflowStep",
+            "name": "Find Stale Assets",
+            "description": "Fetch assets via API; stale filtering happens in downstream Jinja to avoid \/api\/query field limits.",
+            "arguments": {
+                "params": {
+                    "iri": "\/api\/3\/assets?$limit={{vars.input.params.batchSize | default(500) | int}}&$sort=modifyDate",
+                    "body": "",
+                    "method": "GET"
+                },
+                "version": "3.7.0",
+                "connector": "cyops_utilities",
+                "operation": "make_cyops_request",
+                "operationTitle": "FSR: Make FortiSOAR API Call",
+                "step_variables": []
+            },
+            "status": null,
+            "top": "300",
+            "left": "310",
+            "stepType": "\/api\/3\/workflow_step_types\/0109f35d-090b-4a2b-bd8a-94cbc3508562",
+            "group": null,
+            "uuid": "75c85f39-583f-4ad5-9489-4ccb008c71f6"
+        },
+        {
+            "@type": "WorkflowStep",
+            "name": "Has Candidates",
+            "description": null,
+            "arguments": {
+                "conditions": [
+                    {
+                        "option": "yes",
+                        "step_iri": "\/api\/3\/workflow_steps\/cef2516a-b237-4f0d-ae84-ca3cbf74f4ce",
+                        "condition": "{{ ((vars.steps.Find_Stale_Assets.data['hydra:member'] | default([]) | selectattr('duplicateStatus','equalto','duplicate-old') | selectattr('modifyDate','le',(vars.cutoffTs | int)) | list | length) > 0) and ((vars.steps.Find_Stale_Assets.data['hydra:member'] | default([]) | selectattr('duplicateStatus','equalto','duplicate-old') | selectattr('modifyDate','le',(vars.cutoffTs | int)) | list | length) <= (vars.input.params.maxDelete | default(1000) | int)) }}",
+                        "step_name": "Dry Run?"
+                    },
+                    {
+                        "option": "no",
+                        "default": true,
+                        "step_iri": "\/api\/3\/workflow_steps\/d268ace9-d218-49ad-9a6f-58907f06cc22",
+                        "step_name": "Set Summary"
+                    }
+                ],
+                "step_variables": []
+            },
+            "status": null,
+            "top": "435",
+            "left": "310",
+            "stepType": "\/api\/3\/workflow_step_types\/12254cf5-5db7-4b1a-8cb1-3af081924b28",
+            "group": null,
+            "uuid": "5e56a3dc-ff73-4fe6-9a28-751d0530dc31"
+        },
+        {
+            "@type": "WorkflowStep",
+            "name": "Set Cutoff Timestamp",
+            "description": "Compute UTC cutoff epoch from retentionDays.",
+            "arguments": {
+                "cutoffTs": "{{ arrow.utcnow().shift(days=-(vars.input.params.retentionDays | default(1) | int)).int_timestamp }}"
+            },
+            "status": null,
+            "top": "165",
+            "left": "310",
+            "stepType": "\/api\/3\/workflow_step_types\/04d0cf46-b6a8-42c4-8683-60a7eaa69e8f",
+            "group": null,
+            "uuid": "1202692e-ed6c-404c-8def-7ba60b9a7fa8"
+        },
+        {
+            "@type": "WorkflowStep",
+            "name": "Set Summary",
+            "description": null,
+            "arguments": {
+                "summary_message": "{% set c = (vars.steps.Find_Stale_Assets.data['hydra:member'] | default([]) | selectattr('duplicateStatus','equalto','duplicate-old') | selectattr('modifyDate','le',(vars.cutoffTs | int)) | list | length) %}{% set m = (vars.input.params.maxDelete | default(1000) | int) %}{% if c == 0 %}No duplicate-old assets matched cutoff {{ vars.cutoffTs }}.{% elif c > m %}Safety stop: {{ c }} candidates exceed maxDelete={{ m }}. No deletions executed.{% elif vars.input.params.dryRun | default(true) %}Dry-run: {{ c }} duplicate-old assets older than cutoff {{ vars.cutoffTs }}. No deletions executed.{% else %}Deleted {{ c }} duplicate-old assets older than cutoff {{ vars.cutoffTs }}.{% endif %}"
+            },
+            "status": null,
+            "top": "840",
+            "left": "310",
+            "stepType": "\/api\/3\/workflow_step_types\/04d0cf46-b6a8-42c4-8683-60a7eaa69e8f",
+            "group": null,
+            "uuid": "d268ace9-d218-49ad-9a6f-58907f06cc22"
+        },
+        {
+            "@type": "WorkflowStep",
+            "name": "Start",
+            "description": "Scheduled\/manual cleanup of stale duplicate-old FAZ assets.",
+            "arguments": {
+                "route": "f4720fd4-0240-4610-934d-8715eca0095b",
+                "title": "Cleanup FAZ duplicate-old Assets by Age",
+                "resources": [
+                    "assets"
+                ],
+                "inputVariables": [
+                    {
+                        "name": "retentionDays",
+                        "type": "integer",
+                        "label": "Retention Days",
+                        "title": "Number",
+                        "usable": true,
+                        "tooltip": "Delete duplicate-old records older than this many days. Default 0",
+                        "dataType": "integer",
+                        "formType": "integer",
+                        "required": true,
+                        "_expanded": true,
+                        "defaultValue": "0",
+                        "requiredCondition": "required",
+                        "jinjaExpressionView": true
+                    },
+                    {
+                        "name": "dryRun",
+                        "type": "boolean",
+                        "label": "Dry Run",
+                        "title": "Checkbox",
+                        "usable": true,
+                        "tooltip": "When true, only reports candidates and does not delete.",
+                        "dataType": "boolean",
+                        "formType": "checkbox",
+                        "required": true,
+                        "_expanded": true,
+                        "defaultValue": false,
+                        "requiredCondition": "required",
+                        "jinjaExpressionView": true
+                    },
+                    {
+                        "name": "batchSize",
+                        "type": "integer",
+                        "label": "Batch Size",
+                        "title": "Number",
+                        "usable": true,
+                        "tooltip": "Maximum number of candidates fetched in one run.",
+                        "dataType": "integer",
+                        "formType": "integer",
+                        "required": true,
+                        "_expanded": true,
+                        "defaultValue": 500,
+                        "requiredCondition": "required",
+                        "jinjaExpressionView": true
+                    },
+                    {
+                        "name": "maxDelete",
+                        "type": "integer",
+                        "label": "Max Delete Per Run",
+                        "title": "Number",
+                        "usable": true,
+                        "tooltip": "Safety guard: if candidates exceed this number, skip deletion and summarize only.",
+                        "dataType": "integer",
+                        "formType": "integer",
+                        "required": true,
+                        "_expanded": true,
+                        "defaultValue": 1000,
+                        "requiredCondition": "required",
+                        "jinjaExpressionView": true
+                    }
+                ],
+                "step_variables": {
+                    "input": {
+                        "params": [],
+                        "records": "{{vars.input.records}}"
+                    }
+                },
+                "executeButtonText": "Execute",
+                "noRecordExecution": true,
+                "singleRecordExecution": false
+            },
+            "status": null,
+            "top": "30",
+            "left": "310",
+            "stepType": "\/api\/3\/workflow_step_types\/f414d039-bb0d-4e59-9c39-a8f1e880b18a",
+            "group": null,
+            "uuid": "c6157f16-5b15-45c3-9cf7-68772324fac1"
+        }
+    ],
+    "routes": [
+        {
+            "@type": "WorkflowRoute",
+            "name": "Delete Stale Assets -> Set Summary",
+            "targetStep": "\/api\/3\/workflow_steps\/d268ace9-d218-49ad-9a6f-58907f06cc22",
+            "sourceStep": "\/api\/3\/workflow_steps\/d542562d-4203-4d7c-8aa4-0521fde584a3",
+            "label": null,
+            "isExecuted": false,
+            "group": null,
+            "uuid": "b9f95d22-1ab8-4965-95ac-86ae029efc47"
+        },
+        {
+            "@type": "WorkflowRoute",
+            "name": "Dry Run? -> Delete Stale Assets",
+            "targetStep": "\/api\/3\/workflow_steps\/d542562d-4203-4d7c-8aa4-0521fde584a3",
+            "sourceStep": "\/api\/3\/workflow_steps\/cef2516a-b237-4f0d-ae84-ca3cbf74f4ce",
+            "label": "no",
+            "isExecuted": false,
+            "group": null,
+            "uuid": "95978bdd-b1ba-4297-b4e9-9f249d249bfe"
+        },
+        {
+            "@type": "WorkflowRoute",
+            "name": "Dry Run? -> Set Summary",
+            "targetStep": "\/api\/3\/workflow_steps\/d268ace9-d218-49ad-9a6f-58907f06cc22",
+            "sourceStep": "\/api\/3\/workflow_steps\/cef2516a-b237-4f0d-ae84-ca3cbf74f4ce",
+            "label": "yes",
+            "isExecuted": false,
+            "group": null,
+            "uuid": "e35dfceb-85d6-402a-8c20-275112198db0"
+        },
+        {
+            "@type": "WorkflowRoute",
+            "name": "Find Stale Assets -> Has Candidates",
+            "targetStep": "\/api\/3\/workflow_steps\/5e56a3dc-ff73-4fe6-9a28-751d0530dc31",
+            "sourceStep": "\/api\/3\/workflow_steps\/75c85f39-583f-4ad5-9489-4ccb008c71f6",
+            "label": null,
+            "isExecuted": false,
+            "group": null,
+            "uuid": "4129a7c7-8dfa-45da-ac6d-b8edac349968"
+        },
+        {
+            "@type": "WorkflowRoute",
+            "name": "Has Candidates -> Dry Run?",
+            "targetStep": "\/api\/3\/workflow_steps\/cef2516a-b237-4f0d-ae84-ca3cbf74f4ce",
+            "sourceStep": "\/api\/3\/workflow_steps\/5e56a3dc-ff73-4fe6-9a28-751d0530dc31",
+            "label": "yes",
+            "isExecuted": false,
+            "group": null,
+            "uuid": "540f73af-6d5c-4871-a139-02b2b0ff1f28"
+        },
+        {
+            "@type": "WorkflowRoute",
+            "name": "Has Candidates -> Set Summary",
+            "targetStep": "\/api\/3\/workflow_steps\/d268ace9-d218-49ad-9a6f-58907f06cc22",
+            "sourceStep": "\/api\/3\/workflow_steps\/5e56a3dc-ff73-4fe6-9a28-751d0530dc31",
+            "label": "no",
+            "isExecuted": false,
+            "group": null,
+            "uuid": "81ba35b5-2b4b-4227-9568-81fcf1c8fa5e"
+        },
+        {
+            "@type": "WorkflowRoute",
+            "name": "Set Cutoff Timestamp -> Find Stale Assets",
+            "targetStep": "\/api\/3\/workflow_steps\/75c85f39-583f-4ad5-9489-4ccb008c71f6",
+            "sourceStep": "\/api\/3\/workflow_steps\/1202692e-ed6c-404c-8def-7ba60b9a7fa8",
+            "label": null,
+            "isExecuted": false,
+            "group": null,
+            "uuid": "1adcebaa-6bc8-486c-9883-af4c497e58b5"
+        },
+        {
+            "@type": "WorkflowRoute",
+            "name": "Start -> Set Cutoff Timestamp",
+            "targetStep": "\/api\/3\/workflow_steps\/1202692e-ed6c-404c-8def-7ba60b9a7fa8",
+            "sourceStep": "\/api\/3\/workflow_steps\/c6157f16-5b15-45c3-9cf7-68772324fac1",
+            "label": null,
+            "isExecuted": false,
+            "group": null,
+            "uuid": "6cd51b4a-b2ae-4781-9846-0dc48b6c3a85"
+        }
+    ],
+    "groups": [],
+    "priority": "\/api\/3\/picklists\/2b563c61-ae2c-41c0-a85a-c9709585e3f2",
+    "playbookOrigin": "\/api\/3\/picklists\/15c1e8c9-22bf-4e66-8fbb-0a502d4a4a3f",
+    "isEditable": true,
+    "uuid": "07ad5018-2122-4d56-be12-3efd628fa8f8",
+    "owners": [],
+    "isPrivate": false,
+    "deletedAt": null,
+    "recordTags": [],
+    "schedules": [
+        {
+            "crontab": {
+                "id": 30,
+                "minute": "0",
+                "hour": "2",
+                "day_of_week": "*",
+                "day_of_month": "*",
+                "month_of_year": "*",
+                "timezone": "UTC"
+            },
+            "interval": null,
+            "name": "FAZ Duplicate Asset Cleanup Daily",
+            "task": "workflow.tasks.periodic_task",
+            "args": "[]",
+            "kwargs": {
+                "wf_iri": "\/api\/3\/workflows\/07ad5018-2122-4d56-be12-3efd628fa8f8",
+                "priority": {
+                    "@id": "\/api\/3\/picklists\/2b563c61-ae2c-41c0-a85a-c9709585e3f2",
+                    "@type": "Picklist",
+                    "itemValue": "Medium",
+                    "orderIndex": 1,
+                    "color": null,
+                    "icon": null,
+                    "listName": "\/api\/3\/picklist_names\/e104ef72-11b4-4d0c-be0e-e1cf3b87b5f2",
+                    "uuid": "2b563c61-ae2c-41c0-a85a-c9709585e3f2",
+                    "id": 111,
+                    "importedBy": []
+                },
+                "exit_if_running": true,
+                "createUser": "\/api\/3\/people\/3451141c-bac6-467c-8d72-85e0fab569ce",
+                "name": "FAZ Duplicate Asset Cleanup Daily",
+                "description": "Daily 02:00 UTC cleanup run",
+                "auth": {
+                    "auth_method": "CS HMAC"
+                },
+                "referenceid": null,
+                "schedule_entry_name": "FAZ Duplicate Asset Cleanup Daily",
+                "schedule_id": "67c3b015-1260-4ee5-a2d2-152cbf1706e5",
+                "start_time": null,
+                "expires": null,
+                "timezone": "UTC",
+                "utcOffset": "UTC"
+            },
+            "queue": null,
+            "exchange": null,
+            "routing_key": null,
+            "headers": "{}",
+            "priority": 3,
+            "expires": null,
+            "expire_seconds": null,
+            "one_off": false,
+            "start_time": null,
+            "enabled": true,
+            "last_run_at": "2026-05-15T02:00:00.053412Z",
+            "total_run_count": 12,
+            "date_changed": "2026-05-15T02:00:00.151856Z",
+            "description": "Daily 02:00 UTC cleanup run",
+            "solar": null,
+            "clocked": null
+        }
+    ]
+}
