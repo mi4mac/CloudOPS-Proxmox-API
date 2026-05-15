@@ -1,5 +1,4 @@
 {
-    "@context": "\/api\/3\/contexts\/Workflow",
     "@type": "Workflow",
     "triggerLimit": null,
     "name": "Destroy Expired VM Instances",
@@ -12,9 +11,10 @@
     "remoteExecutableFlag": false,
     "parameters": [],
     "synchronous": false,
-    "collection": "\/api\/3\/workflow_collections\/04ee731b-278b-455b-a6c9-4744038c42e7",
+    "lastModifyDate": 1778835511,
+    "collection": "/api/3/workflow_collections/04ee731b-278b-455b-a6c9-4744038c42e7",
     "versions": [],
-    "triggerStep": "\/api\/3\/workflow_steps\/85ae597d-0bb6-463c-bbcb-bce72a66fdd5",
+    "triggerStep": "/api/3/workflow_steps/85ae597d-0bb6-463c-bbcb-bce72a66fdd5",
     "steps": [
         {
             "@type": "WorkflowStep",
@@ -24,21 +24,24 @@
                 "for_each": {
                     "item": "{{vars.steps.Find_Expired_VM_Instances}}",
                     "parallel": false,
-                    "condition": ""
+                    "condition": "",
+                    "save_iteration_result": true
                 },
                 "arguments": {
-                    "vm_instance": "{{vars.item}}"
+                    "vm_instance": "{{vars.item}}",
+                    "destroyed_count": "{{ vars.iteration_result_Destroy_VM_Instance.destroyed_count | default(0) | int }}",
+                    "destroyed_summary_html": "{{ vars.iteration_result_Destroy_VM_Instance.destroyed_summary_html | default('') }}"
                 },
                 "apply_async": false,
                 "step_variables": [],
                 "pass_parent_env": false,
                 "pass_input_record": false,
-                "workflowReference": "\/api\/3\/workflows\/0efc2f76-af97-4577-b7ae-7f954a3f963b"
+                "workflowReference": "/api/3/workflows/0efc2f76-af97-4577-b7ae-7f954a3f963b"
             },
             "status": null,
             "top": "300",
             "left": "125",
-            "stepType": "\/api\/3\/workflow_step_types\/74932bdc-b8b6-4d24-88c4-1a4dfbc524f3",
+            "stepType": "/api/3/workflow_step_types/74932bdc-b8b6-4d24-88c4-1a4dfbc524f3",
             "group": null,
             "uuid": "5f39dbc7-44d9-4678-9942-17d56e7b9cd4"
         },
@@ -73,23 +76,17 @@
                         {
                             "type": "object",
                             "field": "status",
-                            "value": "\/api\/3\/picklists\/81dd9b98-c14d-4ef7-9e4d-22951c11958d",
+                            "value": "/api/3/picklists/81dd9b98-c14d-4ef7-9e4d-22951c11958d",
                             "_value": {
-                                "@id": "\/api\/3\/picklists\/81dd9b98-c14d-4ef7-9e4d-22951c11958d",
+                                "@id": "/api/3/picklists/81dd9b98-c14d-4ef7-9e4d-22951c11958d",
                                 "display": "Active",
                                 "itemValue": "Active"
                             },
                             "operator": "eq"
-                        },
-                        {
-                            "type": "primitive",
-                            "field": "proxmoxId",
-                            "value": "false",
-                            "operator": "isnull",
-                            "_operator": "isnull"
                         }
                     ],
                     "__selectFields": [
+                        "@id",
                         "name",
                         "vMType",
                         "proxmoxId",
@@ -103,7 +100,7 @@
             "status": null,
             "top": "165",
             "left": "125",
-            "stepType": "\/api\/3\/workflow_step_types\/b593663d-7d13-40ce-a3a3-96dece928770",
+            "stepType": "/api/3/workflow_step_types/b593663d-7d13-40ce-a3a3-96dece928770",
             "group": null,
             "uuid": "fc62f880-223c-4d9c-9712-cca7bae0a5ec"
         },
@@ -114,7 +111,7 @@
             "arguments": {
                 "config": "247a6087-d893-4cbd-b84a-29c18e7b0fc1",
                 "params": {
-                    "body": "<p>Automatic cleanup destroyed the following expired VM Instances:<\/p>\n<ul>\n{%- set recs = (vars.steps.Find_Expired_VM_Instances.data.data | default([])) -%}\n{%- for rec in recs -%}\n<li>{{ rec.name }} ({{ rec.vMType.itemValue | default('') }})<\/li>\n{%- endfor -%}\n{%- if recs | length == 0 -%}\n<li>No expired VM Instances were found.<\/li>\n{%- endif -%}\n<\/ul>",
+                    "body": "<p>Automatic cleanup destroyed the following expired VM Instances:</p>\n<ul>\n{{ vars.destroyed_summary_html | default('') }}\n</ul>",
                     "subject": "Proxmox: Destroyed expired VM Instances",
                     "iri_list": "",
                     "cc_recipients": "{{globalVars.infrastructure_team_email}}",
@@ -122,7 +119,6 @@
                     "bcc_recipients": ""
                 },
                 "version": "2.6.0",
-                "from_str": "admin@example.com",
                 "connector": "smtp",
                 "operation": "send_email",
                 "operationTitle": "Send Email",
@@ -131,9 +127,67 @@
             "status": null,
             "top": "435",
             "left": "125",
-            "stepType": "\/api\/3\/workflow_step_types\/4c0019b2-055c-44d0-968c-678a0c2d762e",
+            "stepType": "/api/3/workflow_step_types/4c0019b2-055c-44d0-968c-678a0c2d762e",
             "group": null,
             "uuid": "4f2311dd-ba5c-4c4c-9af3-aefcdd2ee63e"
+        },
+        {
+            "@type": "WorkflowStep",
+            "name": "Build Destroy Summary",
+            "description": "Snapshot candidates + post-loop destroyed query + reference-step return; any source with a confirmed destroy sends one email.",
+            "arguments": {
+                "destroyed_count": "{%- set candidate_ids = vars.expired_candidate_ids_json | default('') | split('||') | reject('equalto', '') | list -%}{%- set candidate_names = vars.expired_candidate_names_json | default('') | split('||') | reject('equalto', '') | list -%}{%- set fe = vars.steps.Find_Confirmed_Destroyed_VM_Instances | default([]) -%}{%- if fe is mapping -%}{%- set destroyed_recs = fe.data.data | default(fe.data['hydra:member'] | default(fe.data | default([]))) -%}{%- else -%}{%- set destroyed_recs = fe -%}{%- endif -%}{%- set parts = [] -%}{%- for rec in destroyed_recs -%}{%- set rid = rec['@id'] | string -%}{%- if rid in candidate_ids or (rec.name | string) in candidate_names -%}{%- set _ = parts.append('<li>' ~ rec.name ~ ' (' ~ (rec.vMType.itemValue | default('')) ~ ')</li>') -%}{%- endif -%}{%- endfor -%}{%- set query_count = parts | length -%}{%- set ir = vars.iteration_result_Destroy_VM_Instance | default({}) -%}{%- set ref = vars.steps.Destroy_VM_Instance | default({}) -%}{%- set loop_count = ir.destroyed_count | default(0) | int -%}{%- set loop_html = ir.destroyed_summary_html | default('') -%}{%- if loop_count == 0 and (ref.destroyed | default(false) | string | lower) == 'true' -%}{%- set loop_count = ref.destroyed_count | default(1) | int -%}{%- set loop_html = ref.destroyed_summary_html | default('') -%}{%- elif loop_count == 0 and 'Return Destroy Success' in (ref.result | default('') | string) -%}{%- set loop_count = ref.destroyed_count | default(1) | int -%}{%- set loop_html = ref.destroyed_summary_html | default('') -%}{%- endif -%}{%- if query_count > 0 -%}{{ query_count }}{%- elif loop_count > 0 -%}{{ loop_count }}{%- else -%}0{%- endif -%}",
+                "destroyed_summary_html": "{%- set candidate_ids = vars.expired_candidate_ids_json | default('') | split('||') | reject('equalto', '') | list -%}{%- set candidate_names = vars.expired_candidate_names_json | default('') | split('||') | reject('equalto', '') | list -%}{%- set fe = vars.steps.Find_Confirmed_Destroyed_VM_Instances | default([]) -%}{%- if fe is mapping -%}{%- set destroyed_recs = fe.data.data | default(fe.data['hydra:member'] | default(fe.data | default([]))) -%}{%- else -%}{%- set destroyed_recs = fe -%}{%- endif -%}{%- set parts = [] -%}{%- for rec in destroyed_recs -%}{%- set rid = rec['@id'] | string -%}{%- if rid in candidate_ids or (rec.name | string) in candidate_names -%}{%- set _ = parts.append('<li>' ~ rec.name ~ ' (' ~ (rec.vMType.itemValue | default('')) ~ ')</li>') -%}{%- endif -%}{%- endfor -%}{%- set ir = vars.iteration_result_Destroy_VM_Instance | default({}) -%}{%- set ref = vars.steps.Destroy_VM_Instance | default({}) -%}{%- set loop_html = ir.destroyed_summary_html | default('') -%}{%- if not loop_html and (ref.destroyed | default(false) | string | lower) == 'true' -%}{%- set loop_html = ref.destroyed_summary_html | default('') -%}{%- elif not loop_html and 'Return Destroy Success' in (ref.result | default('') | string) -%}{%- set loop_html = ref.destroyed_summary_html | default('') -%}{%- endif -%}{%- if parts | length > 0 -%}{{ parts | join('') }}{%- else -%}{{ loop_html }}{%- endif -%}",
+                "send_destroy_notification": "{%- set candidate_ids = vars.expired_candidate_ids_json | default('') | split('||') | reject('equalto', '') | list -%}{%- set candidate_names = vars.expired_candidate_names_json | default('') | split('||') | reject('equalto', '') | list -%}{%- set fe = vars.steps.Find_Confirmed_Destroyed_VM_Instances | default([]) -%}{%- if fe is mapping -%}{%- set destroyed_recs = fe.data.data | default(fe.data['hydra:member'] | default(fe.data | default([]))) -%}{%- else -%}{%- set destroyed_recs = fe -%}{%- endif -%}{%- set parts = [] -%}{%- for rec in destroyed_recs -%}{%- set rid = rec['@id'] | string -%}{%- if rid in candidate_ids or (rec.name | string) in candidate_names -%}{%- set _ = parts.append(rec) -%}{%- endif -%}{%- endfor -%}{%- set query_count = parts | length -%}{%- set ir = vars.iteration_result_Destroy_VM_Instance | default({}) -%}{%- set ref = vars.steps.Destroy_VM_Instance | default({}) -%}{%- set loop_count = ir.destroyed_count | default(0) | int -%}{%- if loop_count == 0 and (ref.destroyed | default(false) | string | lower) == 'true' -%}{%- set loop_count = ref.destroyed_count | default(1) | int -%}{%- elif loop_count == 0 and 'Return Destroy Success' in (ref.result | default('') | string) -%}{%- set loop_count = ref.destroyed_count | default(1) | int -%}{%- endif -%}{%- if query_count > 0 or loop_count > 0 -%}true{%- else -%}false{%- endif -%}"
+            },
+            "status": null,
+            "top": "435",
+            "left": "125",
+            "stepType": "/api/3/workflow_step_types/04d0cf46-b6a8-42c4-8683-60a7eaa69e8f",
+            "group": null,
+            "uuid": "fc85e830-21e2-477f-8a55-12557e89be37"
+        },
+        {
+            "@type": "WorkflowStep",
+            "name": "Destroyed VM Summary Ready",
+            "description": "Send email only when the accumulated destroy summary contains at least one VM.",
+            "arguments": {
+                "conditions": [
+                    {
+                        "option": "yes",
+                        "step_iri": "/api/3/workflow_steps/4f2311dd-ba5c-4c4c-9af3-aefcdd2ee63e",
+                        "condition": "{{ (vars.destroyed_count | default(0) | int) > 0 or vars.send_destroy_notification == true or (vars.send_destroy_notification | string | lower) in ['true', '1', 'yes'] }}",
+                        "step_name": "Notify Destroyed Expired"
+                    },
+                    {
+                        "option": "no",
+                        "default": true,
+                        "step_iri": "/api/3/workflow_steps/60bddae5-7207-42fd-948d-886d03487a9f",
+                        "step_name": "Finish Without Email"
+                    }
+                ],
+                "step_variables": []
+            },
+            "status": null,
+            "top": "570",
+            "left": "125",
+            "stepType": "/api/3/workflow_step_types/12254cf5-5db7-4b1a-8cb1-3af081924b28",
+            "group": null,
+            "uuid": "93caf430-5684-41bc-bdfe-cb4489b735e0"
+        },
+        {
+            "@type": "WorkflowStep",
+            "name": "Finish Without Email",
+            "description": "Finish the workflow without sending an email when no VM was destroyed.",
+            "arguments": {
+                "notification_skipped": "true"
+            },
+            "status": null,
+            "top": "705",
+            "left": "340",
+            "stepType": "/api/3/workflow_step_types/04d0cf46-b6a8-42c4-8683-60a7eaa69e8f",
+            "group": null,
+            "uuid": "60bddae5-7207-42fd-948d-886d03487a9f"
         },
         {
             "@type": "WorkflowStep",
@@ -173,27 +227,124 @@
             "status": null,
             "top": "30",
             "left": "125",
-            "stepType": "\/api\/3\/workflow_step_types\/f414d039-bb0d-4e59-9c39-a8f1e880b18a",
+            "stepType": "/api/3/workflow_step_types/f414d039-bb0d-4e59-9c39-a8f1e880b18a",
             "group": null,
             "uuid": "85ae597d-0bb6-463c-bbcb-bce72a66fdd5"
+        },
+        {
+            "@type": "WorkflowStep",
+            "name": "Find Confirmed Destroyed VM Instances",
+            "description": "Load Destroyed-status records; Build Destroy Summary keeps only IDs from this run's expired candidates.",
+            "arguments": {
+                "query": {
+                    "sort": [],
+                    "limit": 100,
+                    "logic": "AND",
+                    "filters": [
+                        {
+                            "type": "object",
+                            "field": "status",
+                            "value": "/api/3/picklists/87e8de7b-4ca7-41f2-b3ee-bc367faf489c",
+                            "_value": {
+                                "@id": "/api/3/picklists/87e8de7b-4ca7-41f2-b3ee-bc367faf489c",
+                                "display": "Destroyed",
+                                "itemValue": "Destroyed"
+                            },
+                            "operator": "eq"
+                        }
+                    ],
+                    "__selectFields": [
+                        "@id",
+                        "name",
+                        "vMType",
+                        "proxmoxId"
+                    ]
+                },
+                "module": "v_m_instances?$limit=100",
+                "checkboxFields": true,
+                "step_variables": []
+            },
+            "status": null,
+            "top": "370",
+            "left": "125",
+            "stepType": "/api/3/workflow_step_types/b593663d-7d13-40ce-a3a3-96dece928770",
+            "group": null,
+            "uuid": "b4e3c821-9a2f-4c5d-8e7d-1f0a2b3c4d5e"
+        },
+        {
+            "@type": "WorkflowStep",
+            "name": "Snapshot Expired Candidates",
+            "description": "Freeze expired candidate IDs and names before the destroy loop mutates records.",
+            "arguments": {
+                "expired_candidate_count": "{%- set fe = vars.steps.Find_Expired_VM_Instances | default([]) -%}{%- if fe is mapping -%}{%- set recs = fe.data.data | default(fe.data['hydra:member'] | default(fe.data | default([]))) -%}{%- else -%}{%- set recs = fe -%}{%- endif -%}{{ recs | length }}",
+                "expired_candidate_ids_json": "{%- set fe = vars.steps.Find_Expired_VM_Instances | default([]) -%}{%- if fe is mapping -%}{%- set recs = fe.data.data | default(fe.data['hydra:member'] | default(fe.data | default([]))) -%}{%- else -%}{%- set recs = fe -%}{%- endif -%}{%- set ids = [] -%}{%- for rec in recs -%}{%- set _ = ids.append(rec['@id'] | string) -%}{%- endfor -%}{{ ids | join('||') }}",
+                "expired_candidate_names_json": "{%- set fe = vars.steps.Find_Expired_VM_Instances | default([]) -%}{%- if fe is mapping -%}{%- set recs = fe.data.data | default(fe.data['hydra:member'] | default(fe.data | default([]))) -%}{%- else -%}{%- set recs = fe -%}{%- endif -%}{%- set names = [] -%}{%- for rec in recs -%}{%- set _ = names.append(rec.name | string) -%}{%- endfor -%}{{ names | join('||') }}"
+            },
+            "status": null,
+            "top": "230",
+            "left": "125",
+            "stepType": "/api/3/workflow_step_types/04d0cf46-b6a8-42c4-8683-60a7eaa69e8f",
+            "group": null,
+            "uuid": "3868f2d8-213d-495b-8220-5aee57cce802"
+        },
+        {
+            "@type": "WorkflowStep",
+            "name": "Wait Before Destroyed Query",
+            "description": "Allow CRUDhub to commit Destroyed status before the confirmation query.",
+            "arguments": {
+                "rule": {
+                    "actions": [
+                        {
+                            "type": "resume_playbook",
+                            "enabled": true,
+                            "channel_uuid": "e2ce87c2-c55a-11ec-9d64-0242ac120002"
+                        }
+                    ],
+                    "is_active": true,
+                    "event_source": "crudhub"
+                },
+                "type": "TimeBased",
+                "delay": {
+                    "days": 0,
+                    "hours": 0,
+                    "minutes": 0,
+                    "seconds": 5
+                }
+            },
+            "status": null,
+            "top": "335",
+            "left": "125",
+            "stepType": "/api/3/workflow_step_types/6832e556-b9c7-497a-babe-feda3bd27dbf",
+            "group": null,
+            "uuid": "57184ae2-d378-4480-8bbd-453702e5cfd0"
         }
     ],
     "routes": [
         {
             "@type": "WorkflowRoute",
-            "name": "Destroy VM Instance -> Notify Destroyed Expired",
-            "targetStep": "\/api\/3\/workflow_steps\/4f2311dd-ba5c-4c4c-9af3-aefcdd2ee63e",
-            "sourceStep": "\/api\/3\/workflow_steps\/5f39dbc7-44d9-4678-9942-17d56e7b9cd4",
+            "name": "Start -> Find Expired VM Instances",
+            "targetStep": "/api/3/workflow_steps/fc62f880-223c-4d9c-9712-cca7bae0a5ec",
+            "sourceStep": "/api/3/workflow_steps/85ae597d-0bb6-463c-bbcb-bce72a66fdd5",
             "label": null,
             "isExecuted": false,
             "group": null,
-            "uuid": "3fee18cd-661b-47d6-bd66-7966e8dccefa"
+            "uuid": "38caa03f-2d0d-4daa-bac6-12b98cfd34d5"
         },
         {
             "@type": "WorkflowRoute",
-            "name": "Find Expired VM Instances -> Destroy VM Instance",
-            "targetStep": "\/api\/3\/workflow_steps\/5f39dbc7-44d9-4678-9942-17d56e7b9cd4",
-            "sourceStep": "\/api\/3\/workflow_steps\/fc62f880-223c-4d9c-9712-cca7bae0a5ec",
+            "name": "Find Expired VM Instances -> Snapshot Expired Candidates",
+            "targetStep": "/api/3/workflow_steps/3868f2d8-213d-495b-8220-5aee57cce802",
+            "sourceStep": "/api/3/workflow_steps/fc62f880-223c-4d9c-9712-cca7bae0a5ec",
+            "label": null,
+            "isExecuted": false,
+            "group": null,
+            "uuid": "8a611e9d-26a4-40ee-9fef-279849b23b45"
+        },
+        {
+            "@type": "WorkflowRoute",
+            "name": "Snapshot Expired Candidates -> Destroy VM Instance",
+            "targetStep": "/api/3/workflow_steps/5f39dbc7-44d9-4678-9942-17d56e7b9cd4",
+            "sourceStep": "/api/3/workflow_steps/3868f2d8-213d-495b-8220-5aee57cce802",
             "label": null,
             "isExecuted": false,
             "group": null,
@@ -201,85 +352,76 @@
         },
         {
             "@type": "WorkflowRoute",
-            "name": "Start -> Find Expired VM Instances",
-            "targetStep": "\/api\/3\/workflow_steps\/fc62f880-223c-4d9c-9712-cca7bae0a5ec",
-            "sourceStep": "\/api\/3\/workflow_steps\/85ae597d-0bb6-463c-bbcb-bce72a66fdd5",
+            "name": "Destroy VM Instance -> Wait Before Destroyed Query",
+            "targetStep": "/api/3/workflow_steps/57184ae2-d378-4480-8bbd-453702e5cfd0",
+            "sourceStep": "/api/3/workflow_steps/5f39dbc7-44d9-4678-9942-17d56e7b9cd4",
             "label": null,
             "isExecuted": false,
             "group": null,
-            "uuid": "38caa03f-2d0d-4daa-bac6-12b98cfd34d5"
+            "uuid": "046de614-cf18-4599-be69-ae180a0651b1"
+        },
+        {
+            "@type": "WorkflowRoute",
+            "name": "Wait Before Destroyed Query -> Find Confirmed Destroyed VM Instances",
+            "targetStep": "/api/3/workflow_steps/b4e3c821-9a2f-4c5d-8e7d-1f0a2b3c4d5e",
+            "sourceStep": "/api/3/workflow_steps/57184ae2-d378-4480-8bbd-453702e5cfd0",
+            "label": null,
+            "isExecuted": false,
+            "group": null,
+            "uuid": "c8f4a912-0b3e-4f6d-9c1e-2a7b8d9e0f1a"
+        },
+        {
+            "@type": "WorkflowRoute",
+            "name": "Find Confirmed Destroyed VM Instances -> Build Destroy Summary",
+            "targetStep": "/api/3/workflow_steps/fc85e830-21e2-477f-8a55-12557e89be37",
+            "sourceStep": "/api/3/workflow_steps/b4e3c821-9a2f-4c5d-8e7d-1f0a2b3c4d5e",
+            "label": null,
+            "isExecuted": false,
+            "group": null,
+            "uuid": "d9a5b023-1c4f-5a7e-0d2f-3b8c9d0e1f2b"
+        },
+        {
+            "@type": "WorkflowRoute",
+            "name": "Build Destroy Summary -> Destroyed VM Summary Ready",
+            "targetStep": "/api/3/workflow_steps/93caf430-5684-41bc-bdfe-cb4489b735e0",
+            "sourceStep": "/api/3/workflow_steps/fc85e830-21e2-477f-8a55-12557e89be37",
+            "label": null,
+            "isExecuted": false,
+            "group": null,
+            "uuid": "f2031d98-7eb2-4995-9ca8-d95d0b998bf3"
+        },
+        {
+            "@type": "WorkflowRoute",
+            "name": "Destroyed VM Summary Ready -> Notify Destroyed Expired",
+            "targetStep": "/api/3/workflow_steps/4f2311dd-ba5c-4c4c-9af3-aefcdd2ee63e",
+            "sourceStep": "/api/3/workflow_steps/93caf430-5684-41bc-bdfe-cb4489b735e0",
+            "label": "yes",
+            "isExecuted": false,
+            "group": null,
+            "uuid": "15f15e5d-fcc9-40b1-9d94-5631cf8038fb"
+        },
+        {
+            "@type": "WorkflowRoute",
+            "name": "Destroyed VM Summary Ready -> Finish Without Email",
+            "targetStep": "/api/3/workflow_steps/60bddae5-7207-42fd-948d-886d03487a9f",
+            "sourceStep": "/api/3/workflow_steps/93caf430-5684-41bc-bdfe-cb4489b735e0",
+            "label": "no",
+            "isExecuted": false,
+            "group": null,
+            "uuid": "a9515182-6ae1-46c9-87a4-92c62b2336c7"
         }
     ],
     "groups": [],
-    "priority": "\/api\/3\/picklists\/2b563c61-ae2c-41c0-a85a-c9709585e3f2",
-    "playbookOrigin": "\/api\/3\/picklists\/15c1e8c9-22bf-4e66-8fbb-0a502d4a4a3f",
+    "priority": "/api/3/picklists/2b563c61-ae2c-41c0-a85a-c9709585e3f2",
+    "playbookOrigin": "/api/3/picklists/15c1e8c9-22bf-4e66-8fbb-0a502d4a4a3f",
     "isEditable": true,
     "uuid": "02c65239-4d22-4275-b175-fd54d87ce8ac",
+    "id": 1717,
     "owners": [],
     "isPrivate": false,
     "deletedAt": null,
+    "importedBy": [],
     "recordTags": [
         "Destroy"
-    ],
-    "schedules": [
-        {
-            "crontab": {
-                "id": 29,
-                "minute": "1",
-                "hour": "8",
-                "day_of_week": "*",
-                "day_of_month": "*",
-                "month_of_year": "*",
-                "timezone": "UTC"
-            },
-            "interval": null,
-            "name": "Destroy VM Instances Mail",
-            "task": "workflow.tasks.periodic_task",
-            "args": "[]",
-            "kwargs": {
-                "wf_iri": "\/api\/3\/workflows\/02c65239-4d22-4275-b175-fd54d87ce8ac",
-                "priority": {
-                    "@id": "\/api\/3\/picklists\/2b563c61-ae2c-41c0-a85a-c9709585e3f2",
-                    "@type": "Picklist",
-                    "itemValue": "Medium",
-                    "orderIndex": 1,
-                    "color": null,
-                    "icon": null,
-                    "listName": "\/api\/3\/picklist_names\/e104ef72-11b4-4d0c-be0e-e1cf3b87b5f2",
-                    "uuid": "2b563c61-ae2c-41c0-a85a-c9709585e3f2",
-                    "id": 111,
-                    "importedBy": []
-                },
-                "exit_if_running": false,
-                "createUser": "\/api\/3\/people\/3451141c-bac6-467c-8d72-85e0fab569ce",
-                "name": "Destroy VM Instances",
-                "description": "Destroy VM Instances",
-                "auth": {
-                    "auth_method": "CS HMAC"
-                },
-                "referenceid": null,
-                "schedule_entry_name": "Destroy VM Instances Mail",
-                "schedule_id": "620a1f60-7475-4a59-bf42-3fde83a89faa",
-                "start_time": null,
-                "expires": null,
-                "timezone": "UTC"
-            },
-            "queue": null,
-            "exchange": null,
-            "routing_key": null,
-            "headers": "{}",
-            "priority": 3,
-            "expires": null,
-            "expire_seconds": null,
-            "one_off": false,
-            "start_time": null,
-            "enabled": true,
-            "last_run_at": "2026-04-24T08:01:00.013670Z",
-            "total_run_count": 4,
-            "date_changed": "2026-04-24T08:03:05.046717Z",
-            "description": "Destroy VM Instances",
-            "solar": null,
-            "clocked": null
-        }
     ]
 }

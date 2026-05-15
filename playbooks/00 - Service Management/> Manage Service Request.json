@@ -215,7 +215,6 @@
                     "bcc_recipients": ""
                 },
                 "version": "2.6.0",
-                "from_str": "admin@example.com",
                 "connector": "smtp",
                 "operation": "send_email",
                 "operationTitle": "Send Email",
