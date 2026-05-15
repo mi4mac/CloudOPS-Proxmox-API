@@ -1,12 +1,9 @@
 #!/usr/bin/env bash
-# Build the CloudOPS Proxmox + Policy solution pack for FortiSOAR import.
+# Build the CloudOPS Service Management solution pack for FortiSOAR import.
+# Pack source (CloudOPS-Prx-pack-install/) mirrors a FortiSOAR content export:
+# info.json, picklists, modules, views, roles, playbooks, connectors.
 # Usage: ./build-pack.sh [output.zip]
-# Default output: CloudOPS_Solution_Pack.zip (slim build, excludes optional content)
-#
-# Excluded from slim build:
-#   - Activate all users.json (training playbook)
-#   - TESTING_GUIDE.md, SCHRITT_2_GLOBAL_VARIABLES.md (docs)
-#   - README.md (pack root; PACK_README.md retained)
+# Default output: CloudOPS_Solution_Pack.zip
 
 set -e
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -19,14 +16,13 @@ if [[ ! -d "$PACK_DIR" ]]; then
     exit 1
 fi
 
-echo "Building solution pack from $PACK_DIR (slim build)..."
+if [[ ! -f "$PACK_DIR/info.json" ]]; then
+    echo "Error: $PACK_DIR/info.json not found."
+    exit 1
+fi
+
+echo "Building solution pack from $PACK_DIR..."
 rm -f "$OUTPUT_ZIP"
-zip -r "$OUTPUT_ZIP" "$PACK_DIR" \
-    -x "*.DS_Store" \
-    -x "__MACOSX/*" \
-    -x "CloudOPS-Prx-pack-install/playbooks/00 - Policy Playbooks/Activate all users.json" \
-    -x "CloudOPS-Prx-pack-install/TESTING_GUIDE.md" \
-    -x "CloudOPS-Prx-pack-install/SCHRITT_2_GLOBAL_VARIABLES.md" \
-    -x "CloudOPS-Prx-pack-install/README.md"
+zip -r "$OUTPUT_ZIP" "$PACK_DIR" -x "*.DS_Store" -x "__MACOSX/*"
 echo "Created: $OUTPUT_ZIP"
 ls -la "$OUTPUT_ZIP"

@@ -1,7 +1,7 @@
 {
     "fsrMinCompatibility": "7.2.0",
-    "date": "2026-04-24T12:51:11+00:00",
-    "exported_from": "fsr",
+    "date": "2026-05-15T12:46:24+00:00",
+    "exported_from": "fsr.private.lan",
     "exported_by": "CS Admin",
     "contents": {
         "picklistNames": [
@@ -103,14 +103,14 @@
         ],
         "globalVariables": [
             {
-                "name": "Server_fqhn",
-                "value": "192.168.222.218",
-                "default_value": "master.fortisoar.in"
-            },
-            {
                 "name": "policyArchiveRetentionDays",
                 "value": "30",
                 "default_value": "30"
+            },
+            {
+                "name": "Server_fqhn",
+                "value": "192.168.222.218",
+                "default_value": "master.fortisoar.in"
             },
             {
                 "name": "proxmox_storage",
