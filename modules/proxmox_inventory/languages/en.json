@@ -1,0 +1,23 @@
+{
+    "PROXMOX_INVENTORY": {
+        "MODULE_DETAILS": {
+            "SINGULAR_NAME": "Proxmox Inventory Item",
+            "PLURAL_NAME": "Proxmox Inventory"
+        },
+        "FIELDS": {
+            "PROXMOXID": "Proxmox ID",
+            "NAME": "Name",
+            "NODE": "Node",
+            "VMTYPE": "VM Type",
+            "STATUS": "Status",
+            "CLUSTER": "Cluster",
+            "TRACKED": "Tracked",
+            "CPUCORES": "CPU Cores",
+            "MEMORYMB": "Memory (MB)",
+            "DISKGB": "Disk (GB)",
+            "DISKSSUMMARY": "Disks",
+            "INTERFACESSUMMARY": "Interfaces",
+            "LASTSEEN": "Last Seen"
+        }
+    }
+}

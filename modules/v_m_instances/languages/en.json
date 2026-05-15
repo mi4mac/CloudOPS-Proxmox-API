@@ -13,7 +13,14 @@
             "NAME": "Name",
             "REQUESTOR": "Requestor",
             "NETWORKINTERFACES": "Network Interfaces",
-            "STATUS": "Status"
+            "STATUS": "Status",
+            "CPUCORES": "CPU Cores",
+            "MEMORYMB": "Memory (MB)",
+            "DISKGB": "Disk (GB)",
+            "SWAPMB": "Swap (MB)",
+            "PROXMOXCLUSTER": "Proxmox Cluster",
+            "ROOTPASSWORD": "Root Password",
+            "PROXMOXID": "Proxmox ID"
         }
     }
 }

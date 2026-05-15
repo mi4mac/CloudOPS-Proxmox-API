@@ -1,0 +1,636 @@
+{
+    "@context": "\/api\/3\/contexts\/Workflow",
+    "@type": "Workflow",
+    "triggerLimit": null,
+    "name": "Import FAZ Assets to FortiSOAR (Portable)",
+    "aliasName": null,
+    "tag": null,
+    "description": "Portable variant: imports device and traffic-observed assets from FortiAnalyzer into Assets using upsert. ADOM is configurable via input params.adom (default root), and connector config is intentionally blank.",
+    "isActive": true,
+    "debug": true,
+    "singleRecordExecution": false,
+    "remoteExecutableFlag": false,
+    "parameters": [],
+    "synchronous": false,
+    "collection": "\/api\/3\/workflow_collections\/04ee731b-278b-455b-a6c9-4744038c42e7",
+    "versions": [],
+    "triggerStep": "\/api\/3\/workflow_steps\/efb28ead-131a-4e38-8b6d-b413a8ee323e",
+    "steps": [
+        {
+            "@type": "WorkflowStep",
+            "name": "Create Traffic Log Search Task",
+            "description": "Starts bulk device log search via raw JSON-RPC and returns task id (tid).",
+            "arguments": {
+                "name": "FAZ",
+                "config": "",
+                "params": {
+                    "data": {
+                        "id": 1002,
+                        "method": "add",
+                        "params": [
+                            {
+                                "url": "\/logview\/adom\/{{ vars.faz_adom }}\/logsearch",
+                                "apiver": 3,
+                                "device": [
+                                    {
+                                        "devid": "All_Devices"
+                                    }
+                                ],
+                                "filter": "srcip!=0.0.0.0",
+                                "logtype": "traffic",
+                                "time-order": "desc",
+                                "time-range": {
+                                    "end": "{{ arrow.utcnow().format('YYYY-MM-DDTHH:mm:ss.SSS') }}Z",
+                                    "start": "{{ arrow.utcnow().shift(hours=-1).format('YYYY-MM-DDTHH:mm:ss.SSS') }}Z"
+                                }
+                            }
+                        ],
+                        "jsonrpc": "2.0"
+                    }
+                },
+                "version": "3.4.0",
+                "connector": "fortinet-fortianalyzer",
+                "operation": "json_rpc_freeform",
+                "operationTitle": "Execute an API Request",
+                "pickFromTenant": false,
+                "step_variables": []
+            },
+            "status": null,
+            "top": "705",
+            "left": "300",
+            "stepType": "\/api\/3\/workflow_step_types\/0bfed618-0316-11e7-93ae-92361f002671",
+            "group": null,
+            "uuid": "f3c3584c-4b40-4fd8-8f88-3574410f36fb"
+        },
+        {
+            "@type": "WorkflowStep",
+            "name": "Deduplicate Traffic Rows",
+            "description": "Keeps one row per computed deviceUid per run, preferring rows with srcname.",
+            "arguments": {
+                "deduped_traffic_rows": "{% set ns = namespace(seen=[], out=[]) %}{% for a in (vars.traffic_rows | default([])) %}{% set uid = ('FortiAnalyzer|' ~ (vars.faz_adom | default('root')) ~ '|' ~ (a.devid | default('')) ~ '|' ~ (a.vd | default('root')) ~ '|' ~ ((a.srcmac | default(a.mastersrcmac | default(a.srcname | default(a.srcip | default('unknown'))))) | lower)) %}{% if (a.srcmac is defined and a.srcmac != '') and (a.srcname | default('') != '') and (uid not in ns.seen) %}{% set _ = ns.seen.append(uid) %}{% set _ = ns.out.append(a) %}{% endif %}{% endfor %}{% for a in (vars.traffic_rows | default([])) %}{% set uid = ('FortiAnalyzer|' ~ (vars.faz_adom | default('root')) ~ '|' ~ (a.devid | default('')) ~ '|' ~ (a.vd | default('root')) ~ '|' ~ ((a.srcmac | default(a.mastersrcmac | default(a.srcname | default(a.srcip | default('unknown'))))) | lower)) %}{% if (a.srcmac is defined and a.srcmac != '') and (uid not in ns.seen) %}{% set _ = ns.seen.append(uid) %}{% set _ = ns.out.append(a) %}{% endif %}{% endfor %}{{ ns.out }}"
+            },
+            "status": null,
+            "top": "1380",
+            "left": "300",
+            "stepType": "\/api\/3\/workflow_step_types\/04d0cf46-b6a8-42c4-8683-60a7eaa69e8f",
+            "group": null,
+            "uuid": "107dd650-e164-401a-92ce-3cd33d4ee017"
+        },
+        {
+            "@type": "WorkflowStep",
+            "name": "Delete Traffic Log Search Task",
+            "description": "No-op placeholder (task deletion not required in single-step bulk fetch mode).",
+            "arguments": {
+                "params": [],
+                "version": "3.6.0",
+                "connector": "cyops_utilities",
+                "operation": "no_op",
+                "operationTitle": "Utils: No Operation",
+                "step_variables": []
+            },
+            "status": null,
+            "top": "1785",
+            "left": "300",
+            "stepType": "\/api\/3\/workflow_step_types\/0109f35d-090b-4a2b-bd8a-94cbc3508562",
+            "group": null,
+            "uuid": "ec17d501-b4fa-4720-94c7-fb338eeaabdb"
+        },
+        {
+            "@type": "WorkflowStep",
+            "name": "Get FAZ Devices",
+            "description": "Runs JSON-RPC GET \/dvmdb\/adom\/root\/device via FortiAnalyzer connector.",
+            "arguments": {
+                "name": "FAZ",
+                "config": "",
+                "params": {
+                    "data": {
+                        "id": 1001,
+                        "method": "get",
+                        "params": [
+                            {
+                                "url": "\/dvmdb\/adom\/{{ vars.faz_adom }}\/device"
+                            }
+                        ],
+                        "jsonrpc": "2.0"
+                    }
+                },
+                "version": "3.4.0",
+                "connector": "fortinet-fortianalyzer",
+                "operation": "json_rpc_freeform",
+                "operationTitle": "Execute an API Request",
+                "pickFromTenant": false,
+                "step_variables": []
+            },
+            "status": null,
+            "top": "300",
+            "left": "300",
+            "stepType": "\/api\/3\/workflow_step_types\/0bfed618-0316-11e7-93ae-92361f002671",
+            "group": null,
+            "uuid": "d355dcd3-1e10-4fc3-bc28-dc10fdedcc4c"
+        },
+        {
+            "@type": "WorkflowStep",
+            "name": "Get Traffic Log Results",
+            "description": "Fetches traffic logs in one connector action (start+fetch) to avoid task-id\/session scope issues.",
+            "arguments": {
+                "name": "FAZ",
+                "config": "",
+                "params": {
+                    "end": "{{ arrow.utcnow().format('YYYY-MM-DDTHH:mm:ss.SSS') }}Z",
+                    "devid": "All_FortiGate",
+                    "limit": 200,
+                    "start": "{{ arrow.utcnow().shift(hours=-1).format('YYYY-MM-DDTHH:mm:ss.SSS') }}Z",
+                    "filter": "srcip!=0.0.0.0",
+                    "offset": 0,
+                    "logtype": "Traffic",
+                    "adom_name": "{{ vars.faz_adom }}",
+                    "time-order": "desc",
+                    "case-sensitive": false,
+                    "wait_for_search_process_to_complete": true
+                },
+                "version": "3.4.0",
+                "connector": "fortinet-fortianalyzer",
+                "operation": "start_and_fetch_bulk_device_logs",
+                "operationTitle": "Start and Fetch Bulk Device Logs",
+                "pickFromTenant": false,
+                "step_variables": []
+            },
+            "status": null,
+            "top": "1110",
+            "left": "125",
+            "stepType": "\/api\/3\/workflow_step_types\/0bfed618-0316-11e7-93ae-92361f002671",
+            "group": null,
+            "uuid": "23bc5c1b-bc47-49c0-bba2-32e3ad84c688"
+        },
+        {
+            "@type": "WorkflowStep",
+            "name": "Has Valid Task ID",
+            "description": "Only fetch results when a numeric task ID was returned.",
+            "arguments": {
+                "conditions": [
+                    {
+                        "option": "yes",
+                        "step_iri": "\/api\/3\/workflow_steps\/23bc5c1b-bc47-49c0-bba2-32e3ad84c688",
+                        "condition": "{{ (vars.faz_tid | default(0) | int) > 0 }}",
+                        "step_name": "Get Traffic Log Results"
+                    },
+                    {
+                        "option": "no",
+                        "default": true,
+                        "step_iri": "\/api\/3\/workflow_steps\/e238bf36-e763-4ea9-9ad4-68c5709a5e63",
+                        "step_name": "Set Empty Traffic Rows"
+                    }
+                ],
+                "step_variables": []
+            },
+            "status": null,
+            "top": "975",
+            "left": "465",
+            "stepType": "\/api\/3\/workflow_step_types\/12254cf5-5db7-4b1a-8cb1-3af081924b28",
+            "group": null,
+            "uuid": "b0da0e8f-9255-47f0-b867-92058af7303b"
+        },
+        {
+            "@type": "WorkflowStep",
+            "name": "Set Dedup Metrics",
+            "description": "Captures run-level dedup metrics for monitoring and auditing.",
+            "arguments": {
+                "dedup_drop_ratio": "{{ (((vars.traffic_rows | default([]) | length) - (vars.deduped_traffic_rows | default([]) | length)) \/ ((vars.traffic_rows | default([]) | length) if (vars.traffic_rows | default([]) | length) > 0 else 1)) | round(4) }}",
+                "dedup_input_rows": "{{ vars.traffic_rows | default([]) | length }}",
+                "dedup_output_rows": "{{ vars.deduped_traffic_rows | default([]) | length }}",
+                "dedup_dropped_rows": "{{ (vars.traffic_rows | default([]) | length) - (vars.deduped_traffic_rows | default([]) | length) }}"
+            },
+            "status": null,
+            "top": "1515",
+            "left": "300",
+            "stepType": "\/api\/3\/workflow_step_types\/04d0cf46-b6a8-42c4-8683-60a7eaa69e8f",
+            "group": null,
+            "uuid": "1230264c-dd23-4625-8e7a-0d816d06ca26"
+        },
+        {
+            "@type": "WorkflowStep",
+            "name": "Set Device List",
+            "description": null,
+            "arguments": {
+                "faz_devices": "{{ vars.steps.Get_FAZ_Devices.data.result[0].data if vars.steps.Get_FAZ_Devices and vars.steps.Get_FAZ_Devices.data and vars.steps.Get_FAZ_Devices.data.result else [] }}"
+            },
+            "status": null,
+            "top": "435",
+            "left": "300",
+            "stepType": "\/api\/3\/workflow_step_types\/04d0cf46-b6a8-42c4-8683-60a7eaa69e8f",
+            "group": null,
+            "uuid": "76c870bf-49eb-41f3-bf01-6b549a11edb3"
+        },
+        {
+            "@type": "WorkflowStep",
+            "name": "Set Empty Traffic Rows",
+            "description": "Fallback when no valid task ID is returned by the create-search step.",
+            "arguments": {
+                "traffic_rows": []
+            },
+            "status": null,
+            "top": "1110",
+            "left": "475",
+            "stepType": "\/api\/3\/workflow_step_types\/04d0cf46-b6a8-42c4-8683-60a7eaa69e8f",
+            "group": null,
+            "uuid": "e238bf36-e763-4ea9-9ad4-68c5709a5e63"
+        },
+        {
+            "@type": "WorkflowStep",
+            "name": "Set Runtime Defaults",
+            "description": "Set runtime ADOM from input params; defaults to root.",
+            "arguments": {
+                "faz_adom": "{{ vars.input.params.adom if vars.input and vars.input.params and vars.input.params.adom else 'root' }}"
+            },
+            "status": null,
+            "top": "165",
+            "left": "300",
+            "stepType": "\/api\/3\/workflow_step_types\/04d0cf46-b6a8-42c4-8683-60a7eaa69e8f",
+            "group": null,
+            "uuid": "b1c1da14-45c0-45eb-be6b-a0b5ba709f30"
+        },
+        {
+            "@type": "WorkflowStep",
+            "name": "Set Traffic Rows",
+            "description": null,
+            "arguments": {
+                "traffic_rows": "{{ vars.steps.Get_Traffic_Log_Results.data.result.data if vars.steps.Get_Traffic_Log_Results and vars.steps.Get_Traffic_Log_Results.data and vars.steps.Get_Traffic_Log_Results.data.result else [] }}"
+            },
+            "status": null,
+            "top": "1245",
+            "left": "300",
+            "stepType": "\/api\/3\/workflow_step_types\/04d0cf46-b6a8-42c4-8683-60a7eaa69e8f",
+            "group": null,
+            "uuid": "895dcf58-fc73-42f4-89ea-839e8b0d2768"
+        },
+        {
+            "@type": "WorkflowStep",
+            "name": "Set Traffic Search Task ID",
+            "description": null,
+            "arguments": {
+                "faz_tid": "{{ vars.steps.Create_Traffic_Log_Search_Task.data.result.tid if vars.steps.Create_Traffic_Log_Search_Task and vars.steps.Create_Traffic_Log_Search_Task.data and vars.steps.Create_Traffic_Log_Search_Task.data.result and vars.steps.Create_Traffic_Log_Search_Task.data.result.tid is defined else (vars.steps.Create_Traffic_Log_Search_Task.data.result[0].tid if vars.steps.Create_Traffic_Log_Search_Task and vars.steps.Create_Traffic_Log_Search_Task.data and vars.steps.Create_Traffic_Log_Search_Task.data.result and vars.steps.Create_Traffic_Log_Search_Task.data.result|length > 0 and vars.steps.Create_Traffic_Log_Search_Task.data.result[0].tid is defined else (vars.steps.Create_Traffic_Log_Search_Task.data.result[0].result.tid if vars.steps.Create_Traffic_Log_Search_Task and vars.steps.Create_Traffic_Log_Search_Task.data and vars.steps.Create_Traffic_Log_Search_Task.data.result and vars.steps.Create_Traffic_Log_Search_Task.data.result|length > 0 and vars.steps.Create_Traffic_Log_Search_Task.data.result[0].result is defined and vars.steps.Create_Traffic_Log_Search_Task.data.result[0].result.tid is defined else (vars.steps.Create_Traffic_Log_Search_Task.data.tid if vars.steps.Create_Traffic_Log_Search_Task and vars.steps.Create_Traffic_Log_Search_Task.data and vars.steps.Create_Traffic_Log_Search_Task.data.tid is defined else ''))) }}"
+            },
+            "status": null,
+            "top": "840",
+            "left": "465",
+            "stepType": "\/api\/3\/workflow_step_types\/04d0cf46-b6a8-42c4-8683-60a7eaa69e8f",
+            "group": null,
+            "uuid": "5ff2f856-a786-4807-a25c-31c07f88bff8"
+        },
+        {
+            "@type": "WorkflowStep",
+            "name": "Start",
+            "description": null,
+            "arguments": {
+                "route": "46379189-45d1-44ac-8428-8520a528c0e0",
+                "title": "Import FAZ Assets to FortiSOAR",
+                "resources": [
+                    "assets"
+                ],
+                "inputVariables": [],
+                "step_variables": {
+                    "input": {
+                        "params": [],
+                        "records": "{{vars.input.records}}"
+                    }
+                },
+                "executeButtonText": "Execute",
+                "noRecordExecution": true,
+                "singleRecordExecution": false
+            },
+            "status": null,
+            "top": "30",
+            "left": "300",
+            "stepType": "\/api\/3\/workflow_step_types\/f414d039-bb0d-4e59-9c39-a8f1e880b18a",
+            "group": null,
+            "uuid": "efb28ead-131a-4e38-8b6d-b413a8ee323e"
+        },
+        {
+            "@type": "WorkflowStep",
+            "name": "Upsert Managed Devices",
+            "description": "Upserts managed devices using serial\/IP fields.",
+            "arguments": {
+                "for_each": {
+                    "item": "{{ vars.faz_devices or [] }}",
+                    "__bulk": true,
+                    "parallel": false,
+                    "condition": "",
+                    "batch_size": 100
+                },
+                "resource": {
+                    "ip": "{{ vars.item.ip | default('') }}",
+                    "name": "{{ vars.item.name | default('') }}",
+                    "state": "\/api\/3\/picklists\/b31da3b9-6f87-469e-a1bf-2517c48a7001",
+                    "vendor": "Fortinet",
+                    "product": "{{ vars.item.platform_str | default('') }}",
+                    "firmware": "{% if vars.item.version and vars.item.patch is defined and vars.item.patch != -1 %}{{ vars.item.version }}.{{ vars.item.patch }}{% else %}{{ vars.item.version | default('') }}{% endif %}",
+                    "hostname": "{{ vars.item.hostname | default(vars.item.name | default('')) }}",
+                    "__replace": "true",
+                    "deviceUid": "{{ 'FortiAnalyzer' ~ '|' ~ (vars.faz_adom | default('root')) ~ '|' ~ (vars.item.name | default('')) ~ '|' ~ ((vars.item.vdom[0].name) if (vars.item.vdom is defined and vars.item.vdom|length > 0 and vars.item.vdom[0].name is defined) else 'root') }}",
+                    "recordTags": [
+                        "faz",
+                        "managed-device"
+                    ],
+                    "sourceData": "{{ {'sourceSystem':'FortiAnalyzer','sourceAdom':(vars.faz_adom | default('root')),'sourceDeviceId':(vars.item.name | default('')),'sourceVdom':((vars.item.vdom[0].name) if (vars.item.vdom is defined and vars.item.vdom|length > 0 and vars.item.vdom[0].name is defined) else 'root'),'sourceIdentityKey':('FortiAnalyzer|' ~ (vars.faz_adom | default('root')) ~ '|' ~ (vars.item.name | default('')) ~ '|' ~ (((vars.item.vdom[0].name) if (vars.item.vdom is defined and vars.item.vdom|length > 0 and vars.item.vdom[0].name is defined) else 'root'))),'lastSeenEpoch':(vars.item.last_checked | default(0))} | tojson }}",
+                    "description": "Imported from FortiAnalyzer Device Manager",
+                    "serialNumber": "{{ vars.item.sn | default('') }}"
+                },
+                "operation": "Overwrite",
+                "collection": "\/api\/3\/upsert\/assets",
+                "__recommend": [],
+                "fieldOperation": {
+                    "recordTags": "Append"
+                },
+                "step_variables": []
+            },
+            "status": null,
+            "top": "570",
+            "left": "300",
+            "stepType": "\/api\/3\/workflow_step_types\/2597053c-e718-44b4-8394-4d40fe26d357",
+            "group": null,
+            "uuid": "bfc86e81-1825-4940-b88a-8803e860e655"
+        },
+        {
+            "@type": "WorkflowStep",
+            "name": "Upsert Observed Hosts",
+            "description": "Upserts hosts observed in traffic logs including MAC addresses. Host labels are normalized to lowercase to prevent case-only duplicates.",
+            "arguments": {
+                "for_each": {
+                    "item": "{{ vars.deduped_traffic_rows or [] }}",
+                    "__bulk": true,
+                    "parallel": false,
+                    "condition": "{{ vars.item.srcmac is defined and vars.item.srcmac != '' }}",
+                    "batch_size": 100
+                },
+                "resource": {
+                    "ip": "{{ vars.item.srcip | default('') }}",
+                    "name": "{{ (vars.item.srcname | default(vars.item.srcip | default(''))) | lower }}",
+                    "state": "\/api\/3\/picklists\/b31da3b9-6f87-469e-a1bf-2517c48a7001",
+                    "vendor": "{{ vars.item.srchwvendor | default('') }}",
+                    "network": "{{ vars.item.srcintf | default('') }}",
+                    "product": "{{ vars.item.devtype | default(vars.item.srchwversion | default('')) }}",
+                    "firmware": "{{ vars.item.srcswversion | default('') }}",
+                    "hostname": "{{ (vars.item.srcname | default('')) | lower }}",
+                    "__replace": "true",
+                    "deviceUid": "{{ 'FortiAnalyzer' ~ '|' ~ (vars.faz_adom | default('root')) ~ '|' ~ (vars.item.devid | default('')) ~ '|' ~ (vars.item.vd | default('root')) ~ '|' ~ ((vars.item.srcmac | default(vars.item.mastersrcmac | default(vars.item.srcname | default(vars.item.srcip | default('unknown'))))) | lower) }}",
+                    "macAddress": "{{ (vars.item.srcmac | default(vars.item.mastersrcmac | default(''))) | lower }}",
+                    "recordTags": [
+                        "faz",
+                        "observed-host",
+                        "identity-confidence-high"
+                    ],
+                    "sourceData": "{{ {'sourceSystem':'FortiAnalyzer','sourceAdom':(vars.faz_adom | default('root')),'sourceDeviceId':(vars.item.devid | default('')),'sourceVdom':(vars.item.vd | default('root')),'sourceIdentityKey':('FortiAnalyzer|' ~ (vars.faz_adom | default('root')) ~ '|' ~ (vars.item.devid | default('')) ~ '|' ~ (vars.item.vd | default('root')) ~ '|' ~ ((vars.item.srcmac | default(vars.item.srcip | default('unknown'))) | lower)),'identityConfidence':'high','dedupInputRows':(vars.dedup_input_rows | default(0)),'dedupOutputRows':(vars.dedup_output_rows | default(0)),'dedupDroppedRows':(vars.dedup_dropped_rows | default(0)),'dedupDropRatio':(vars.dedup_drop_ratio | default(0)),'lastSeen':(vars.item.itime | default(vars.item.dtime | default('')))} | tojson }}",
+                    "description": "Observed in FAZ traffic logs"
+                },
+                "operation": "Overwrite",
+                "collection": "\/api\/3\/upsert\/assets",
+                "__recommend": [],
+                "fieldOperation": {
+                    "recordTags": "Append"
+                },
+                "step_variables": []
+            },
+            "status": null,
+            "top": "1650",
+            "left": "300",
+            "stepType": "\/api\/3\/workflow_step_types\/2597053c-e718-44b4-8394-4d40fe26d357",
+            "group": null,
+            "uuid": "16d91e51-ffbd-4d2d-b14a-cc84c8073b5d"
+        }
+    ],
+    "routes": [
+        {
+            "@type": "WorkflowRoute",
+            "name": "Create Traffic Search -> Get Traffic Results",
+            "targetStep": "\/api\/3\/workflow_steps\/23bc5c1b-bc47-49c0-bba2-32e3ad84c688",
+            "sourceStep": "\/api\/3\/workflow_steps\/f3c3584c-4b40-4fd8-8f88-3574410f36fb",
+            "label": null,
+            "isExecuted": false,
+            "group": null,
+            "uuid": "6adbdb15-14b7-46fe-9bf1-c315fc24f398"
+        },
+        {
+            "@type": "WorkflowRoute",
+            "name": "Create Traffic Search -> Set Task ID",
+            "targetStep": "\/api\/3\/workflow_steps\/5ff2f856-a786-4807-a25c-31c07f88bff8",
+            "sourceStep": "\/api\/3\/workflow_steps\/f3c3584c-4b40-4fd8-8f88-3574410f36fb",
+            "label": null,
+            "isExecuted": false,
+            "group": null,
+            "uuid": "b436f958-4000-411f-af11-25cfb2140f18"
+        },
+        {
+            "@type": "WorkflowRoute",
+            "name": "Deduplicate Traffic Rows -> Set Dedup Metrics",
+            "targetStep": "\/api\/3\/workflow_steps\/1230264c-dd23-4625-8e7a-0d816d06ca26",
+            "sourceStep": "\/api\/3\/workflow_steps\/107dd650-e164-401a-92ce-3cd33d4ee017",
+            "label": null,
+            "isExecuted": false,
+            "group": null,
+            "uuid": "f1f82045-260f-4b6d-b895-d36c6bb886b1"
+        },
+        {
+            "@type": "WorkflowRoute",
+            "name": "Get FAZ Devices -> Set Device List",
+            "targetStep": "\/api\/3\/workflow_steps\/76c870bf-49eb-41f3-bf01-6b549a11edb3",
+            "sourceStep": "\/api\/3\/workflow_steps\/d355dcd3-1e10-4fc3-bc28-dc10fdedcc4c",
+            "label": null,
+            "isExecuted": false,
+            "group": null,
+            "uuid": "3a71340e-bc05-40a8-ad75-d7729f0f08db"
+        },
+        {
+            "@type": "WorkflowRoute",
+            "name": "Get Traffic Results -> Set Traffic Rows",
+            "targetStep": "\/api\/3\/workflow_steps\/895dcf58-fc73-42f4-89ea-839e8b0d2768",
+            "sourceStep": "\/api\/3\/workflow_steps\/23bc5c1b-bc47-49c0-bba2-32e3ad84c688",
+            "label": null,
+            "isExecuted": false,
+            "group": null,
+            "uuid": "ed625c72-2588-4308-b52d-472bf9ed710f"
+        },
+        {
+            "@type": "WorkflowRoute",
+            "name": "Has Valid Task ID -> Get Traffic Log Results",
+            "targetStep": "\/api\/3\/workflow_steps\/23bc5c1b-bc47-49c0-bba2-32e3ad84c688",
+            "sourceStep": "\/api\/3\/workflow_steps\/b0da0e8f-9255-47f0-b867-92058af7303b",
+            "label": "yes",
+            "isExecuted": false,
+            "group": null,
+            "uuid": "9f3d7673-3d8e-4412-a4d0-59285edbc3e6"
+        },
+        {
+            "@type": "WorkflowRoute",
+            "name": "Has Valid Task ID -> Set Empty Traffic Rows",
+            "targetStep": "\/api\/3\/workflow_steps\/e238bf36-e763-4ea9-9ad4-68c5709a5e63",
+            "sourceStep": "\/api\/3\/workflow_steps\/b0da0e8f-9255-47f0-b867-92058af7303b",
+            "label": "no",
+            "isExecuted": false,
+            "group": null,
+            "uuid": "e5f57bcd-00cc-41e5-8826-6f3c34699e34"
+        },
+        {
+            "@type": "WorkflowRoute",
+            "name": "Set Dedup Metrics -> Upsert Observed Hosts",
+            "targetStep": "\/api\/3\/workflow_steps\/16d91e51-ffbd-4d2d-b14a-cc84c8073b5d",
+            "sourceStep": "\/api\/3\/workflow_steps\/1230264c-dd23-4625-8e7a-0d816d06ca26",
+            "label": null,
+            "isExecuted": false,
+            "group": null,
+            "uuid": "025d45c2-2ed4-49f8-ac7c-102dcf131a0b"
+        },
+        {
+            "@type": "WorkflowRoute",
+            "name": "Set Device List -> Upsert Managed Devices",
+            "targetStep": "\/api\/3\/workflow_steps\/bfc86e81-1825-4940-b88a-8803e860e655",
+            "sourceStep": "\/api\/3\/workflow_steps\/76c870bf-49eb-41f3-bf01-6b549a11edb3",
+            "label": null,
+            "isExecuted": false,
+            "group": null,
+            "uuid": "28a4a781-bf30-4d46-8b1f-c6aa4dfeb50b"
+        },
+        {
+            "@type": "WorkflowRoute",
+            "name": "Set Empty Traffic Rows -> Set Traffic Rows",
+            "targetStep": "\/api\/3\/workflow_steps\/895dcf58-fc73-42f4-89ea-839e8b0d2768",
+            "sourceStep": "\/api\/3\/workflow_steps\/e238bf36-e763-4ea9-9ad4-68c5709a5e63",
+            "label": null,
+            "isExecuted": false,
+            "group": null,
+            "uuid": "52df73fa-99c3-4117-9ca7-448d86f2c8b9"
+        },
+        {
+            "@type": "WorkflowRoute",
+            "name": "Set Runtime Defaults -> Get FAZ Devices",
+            "targetStep": "\/api\/3\/workflow_steps\/d355dcd3-1e10-4fc3-bc28-dc10fdedcc4c",
+            "sourceStep": "\/api\/3\/workflow_steps\/b1c1da14-45c0-45eb-be6b-a0b5ba709f30",
+            "label": null,
+            "isExecuted": false,
+            "group": null,
+            "uuid": "d2a34b95-6dbd-400f-bf2a-991a7f43a34b"
+        },
+        {
+            "@type": "WorkflowRoute",
+            "name": "Set Task ID -> Has Valid Task ID",
+            "targetStep": "\/api\/3\/workflow_steps\/b0da0e8f-9255-47f0-b867-92058af7303b",
+            "sourceStep": "\/api\/3\/workflow_steps\/5ff2f856-a786-4807-a25c-31c07f88bff8",
+            "label": null,
+            "isExecuted": false,
+            "group": null,
+            "uuid": "1fbd89d8-58b6-41e4-a7de-5e40ab17ce83"
+        },
+        {
+            "@type": "WorkflowRoute",
+            "name": "Set Traffic Rows -> Deduplicate Traffic Rows",
+            "targetStep": "\/api\/3\/workflow_steps\/107dd650-e164-401a-92ce-3cd33d4ee017",
+            "sourceStep": "\/api\/3\/workflow_steps\/895dcf58-fc73-42f4-89ea-839e8b0d2768",
+            "label": null,
+            "isExecuted": false,
+            "group": null,
+            "uuid": "7fe142ec-13fa-491f-bec1-b993a28e7c62"
+        },
+        {
+            "@type": "WorkflowRoute",
+            "name": "Start -> Get FAZ Devices",
+            "targetStep": "\/api\/3\/workflow_steps\/b1c1da14-45c0-45eb-be6b-a0b5ba709f30",
+            "sourceStep": "\/api\/3\/workflow_steps\/efb28ead-131a-4e38-8b6d-b413a8ee323e",
+            "label": null,
+            "isExecuted": false,
+            "group": null,
+            "uuid": "a4ded715-8d9b-4b77-80ad-fda18a842461"
+        },
+        {
+            "@type": "WorkflowRoute",
+            "name": "Upsert Managed Devices -> Create Traffic Search",
+            "targetStep": "\/api\/3\/workflow_steps\/f3c3584c-4b40-4fd8-8f88-3574410f36fb",
+            "sourceStep": "\/api\/3\/workflow_steps\/bfc86e81-1825-4940-b88a-8803e860e655",
+            "label": null,
+            "isExecuted": false,
+            "group": null,
+            "uuid": "171a8c6d-43a8-4883-86dc-bf19265815a1"
+        },
+        {
+            "@type": "WorkflowRoute",
+            "name": "Upsert Observed Hosts -> Delete Task",
+            "targetStep": "\/api\/3\/workflow_steps\/ec17d501-b4fa-4720-94c7-fb338eeaabdb",
+            "sourceStep": "\/api\/3\/workflow_steps\/16d91e51-ffbd-4d2d-b14a-cc84c8073b5d",
+            "label": null,
+            "isExecuted": false,
+            "group": null,
+            "uuid": "ec2cc36b-8c16-43e0-bd5a-53c3d8589b7d"
+        }
+    ],
+    "groups": [],
+    "priority": "\/api\/3\/picklists\/2b563c61-ae2c-41c0-a85a-c9709585e3f2",
+    "playbookOrigin": "\/api\/3\/picklists\/15c1e8c9-22bf-4e66-8fbb-0a502d4a4a3f",
+    "isEditable": true,
+    "uuid": "4d2613b5-28be-459f-80dc-162acdedb84f",
+    "owners": [],
+    "isPrivate": false,
+    "deletedAt": null,
+    "recordTags": [
+        "asset-ingestion",
+        "faz"
+    ],
+    "schedules": [
+        {
+            "crontab": {
+                "id": 3,
+                "minute": "0",
+                "hour": "*\/1",
+                "day_of_week": "*",
+                "day_of_month": "*",
+                "month_of_year": "*",
+                "timezone": "UTC"
+            },
+            "interval": null,
+            "name": "Import FAZ Assets to FSR",
+            "task": "workflow.tasks.periodic_task",
+            "args": "[]",
+            "kwargs": {
+                "wf_iri": "\/api\/3\/workflows\/4d2613b5-28be-459f-80dc-162acdedb84f",
+                "priority": {
+                    "@id": "\/api\/3\/picklists\/2b563c61-ae2c-41c0-a85a-c9709585e3f2",
+                    "@type": "Picklist",
+                    "itemValue": "Medium",
+                    "orderIndex": 1,
+                    "color": null,
+                    "icon": null,
+                    "listName": "\/api\/3\/picklist_names\/e104ef72-11b4-4d0c-be0e-e1cf3b87b5f2",
+                    "uuid": "2b563c61-ae2c-41c0-a85a-c9709585e3f2",
+                    "id": 111,
+                    "importedBy": []
+                },
+                "exit_if_running": false,
+                "createUser": "\/api\/3\/people\/3451141c-bac6-467c-8d72-85e0fab569ce",
+                "name": "Import FAZ Assets to FSR",
+                "description": "Import FAZ Assets to FSR",
+                "auth": {
+                    "auth_method": "CS HMAC"
+                },
+                "referenceid": null,
+                "schedule_entry_name": "Import FAZ Assets to FSR",
+                "schedule_id": "f695a5d1-f1a8-4d42-b9e3-35a7d3cde93c",
+                "start_time": null,
+                "expires": null,
+                "timezone": "UTC"
+            },
+            "queue": null,
+            "exchange": null,
+            "routing_key": null,
+            "headers": "{}",
+            "priority": 3,
+            "expires": null,
+            "expire_seconds": null,
+            "one_off": false,
+            "start_time": null,
+            "enabled": true,
+            "last_run_at": "2026-05-15T12:00:00.338252Z",
+            "total_run_count": 420,
+            "date_changed": "2026-05-15T12:00:00.497350Z",
+            "description": "Import FAZ Assets to FSR",
+            "solar": null,
+            "clocked": null
+        }
+    ]
+}

@@ -1,5 +1,5 @@
 {
-    "@context": "/api/3/contexts/Workflow",
+    "@context": "\/api\/3\/contexts\/Workflow",
     "@type": "Workflow",
     "triggerLimit": null,
     "name": "> Provision VM Instances",
@@ -7,16 +7,16 @@
     "tag": null,
     "description": "Create VM Instances",
     "isActive": true,
-    "debug": false,
+    "debug": true,
     "singleRecordExecution": false,
     "remoteExecutableFlag": false,
     "parameters": [
         "vm_instance"
     ],
     "synchronous": false,
-    "collection": "/api/3/workflow_collections/04ee731b-278b-455b-a6c9-4744038c42e7",
+    "collection": "\/api\/3\/workflow_collections\/04ee731b-278b-455b-a6c9-4744038c42e7",
     "versions": [],
-    "triggerStep": "/api/3/workflow_steps/5a2652b6-dd0a-4a23-b6a9-384a5d327616",
+    "triggerStep": "\/api\/3\/workflow_steps\/7ad39498-48e0-4055-b0ed-68b7522588c7",
     "steps": [
         {
             "@type": "WorkflowStep",
@@ -43,24 +43,24 @@
             "status": null,
             "top": "1245",
             "left": "485",
-            "stepType": "/api/3/workflow_step_types/0bfed618-0316-11e7-93ae-92361f002671",
+            "stepType": "\/api\/3\/workflow_step_types\/0bfed618-0316-11e7-93ae-92361f002671",
             "group": null,
-            "uuid": "7ec44d59-6314-4e85-bdfa-99cb90811f0c"
+            "uuid": "7aacc82b-3317-48f2-823b-0e01b6b698b1"
         },
         {
             "@type": "WorkflowStep",
             "name": "Compute Available Resource",
             "description": null,
             "arguments": {
-                "available_ram": "{{ ((vars.steps.Get_Node_Status.data.data.memory.total - vars.steps.Get_Node_Status.data.data.memory.used) / (1024*1024)) | int }}",
-                "available_disk": "{{ ((vars.steps.Get_Storage_Status.data.data.total - vars.steps.Get_Storage_Status.data.data.used) / (1024*1024*1024)) | int }}"
+                "available_ram": "{{ ((vars.steps.Get_Node_Status.data.data.memory.total - vars.steps.Get_Node_Status.data.data.memory.used) \/ (1024*1024)) | int }}",
+                "available_disk": "{{ ((vars.steps.Get_Storage_Status.data.data.total - vars.steps.Get_Storage_Status.data.data.used) \/ (1024*1024*1024)) | int }}"
             },
             "status": null,
             "top": "570",
             "left": "578",
-            "stepType": "/api/3/workflow_step_types/04d0cf46-b6a8-42c4-8683-60a7eaa69e8f",
+            "stepType": "\/api\/3\/workflow_step_types\/04d0cf46-b6a8-42c4-8683-60a7eaa69e8f",
             "group": null,
-            "uuid": "a9dc4111-c234-46a6-8201-bf12372aca87"
+            "uuid": "7ef011f2-53fe-420a-8a4e-6dcd3ae411a2"
         },
         {
             "@type": "WorkflowStep",
@@ -77,15 +77,15 @@
                 "minimum_ram_mb": "1500",
                 "minimum_disk_gb": "3",
                 "requestor_email": "{{vars.input.records[0].requestor.email}}",
-                "available_resources": "df -BG --output=avail / | tail -n 1 | sed \"s/G//\" | tr -d \" \";free -m | awk '/^Mem:/ {print $7}'",
+                "available_resources": "df -BG --output=avail \/ | tail -n 1 | sed \"s\/G\/\/\" | tr -d \" \";free -m | awk '\/^Mem:\/ {print $7}'",
                 "infrastructure_team_email": "{{globalVars.infrastructure_team_email or \"cloud-ops@fortielab.com\"}}"
             },
             "status": null,
             "top": "165",
             "left": "578",
-            "stepType": "/api/3/workflow_step_types/04d0cf46-b6a8-42c4-8683-60a7eaa69e8f",
+            "stepType": "\/api\/3\/workflow_step_types\/04d0cf46-b6a8-42c4-8683-60a7eaa69e8f",
             "group": null,
-            "uuid": "41c2bb53-252b-4218-a863-49da0d03cbd5"
+            "uuid": "59179ba3-6937-46c7-a16b-83140ad785cf"
         },
         {
             "@type": "WorkflowStep",
@@ -97,7 +97,7 @@
                 "params": {
                     "node": "{{ globalVars.proxmox_default_node | default('pve') }}",
                     "vmid": "{{ vars.steps.Get_Next_VMID.data.data | int }}",
-                    "body_params": "{\"cores\": {{ vars.cpu_cores | int }}, \"memory\": {{ vars.memory_mb | int }}, \"net0\": \"virtio,bridge={{ vars.bridge }},tag={{ vars.vlan }}\", \"ipconfig0\": \"ip={{ vars.vm_ip_address }}/24,gw={{ vars.gateway }}\", \"scsi0\": \"{{ globalVars.proxmox_storage | default('local-lvm') }}:{{ vars.disk_gb | int }}\"}"
+                    "body_params": "{\"cores\": {{ vars.cpu_cores | int }}, \"memory\": {{ vars.memory_mb | int }}, \"net0\": \"virtio,bridge={{ vars.bridge }},tag={{ vars.vlan }}\", \"ipconfig0\": \"ip={{ vars.vm_ip_address }}\/24,gw={{ vars.gateway }}\", \"scsi0\": \"{{ globalVars.proxmox_storage | default('local-lvm') }}:{{ vars.disk_gb | int }}\"}"
                 },
                 "version": "2.0.0",
                 "connector": "proxmox-api",
@@ -109,9 +109,9 @@
             "status": null,
             "top": "1380",
             "left": "485",
-            "stepType": "/api/3/workflow_step_types/0bfed618-0316-11e7-93ae-92361f002671",
+            "stepType": "\/api\/3\/workflow_step_types\/0bfed618-0316-11e7-93ae-92361f002671",
             "group": null,
-            "uuid": "5d281574-e0bc-4a2e-b7b1-b37eb0ef1e76"
+            "uuid": "b42684ff-df2a-44bf-afcf-45c88a142832"
         },
         {
             "@type": "WorkflowStep",
@@ -121,7 +121,7 @@
                 "name": "API Connector Proxmox",
                 "config": "''",
                 "params": {
-                    "net0": "name=eth0,bridge={{ vars.bridge }},tag={{ vars.vlan }},ip={{ vars.vm_ip_address }}/24,gw={{ vars.gateway }}",
+                    "net0": "name=eth0,bridge={{ vars.bridge }},tag={{ vars.vlan }},ip={{ vars.vm_ip_address }}\/24,gw={{ vars.gateway }}",
                     "node": "{{ globalVars.proxmox_default_node | default('pve') }}",
                     "swap": "{{ vars.swap_mb | int }}",
                     "vmid": "{{ vars.steps.Get_Next_VMID.data.data | int }}",
@@ -145,9 +145,9 @@
             "status": null,
             "top": "1380",
             "left": "125",
-            "stepType": "/api/3/workflow_step_types/0bfed618-0316-11e7-93ae-92361f002671",
+            "stepType": "\/api\/3\/workflow_step_types\/0bfed618-0316-11e7-93ae-92361f002671",
             "group": null,
-            "uuid": "d3697e09-5d11-4dc4-920a-9a4f2755d517"
+            "uuid": "69151635-e606-4d75-8580-01a21c4166e1"
         },
         {
             "@type": "WorkflowStep",
@@ -157,15 +157,15 @@
                 "conditions": [
                     {
                         "option": "yes",
-                        "step_iri": "/api/3/workflow_steps/ebebdd14-886b-4379-a760-eb1f6b0b73f0",
+                        "step_iri": "\/api\/3\/workflow_steps\/b17dda10-8ce7-4429-846d-5fbbdecae800",
                         "condition": "{{ \"provisioned successfully\" in (vars.cmd_result | string | lower) }}",
                         "step_name": "Update VM Instance Success"
                     },
                     {
                         "option": "no",
-                        "step_iri": "/api/3/workflow_steps/d543e577-4587-4a2c-97c7-8670b3ff144a",
-                        "step_name": "Set Provision Failure Result",
-                        "condition": "{{ \"provisioned successfully\" not in (vars.cmd_result | string | lower) }}"
+                        "step_iri": "\/api\/3\/workflow_steps\/76e58faf-0cbe-4a4d-b6f1-eac6c2729cd9",
+                        "condition": "{{ \"provisioned successfully\" not in (vars.cmd_result | string | lower) }}",
+                        "step_name": "Set Provision Failure Result"
                     }
                 ],
                 "step_variables": []
@@ -173,9 +173,9 @@
             "status": null,
             "top": "1785",
             "left": "660",
-            "stepType": "/api/3/workflow_step_types/12254cf5-5db7-4b1a-8cb1-3af081924b28",
+            "stepType": "\/api\/3\/workflow_step_types\/12254cf5-5db7-4b1a-8cb1-3af081924b28",
             "group": null,
-            "uuid": "8aaae492-5111-46cb-8cd7-fe523cd8eeaa"
+            "uuid": "880cc5fb-5d38-4aeb-a67e-f1c4d6c80774"
         },
         {
             "@type": "WorkflowStep",
@@ -195,9 +195,9 @@
             "status": null,
             "top": "975",
             "left": "300",
-            "stepType": "/api/3/workflow_step_types/0bfed618-0316-11e7-93ae-92361f002671",
+            "stepType": "\/api\/3\/workflow_step_types\/0bfed618-0316-11e7-93ae-92361f002671",
             "group": null,
-            "uuid": "9d9ecba4-2fea-46e2-a27d-5eb0c4135b6c"
+            "uuid": "ae89de77-4e3c-4ceb-8ec3-0fcc0f874358"
         },
         {
             "@type": "WorkflowStep",
@@ -217,9 +217,9 @@
             "status": null,
             "top": "300",
             "left": "578",
-            "stepType": "/api/3/workflow_step_types/0bfed618-0316-11e7-93ae-92361f002671",
+            "stepType": "\/api\/3\/workflow_step_types\/0bfed618-0316-11e7-93ae-92361f002671",
             "group": null,
-            "uuid": "b6005949-1cbf-436c-b83f-f55d8818e830"
+            "uuid": "2e05a304-530d-4ffa-b06f-284e86c7a217"
         },
         {
             "@type": "WorkflowStep",
@@ -241,9 +241,9 @@
             "status": null,
             "top": "435",
             "left": "578",
-            "stepType": "/api/3/workflow_step_types/0bfed618-0316-11e7-93ae-92361f002671",
+            "stepType": "\/api\/3\/workflow_step_types\/0bfed618-0316-11e7-93ae-92361f002671",
             "group": null,
-            "uuid": "fc616bd2-65a7-4c8e-b341-c92732cf4432"
+            "uuid": "edbda722-aae9-4830-9414-b2448170e8d4"
         },
         {
             "@type": "WorkflowStep",
@@ -252,7 +252,7 @@
             "arguments": {
                 "config": "88c3d39c-2fa9-4731-b00d-29815008f17c",
                 "params": {
-                    "body": "<p>Dear {{vars.input.records[0].requestor.firstname}}</p>\n<p>An error occurred while processing request ID:&nbsp;<span style=\"color: rgb(230, 126, 35);\"><strong>{{vars.input.records[0].id}}</strong></span>.</p>\n<p>&nbsp;The Cloud Operations team has been notified and will address the issue shortly.</p>\n<p>&nbsp;</p>\n<p>Cloud Ops Team</p>",
+                    "body": "<p>Dear {{vars.input.records[0].requestor.firstname}}<\/p>\n<p>An error occurred while processing request ID:&nbsp;<span style=\"color: rgb(230, 126, 35);\"><strong>{{vars.input.records[0].id}}<\/strong><\/span>.<\/p>\n<p>&nbsp;The Cloud Operations team has been notified and will address the issue shortly.<\/p>\n<p>&nbsp;<\/p>\n<p>Cloud Ops Team<\/p>",
                     "subject": "VM Instance Request Provisioning Failure",
                     "iri_list": "",
                     "cc_recipients": "{{vars.infrastructure_team_email}}",
@@ -260,6 +260,7 @@
                     "bcc_recipients": ""
                 },
                 "version": "2.6.0",
+                "from_str": "admin@example.com",
                 "connector": "smtp",
                 "operation": "send_email",
                 "operationTitle": "Send Email",
@@ -268,9 +269,9 @@
             "status": null,
             "top": "2200",
             "left": "860",
-            "stepType": "/api/3/workflow_step_types/4c0019b2-055c-44d0-968c-678a0c2d762e",
+            "stepType": "\/api\/3\/workflow_step_types\/4c0019b2-055c-44d0-968c-678a0c2d762e",
             "group": null,
-            "uuid": "610e923d-abb8-4ee2-b890-e427164abc5a"
+            "uuid": "02a9fe10-a4f5-4149-a842-f66cbc093d41"
         },
         {
             "@type": "WorkflowStep",
@@ -279,7 +280,7 @@
             "arguments": {
                 "config": "88c3d39c-2fa9-4731-b00d-29815008f17c",
                 "params": {
-                    "body": "<p>Dear {{vars.input.records[0].requestor.firstname}}</p>\n<p>Your VM Instance has been provisioned successfully</p>\n<ul>\n<li>Host: {{vars.vm_ip_address}}</li>\n<li>Username: sysadmin</li>\n<li>Password: fortinet</li>\n</ul>\n<p>&nbsp;</p>\n<p>Cloud Ops Team</p>",
+                    "body": "<p>Dear {{vars.input.records[0].requestor.firstname}}<\/p>\n<p>Your VM Instance has been provisioned successfully<\/p>\n<ul>\n<li>Host: {{vars.vm_ip_address}}<\/li>\n<li>Username: sysadmin<\/li>\n<li>Password: fortinet<\/li>\n<\/ul>\n<p>&nbsp;<\/p>\n<p>Cloud Ops Team<\/p>",
                     "subject": "VM Instance Request Provisioning Success",
                     "iri_list": "",
                     "cc_recipients": "{{vars.infrastructure_team_email}}",
@@ -287,6 +288,7 @@
                     "bcc_recipients": ""
                 },
                 "version": "2.6.0",
+                "from_str": "admin@example.com",
                 "connector": "smtp",
                 "operation": "send_email",
                 "operationTitle": "Send Email",
@@ -295,9 +297,9 @@
             "status": null,
             "top": "2060",
             "left": "300",
-            "stepType": "/api/3/workflow_step_types/4c0019b2-055c-44d0-968c-678a0c2d762e",
+            "stepType": "\/api\/3\/workflow_step_types\/4c0019b2-055c-44d0-968c-678a0c2d762e",
             "group": null,
-            "uuid": "70524fec-bb99-466b-a4f0-fe4c8d16c018"
+            "uuid": "3a32a1f0-65d8-4b62-9d76-173f65abf9a7"
         },
         {
             "@type": "WorkflowStep",
@@ -307,14 +309,14 @@
                 "conditions": [
                     {
                         "option": "Container",
-                        "step_iri": "/api/3/workflow_steps/d3697e09-5d11-4dc4-920a-9a4f2755d517",
+                        "step_iri": "\/api\/3\/workflow_steps\/69151635-e606-4d75-8580-01a21c4166e1",
                         "condition": "{{ ((vars.is_container | string | lower) == 'true' or vars.is_container == true) and true or false }}",
                         "step_name": "Create Container (API)"
                     },
                     {
                         "option": "VM",
                         "default": true,
-                        "step_iri": "/api/3/workflow_steps/7ec44d59-6314-4e85-bdfa-99cb90811f0c",
+                        "step_iri": "\/api\/3\/workflow_steps\/7aacc82b-3317-48f2-823b-0e01b6b698b1",
                         "step_name": "Clone VM (API)"
                     }
                 ],
@@ -323,9 +325,9 @@
             "status": null,
             "top": "1110",
             "left": "300",
-            "stepType": "/api/3/workflow_step_types/12254cf5-5db7-4b1a-8cb1-3af081924b28",
+            "stepType": "\/api\/3\/workflow_step_types\/12254cf5-5db7-4b1a-8cb1-3af081924b28",
             "group": null,
-            "uuid": "5a80349a-e714-4205-a526-e6fd97e4cba4"
+            "uuid": "f09a50e0-bfd7-4918-9661-4a7cfd1b6565"
         },
         {
             "@type": "WorkflowStep",
@@ -342,7 +344,7 @@
                     "proxmoxId": "{{ vars.proxmox_id | string }}"
                 },
                 "operation": "Overwrite",
-                "collection": "/api/3/upsert/proxmox_inventory",
+                "collection": "\/api\/3\/upsert\/proxmox_inventory",
                 "__recommend": [],
                 "fieldOperation": [],
                 "step_variables": []
@@ -350,9 +352,9 @@
             "status": null,
             "top": "1785",
             "left": "300",
-            "stepType": "/api/3/workflow_step_types/2597053c-e718-44b4-8394-4d40fe26d357",
+            "stepType": "\/api\/3\/workflow_step_types\/2597053c-e718-44b4-8394-4d40fe26d357",
             "group": null,
-            "uuid": "32b62d40-4374-46f8-b186-fc6dff48adf8"
+            "uuid": "e431d715-51c4-4f0a-afda-b28c4ce918e3"
         },
         {
             "@type": "WorkflowStep",
@@ -362,13 +364,13 @@
                 "conditions": [
                     {
                         "option": "yes",
-                        "step_iri": "/api/3/workflow_steps/fde09556-3d25-4e2f-bebd-7ad96ee8bbe1",
+                        "step_iri": "\/api\/3\/workflow_steps\/1d4af400-bef0-4dc5-9562-9c598070c0d6",
                         "condition": "{{ vars.available_disk | int >= vars.minimum_disk_gb | int and vars.available_ram | int >= vars.minimum_ram_mb | int }}",
                         "step_name": "Set Provisioning Params"
                     },
                     {
                         "option": "no",
-                        "step_iri": "/api/3/workflow_steps/d543e577-4587-4a2c-97c7-8670b3ff144a",
+                        "step_iri": "\/api\/3\/workflow_steps\/76e58faf-0cbe-4a4d-b6f1-eac6c2729cd9",
                         "condition": "{{ vars.available_disk | int < vars.minimum_disk_gb | int or vars.available_ram | int < vars.minimum_ram_mb | int }}",
                         "step_name": "Set Provision Failure Result"
                     }
@@ -376,11 +378,11 @@
                 "step_variables": []
             },
             "status": null,
-            "top": "705",
-            "left": "578",
-            "stepType": "/api/3/workflow_step_types/12254cf5-5db7-4b1a-8cb1-3af081924b28",
+            "top": "840",
+            "left": "820",
+            "stepType": "\/api\/3\/workflow_step_types\/12254cf5-5db7-4b1a-8cb1-3af081924b28",
             "group": null,
-            "uuid": "cd67f2b1-f2b4-4d23-bb1d-241c2d5767a8"
+            "uuid": "56b7c7b2-79d3-4f90-a36d-3767f5487f5b"
         },
         {
             "@type": "WorkflowStep",
@@ -392,9 +394,9 @@
             "status": null,
             "top": "1920",
             "left": "670",
-            "stepType": "/api/3/workflow_step_types/04d0cf46-b6a8-42c4-8683-60a7eaa69e8f",
+            "stepType": "\/api\/3\/workflow_step_types\/04d0cf46-b6a8-42c4-8683-60a7eaa69e8f",
             "group": null,
-            "uuid": "d543e577-4587-4a2c-97c7-8670b3ff144a"
+            "uuid": "76e58faf-0cbe-4a4d-b6f1-eac6c2729cd9"
         },
         {
             "@type": "WorkflowStep",
@@ -405,15 +407,15 @@
                 "bridge": "{{ globalVars.proxmox_bridge | default('vmbr0') }}",
                 "gateway": "{{ globalVars.proxmox_gateway | default('10.255.255.1') }}",
                 "is_container": "{{ 'CT' in (vars.input.records[0].vMType.itemValue or '') }}",
-                "prov_ostemplate": "{%- if vars.input.records[0].vMType.itemValue == 'Debian13-CT' -%}{{ globalVars.proxmox_template_debian13_ct | default('local:vztmpl/debian-13-standard_13.1-2_amd64.tar.zst') }}{%- elif vars.input.records[0].vMType.itemValue == 'Ubuntu2204-CT' -%}{{ globalVars.proxmox_template_ubuntu2204_ct | default('local:vztmpl/ubuntu-22.04-standard_22.04-1_amd64.tar.zst') }}{%- elif vars.input.records[0].vMType.itemValue == 'RockyLinux9-CT' -%}{{ globalVars.proxmox_template_rockylinux9_ct | default('local:vztmpl/rockylinux-9-default_20240912_amd64.tar.xz') }}{%- else -%}{%- endif -%}",
+                "prov_ostemplate": "{%- if vars.input.records[0].vMType.itemValue == 'Debian13-CT' -%}{{ globalVars.proxmox_template_debian13_ct | default('local:vztmpl\/debian-13-standard_13.1-2_amd64.tar.zst') }}{%- elif vars.input.records[0].vMType.itemValue == 'Ubuntu2204-CT' -%}{{ globalVars.proxmox_template_ubuntu2204_ct | default('local:vztmpl\/ubuntu-22.04-standard_22.04-1_amd64.tar.zst') }}{%- elif vars.input.records[0].vMType.itemValue == 'RockyLinux9-CT' -%}{{ globalVars.proxmox_template_rockylinux9_ct | default('local:vztmpl\/rockylinux-9-default_20240912_amd64.tar.xz') }}{%- else -%}{%- endif -%}",
                 "prov_template_vmid": "{{ globalVars.proxmox_template_rocky9_vm | default(9000) }}"
             },
             "status": null,
             "top": "840",
             "left": "300",
-            "stepType": "/api/3/workflow_step_types/04d0cf46-b6a8-42c4-8683-60a7eaa69e8f",
+            "stepType": "\/api\/3\/workflow_step_types\/04d0cf46-b6a8-42c4-8683-60a7eaa69e8f",
             "group": null,
-            "uuid": "fde09556-3d25-4e2f-bebd-7ad96ee8bbe1"
+            "uuid": "1d4af400-bef0-4dc5-9562-9c598070c0d6"
         },
         {
             "@type": "WorkflowStep",
@@ -426,9 +428,9 @@
             "status": null,
             "top": "1650",
             "left": "125",
-            "stepType": "/api/3/workflow_step_types/04d0cf46-b6a8-42c4-8683-60a7eaa69e8f",
+            "stepType": "\/api\/3\/workflow_step_types\/04d0cf46-b6a8-42c4-8683-60a7eaa69e8f",
             "group": null,
-            "uuid": "d8a8319d-55ce-4398-870c-8986252230d2"
+            "uuid": "edc71134-b8a8-4bb8-9346-d389421fa733"
         },
         {
             "@type": "WorkflowStep",
@@ -441,16 +443,16 @@
             "status": null,
             "top": "1650",
             "left": "485",
-            "stepType": "/api/3/workflow_step_types/04d0cf46-b6a8-42c4-8683-60a7eaa69e8f",
+            "stepType": "\/api\/3\/workflow_step_types\/04d0cf46-b6a8-42c4-8683-60a7eaa69e8f",
             "group": null,
-            "uuid": "8005700b-ed0b-4b24-9275-f1e62b950519"
+            "uuid": "a6bdb97d-3ec6-4426-b732-270cfa965e6b"
         },
         {
             "@type": "WorkflowStep",
             "name": "Start",
             "description": null,
             "arguments": {
-                "route": "ede3d67a-7f2a-42a0-b5f0-71f13ca57cad",
+                "route": "13809215-ecf0-47c6-bcd7-446fbd8c124a",
                 "resources": [
                     "v_m_instances"
                 ],
@@ -485,9 +487,9 @@
             "status": null,
             "top": "30",
             "left": "578",
-            "stepType": "/api/3/workflow_step_types/f414d039-bb0d-4e59-9c39-a8f1e880b18a",
+            "stepType": "\/api\/3\/workflow_step_types\/f414d039-bb0d-4e59-9c39-a8f1e880b18a",
             "group": null,
-            "uuid": "5a2652b6-dd0a-4a23-b6a9-384a5d327616"
+            "uuid": "7ad39498-48e0-4055-b0ed-68b7522588c7"
         },
         {
             "@type": "WorkflowStep",
@@ -510,9 +512,9 @@
             "status": null,
             "top": "1515",
             "left": "125",
-            "stepType": "/api/3/workflow_step_types/0bfed618-0316-11e7-93ae-92361f002671",
+            "stepType": "\/api\/3\/workflow_step_types\/0bfed618-0316-11e7-93ae-92361f002671",
             "group": null,
-            "uuid": "d5e5b6ac-431d-4eb9-9a18-777a2e39af16"
+            "uuid": "f7cad95e-9401-4abd-839f-92e1607604f5"
         },
         {
             "@type": "WorkflowStep",
@@ -535,9 +537,9 @@
             "status": null,
             "top": "1515",
             "left": "485",
-            "stepType": "/api/3/workflow_step_types/0bfed618-0316-11e7-93ae-92361f002671",
+            "stepType": "\/api\/3\/workflow_step_types\/0bfed618-0316-11e7-93ae-92361f002671",
             "group": null,
-            "uuid": "1a61bc2f-8d92-4c34-8ed4-4add3d3fdb47"
+            "uuid": "3c76e5b2-5de2-47ec-be31-3e58a5179e5e"
         },
         {
             "@type": "WorkflowStep",
@@ -545,13 +547,13 @@
             "description": null,
             "arguments": {
                 "resource": {
-                    "logs": "<p>{{ (vars.cmd_result | default('Provisioning failed')) | replace('\\r\\n','&lt;br&gt;') }}</p>",
-                    "status": "/api/3/picklists/3a009813-79af-4d41-8eeb-cec911d4821c"
+                    "logs": "<p>{{ (vars.cmd_result | default('Provisioning failed')) | replace('\\r\\n','&lt;br&gt;') }}<\/p>",
+                    "status": "\/api\/3\/picklists\/3a009813-79af-4d41-8eeb-cec911d4821c"
                 },
                 "operation": "Append",
                 "collection": "{{vars.input.records[0]['@id']}}",
                 "__recommend": [],
-                "collectionType": "/api/3/v_m_instances",
+                "collectionType": "\/api\/3\/v_m_instances",
                 "fieldOperation": {
                     "recordTags": "Append"
                 },
@@ -560,9 +562,9 @@
             "status": null,
             "top": "2060",
             "left": "860",
-            "stepType": "/api/3/workflow_step_types/b593663d-7d13-40ce-a3a3-96dece928722",
+            "stepType": "\/api\/3\/workflow_step_types\/b593663d-7d13-40ce-a3a3-96dece928722",
             "group": null,
-            "uuid": "7f41c22a-3dc0-4485-946e-4f64d8de31cf"
+            "uuid": "5388d19b-8851-48ff-8c8e-b75cce8fb544"
         },
         {
             "@type": "WorkflowStep",
@@ -570,15 +572,15 @@
             "description": null,
             "arguments": {
                 "resource": {
-                    "logs": "<p>{{vars.cmd_result|replace('\\r\\n','&lt;br&gt;')}}</p>",
-                    "status": "/api/3/picklists/81dd9b98-c14d-4ef7-9e4d-22951c11958d",
+                    "logs": "<p>{{vars.cmd_result|replace('\\r\\n','&lt;br&gt;')}}<\/p>",
+                    "status": "\/api\/3\/picklists\/81dd9b98-c14d-4ef7-9e4d-22951c11958d",
                     "proxmoxId": "{{vars.proxmox_id}}"
                 },
                 "_showJson": false,
                 "operation": "Append",
                 "collection": "{{vars.input.records[0]['@id']}}",
                 "__recommend": [],
-                "collectionType": "/api/3/v_m_instances",
+                "collectionType": "\/api\/3\/v_m_instances",
                 "fieldOperation": {
                     "recordTags": "Append"
                 },
@@ -587,258 +589,258 @@
             "status": null,
             "top": "1920",
             "left": "300",
-            "stepType": "/api/3/workflow_step_types/b593663d-7d13-40ce-a3a3-96dece928722",
+            "stepType": "\/api\/3\/workflow_step_types\/b593663d-7d13-40ce-a3a3-96dece928722",
             "group": null,
-            "uuid": "ebebdd14-886b-4379-a760-eb1f6b0b73f0"
+            "uuid": "b17dda10-8ce7-4429-846d-5fbbdecae800"
         }
     ],
     "routes": [
         {
             "@type": "WorkflowRoute",
             "name": "Clone VM (API) -> Config VM (API)",
-            "targetStep": "/api/3/workflow_steps/5d281574-e0bc-4a2e-b7b1-b37eb0ef1e76",
-            "sourceStep": "/api/3/workflow_steps/7ec44d59-6314-4e85-bdfa-99cb90811f0c",
+            "targetStep": "\/api\/3\/workflow_steps\/b42684ff-df2a-44bf-afcf-45c88a142832",
+            "sourceStep": "\/api\/3\/workflow_steps\/7aacc82b-3317-48f2-823b-0e01b6b698b1",
             "label": null,
             "isExecuted": false,
             "group": null,
-            "uuid": "60dabc00-0f91-4e87-82e9-3d054acb0ce3"
+            "uuid": "9c871976-1a7a-457b-a2a7-001521df182a"
         },
         {
             "@type": "WorkflowRoute",
             "name": "Compute Available Resource -> Are Hardware Resources Enough",
-            "targetStep": "/api/3/workflow_steps/cd67f2b1-f2b4-4d23-bb1d-241c2d5767a8",
-            "sourceStep": "/api/3/workflow_steps/a9dc4111-c234-46a6-8201-bf12372aca87",
+            "targetStep": "\/api\/3\/workflow_steps\/56b7c7b2-79d3-4f90-a36d-3767f5487f5b",
+            "sourceStep": "\/api\/3\/workflow_steps\/7ef011f2-53fe-420a-8a4e-6dcd3ae411a2",
             "label": null,
             "isExecuted": false,
             "group": null,
-            "uuid": "3cb45afe-a0ab-434b-abb5-d81c234bbd43"
+            "uuid": "9fb02245-60ca-48ea-8acf-1bcbb0a13e38"
         },
         {
             "@type": "WorkflowRoute",
             "name": "Configuration -> Get Node Status",
-            "targetStep": "/api/3/workflow_steps/b6005949-1cbf-436c-b83f-f55d8818e830",
-            "sourceStep": "/api/3/workflow_steps/41c2bb53-252b-4218-a863-49da0d03cbd5",
+            "targetStep": "\/api\/3\/workflow_steps\/2e05a304-530d-4ffa-b06f-284e86c7a217",
+            "sourceStep": "\/api\/3\/workflow_steps\/59179ba3-6937-46c7-a16b-83140ad785cf",
             "label": null,
             "isExecuted": false,
             "group": null,
-            "uuid": "1f8ee516-540f-4d7c-ae63-4c71fce20b76"
+            "uuid": "09b3cfd7-a62e-46fd-a9cc-b6feadcda41a"
         },
         {
             "@type": "WorkflowRoute",
             "name": "Config VM (API) -> Start VM (API)",
-            "targetStep": "/api/3/workflow_steps/1a61bc2f-8d92-4c34-8ed4-4add3d3fdb47",
-            "sourceStep": "/api/3/workflow_steps/5d281574-e0bc-4a2e-b7b1-b37eb0ef1e76",
+            "targetStep": "\/api\/3\/workflow_steps\/3c76e5b2-5de2-47ec-be31-3e58a5179e5e",
+            "sourceStep": "\/api\/3\/workflow_steps\/b42684ff-df2a-44bf-afcf-45c88a142832",
             "label": null,
             "isExecuted": false,
             "group": null,
-            "uuid": "9a16ab53-c6d5-4a02-866c-3a91abcd4274"
+            "uuid": "7f6b8f5c-e74e-4695-ba7c-a0af5326c44f"
         },
         {
             "@type": "WorkflowRoute",
             "name": "Create Container (API) -> Start Container (API)",
-            "targetStep": "/api/3/workflow_steps/d5e5b6ac-431d-4eb9-9a18-777a2e39af16",
-            "sourceStep": "/api/3/workflow_steps/d3697e09-5d11-4dc4-920a-9a4f2755d517",
+            "targetStep": "\/api\/3\/workflow_steps\/f7cad95e-9401-4abd-839f-92e1607604f5",
+            "sourceStep": "\/api\/3\/workflow_steps\/69151635-e606-4d75-8580-01a21c4166e1",
             "label": null,
             "isExecuted": false,
             "group": null,
-            "uuid": "a48bc9fd-69f9-4bd4-a1d0-5de59b62aafe"
+            "uuid": "50e66307-86d1-443c-b3b4-2bc3db8adb14"
         },
         {
             "@type": "WorkflowRoute",
             "name": "Deployment Successful -> Set Provision Failure Result",
-            "targetStep": "/api/3/workflow_steps/d543e577-4587-4a2c-97c7-8670b3ff144a",
-            "sourceStep": "/api/3/workflow_steps/8aaae492-5111-46cb-8cd7-fe523cd8eeaa",
+            "targetStep": "\/api\/3\/workflow_steps\/76e58faf-0cbe-4a4d-b6f1-eac6c2729cd9",
+            "sourceStep": "\/api\/3\/workflow_steps\/880cc5fb-5d38-4aeb-a67e-f1c4d6c80774",
             "label": "no",
             "isExecuted": false,
             "group": null,
-            "uuid": "07b64f15-59a7-4b49-a7d4-64e66d1287f4"
+            "uuid": "b635816d-88bb-4a37-999d-f57cd5f093b0"
         },
         {
             "@type": "WorkflowRoute",
             "name": "Deployment Successful -> Update VM Instance Success",
-            "targetStep": "/api/3/workflow_steps/ebebdd14-886b-4379-a760-eb1f6b0b73f0",
-            "sourceStep": "/api/3/workflow_steps/8aaae492-5111-46cb-8cd7-fe523cd8eeaa",
+            "targetStep": "\/api\/3\/workflow_steps\/b17dda10-8ce7-4429-846d-5fbbdecae800",
+            "sourceStep": "\/api\/3\/workflow_steps\/880cc5fb-5d38-4aeb-a67e-f1c4d6c80774",
             "label": "yes",
             "isExecuted": false,
             "group": null,
-            "uuid": "fda4df8c-35dd-4301-bae0-4d375a85fa98"
+            "uuid": "e5f13c40-8955-45ca-a66b-107e2d11ab1c"
         },
         {
             "@type": "WorkflowRoute",
             "name": "Get Next VMID -> Provision Type",
-            "targetStep": "/api/3/workflow_steps/5a80349a-e714-4205-a526-e6fd97e4cba4",
-            "sourceStep": "/api/3/workflow_steps/9d9ecba4-2fea-46e2-a27d-5eb0c4135b6c",
+            "targetStep": "\/api\/3\/workflow_steps\/f09a50e0-bfd7-4918-9661-4a7cfd1b6565",
+            "sourceStep": "\/api\/3\/workflow_steps\/ae89de77-4e3c-4ceb-8ec3-0fcc0f874358",
             "label": null,
             "isExecuted": false,
             "group": null,
-            "uuid": "0867f3e4-198a-4dd8-9922-fbc018e64fe3"
+            "uuid": "0e932956-01b6-45fc-9aaf-03b8e12fb1ca"
         },
         {
             "@type": "WorkflowRoute",
             "name": "Get Node Status -> Get Storage Status",
-            "targetStep": "/api/3/workflow_steps/fc616bd2-65a7-4c8e-b341-c92732cf4432",
-            "sourceStep": "/api/3/workflow_steps/b6005949-1cbf-436c-b83f-f55d8818e830",
+            "targetStep": "\/api\/3\/workflow_steps\/edbda722-aae9-4830-9414-b2448170e8d4",
+            "sourceStep": "\/api\/3\/workflow_steps\/2e05a304-530d-4ffa-b06f-284e86c7a217",
             "label": null,
             "isExecuted": false,
             "group": null,
-            "uuid": "fd99e1eb-6f5d-4480-ac72-027d73925ec2"
+            "uuid": "8e67939b-4316-4ff6-b7ea-f4261432e72b"
         },
         {
             "@type": "WorkflowRoute",
             "name": "Get Storage Status -> Compute Available Resource",
-            "targetStep": "/api/3/workflow_steps/a9dc4111-c234-46a6-8201-bf12372aca87",
-            "sourceStep": "/api/3/workflow_steps/fc616bd2-65a7-4c8e-b341-c92732cf4432",
+            "targetStep": "\/api\/3\/workflow_steps\/7ef011f2-53fe-420a-8a4e-6dcd3ae411a2",
+            "sourceStep": "\/api\/3\/workflow_steps\/edbda722-aae9-4830-9414-b2448170e8d4",
             "label": null,
             "isExecuted": false,
             "group": null,
-            "uuid": "b5261620-98e9-4311-add0-239852207d5d"
+            "uuid": "bc198966-4877-46e9-9161-884720bc1e6f"
         },
         {
             "@type": "WorkflowRoute",
             "name": "Provision Type -> Clone VM (API)",
-            "targetStep": "/api/3/workflow_steps/7ec44d59-6314-4e85-bdfa-99cb90811f0c",
-            "sourceStep": "/api/3/workflow_steps/5a80349a-e714-4205-a526-e6fd97e4cba4",
+            "targetStep": "\/api\/3\/workflow_steps\/7aacc82b-3317-48f2-823b-0e01b6b698b1",
+            "sourceStep": "\/api\/3\/workflow_steps\/f09a50e0-bfd7-4918-9661-4a7cfd1b6565",
             "label": "VM",
             "isExecuted": false,
             "group": null,
-            "uuid": "8d1314ad-fe76-4acf-a816-512eccb28410"
+            "uuid": "638738d5-4398-4737-a19b-d431952bcd22"
         },
         {
             "@type": "WorkflowRoute",
             "name": "Provision Type -> Create Container (API)",
-            "targetStep": "/api/3/workflow_steps/d3697e09-5d11-4dc4-920a-9a4f2755d517",
-            "sourceStep": "/api/3/workflow_steps/5a80349a-e714-4205-a526-e6fd97e4cba4",
+            "targetStep": "\/api\/3\/workflow_steps\/69151635-e606-4d75-8580-01a21c4166e1",
+            "sourceStep": "\/api\/3\/workflow_steps\/f09a50e0-bfd7-4918-9661-4a7cfd1b6565",
             "label": "Container",
             "isExecuted": false,
             "group": null,
-            "uuid": "4b6cc2ab-6f67-43e3-b4b4-f04d12db9005"
+            "uuid": "88da6b35-209b-4402-8874-1b89122adc6e"
         },
         {
             "@type": "WorkflowRoute",
             "name": "Proxmox Inventory Tracked -> Deployment Successful",
-            "targetStep": "/api/3/workflow_steps/8aaae492-5111-46cb-8cd7-fe523cd8eeaa",
-            "sourceStep": "/api/3/workflow_steps/32b62d40-4374-46f8-b186-fc6dff48adf8",
+            "targetStep": "\/api\/3\/workflow_steps\/880cc5fb-5d38-4aeb-a67e-f1c4d6c80774",
+            "sourceStep": "\/api\/3\/workflow_steps\/e431d715-51c4-4f0a-afda-b28c4ce918e3",
             "label": null,
             "isExecuted": false,
             "group": null,
-            "uuid": "a3f8c2e1-9b4d-4f7a-8e6c-1d2b3a4c5d6e"
-        },
-        {
-            "@type": "WorkflowRoute",
-            "name": "Start -> Configuration",
-            "targetStep": "/api/3/workflow_steps/41c2bb53-252b-4218-a863-49da0d03cbd5",
-            "sourceStep": "/api/3/workflow_steps/5a2652b6-dd0a-4a23-b6a9-384a5d327616",
-            "label": null,
-            "isExecuted": false,
-            "group": null,
-            "uuid": "01be7a3f-4128-4e7c-be43-1da560a57e78"
-        },
-        {
-            "@type": "WorkflowRoute",
-            "name": "Proxmox Node Resources Available -> Set Provisioning Params",
-            "targetStep": "/api/3/workflow_steps/fde09556-3d25-4e2f-bebd-7ad96ee8bbe1",
-            "sourceStep": "/api/3/workflow_steps/cd67f2b1-f2b4-4d23-bb1d-241c2d5767a8",
-            "label": "yes",
-            "isExecuted": false,
-            "group": null,
-            "uuid": "27708f40-71da-485a-9231-4ae35bfb5f22"
-        },
-        {
-            "@type": "WorkflowRoute",
-            "name": "Set Provision Failure Result -> Update VM Instance Failure",
-            "targetStep": "/api/3/workflow_steps/7f41c22a-3dc0-4485-946e-4f64d8de31cf",
-            "sourceStep": "/api/3/workflow_steps/d543e577-4587-4a2c-97c7-8670b3ff144a",
-            "label": null,
-            "isExecuted": false,
-            "group": null,
-            "uuid": "65a91152-901b-4f6c-9900-aacb330a3c7c"
-        },
-        {
-            "@type": "WorkflowRoute",
-            "name": "Set Provisioning Params -> Get Next VMID",
-            "targetStep": "/api/3/workflow_steps/9d9ecba4-2fea-46e2-a27d-5eb0c4135b6c",
-            "sourceStep": "/api/3/workflow_steps/fde09556-3d25-4e2f-bebd-7ad96ee8bbe1",
-            "label": null,
-            "isExecuted": false,
-            "group": null,
-            "uuid": "c26cca51-c685-42f6-8bc9-2c2a6e60610c"
-        },
-        {
-            "@type": "WorkflowRoute",
-            "name": "Set Provision Result (CT) -> Proxmox Inventory Tracked",
-            "targetStep": "/api/3/workflow_steps/32b62d40-4374-46f8-b186-fc6dff48adf8",
-            "sourceStep": "/api/3/workflow_steps/d8a8319d-55ce-4398-870c-8986252230d2",
-            "label": null,
-            "isExecuted": false,
-            "group": null,
-            "uuid": "18b669cd-ce43-41b9-b98e-d608857f9202"
-        },
-        {
-            "@type": "WorkflowRoute",
-            "name": "Set Provision Result (VM) -> Proxmox Inventory Tracked",
-            "targetStep": "/api/3/workflow_steps/32b62d40-4374-46f8-b186-fc6dff48adf8",
-            "sourceStep": "/api/3/workflow_steps/8005700b-ed0b-4b24-9275-f1e62b950519",
-            "label": null,
-            "isExecuted": false,
-            "group": null,
-            "uuid": "6ba74ab0-3c1a-4b8c-ad4a-585326141319"
-        },
-        {
-            "@type": "WorkflowRoute",
-            "name": "Start Container (API) -> Set Provision Result (CT)",
-            "targetStep": "/api/3/workflow_steps/d8a8319d-55ce-4398-870c-8986252230d2",
-            "sourceStep": "/api/3/workflow_steps/d5e5b6ac-431d-4eb9-9a18-777a2e39af16",
-            "label": null,
-            "isExecuted": false,
-            "group": null,
-            "uuid": "6cd66b9b-c18d-44e2-ae9a-dd2a916e4d81"
-        },
-        {
-            "@type": "WorkflowRoute",
-            "name": "Start VM (API) -> Set Provision Result (VM)",
-            "targetStep": "/api/3/workflow_steps/8005700b-ed0b-4b24-9275-f1e62b950519",
-            "sourceStep": "/api/3/workflow_steps/1a61bc2f-8d92-4c34-8ed4-4add3d3fdb47",
-            "label": null,
-            "isExecuted": false,
-            "group": null,
-            "uuid": "c047eb36-ccee-47bb-9ddb-3f3392e4f3b1"
-        },
-        {
-            "@type": "WorkflowRoute",
-            "name": "Update VM Instance Failure -> Notify Failure",
-            "targetStep": "/api/3/workflow_steps/610e923d-abb8-4ee2-b890-e427164abc5a",
-            "sourceStep": "/api/3/workflow_steps/7f41c22a-3dc0-4485-946e-4f64d8de31cf",
-            "label": null,
-            "isExecuted": false,
-            "group": null,
-            "uuid": "c14b1522-52c6-4c8a-b227-c4a1ab3e5a7d"
-        },
-        {
-            "@type": "WorkflowRoute",
-            "name": "Update VM Instance Success -> Notify Success",
-            "targetStep": "/api/3/workflow_steps/70524fec-bb99-466b-a4f0-fe4c8d16c018",
-            "sourceStep": "/api/3/workflow_steps/ebebdd14-886b-4379-a760-eb1f6b0b73f0",
-            "label": null,
-            "isExecuted": false,
-            "group": null,
-            "uuid": "c537d0f4-f0ba-43f0-b9ef-1b5ea8fd71a2"
+            "uuid": "ab5f5c13-8db2-4efb-b873-d224b341e310"
         },
         {
             "@type": "WorkflowRoute",
             "name": "Proxmox Node Resources Available -> Set Provision Failure Result",
-            "targetStep": "/api/3/workflow_steps/d543e577-4587-4a2c-97c7-8670b3ff144a",
-            "sourceStep": "/api/3/workflow_steps/cd67f2b1-f2b4-4d23-bb1d-241c2d5767a8",
+            "targetStep": "\/api\/3\/workflow_steps\/76e58faf-0cbe-4a4d-b6f1-eac6c2729cd9",
+            "sourceStep": "\/api\/3\/workflow_steps\/56b7c7b2-79d3-4f90-a36d-3767f5487f5b",
             "label": "no",
             "isExecuted": false,
             "group": null,
-            "uuid": "5eb416e0-499e-40fb-8d9e-841062594478"
+            "uuid": "0b8b6f06-4540-4142-bc4a-95fb99a48269"
+        },
+        {
+            "@type": "WorkflowRoute",
+            "name": "Proxmox Node Resources Available -> Set Provisioning Params",
+            "targetStep": "\/api\/3\/workflow_steps\/1d4af400-bef0-4dc5-9562-9c598070c0d6",
+            "sourceStep": "\/api\/3\/workflow_steps\/56b7c7b2-79d3-4f90-a36d-3767f5487f5b",
+            "label": "yes",
+            "isExecuted": false,
+            "group": null,
+            "uuid": "adc2c4d8-5289-4983-ac18-7344324c579e"
+        },
+        {
+            "@type": "WorkflowRoute",
+            "name": "Set Provision Failure Result -> Update VM Instance Failure",
+            "targetStep": "\/api\/3\/workflow_steps\/5388d19b-8851-48ff-8c8e-b75cce8fb544",
+            "sourceStep": "\/api\/3\/workflow_steps\/76e58faf-0cbe-4a4d-b6f1-eac6c2729cd9",
+            "label": null,
+            "isExecuted": false,
+            "group": null,
+            "uuid": "3ef06379-df04-4a6a-9b93-9c22fdc109b7"
+        },
+        {
+            "@type": "WorkflowRoute",
+            "name": "Set Provisioning Params -> Get Next VMID",
+            "targetStep": "\/api\/3\/workflow_steps\/ae89de77-4e3c-4ceb-8ec3-0fcc0f874358",
+            "sourceStep": "\/api\/3\/workflow_steps\/1d4af400-bef0-4dc5-9562-9c598070c0d6",
+            "label": null,
+            "isExecuted": false,
+            "group": null,
+            "uuid": "e71a6f10-aee0-4e01-9f3a-92800e80057b"
+        },
+        {
+            "@type": "WorkflowRoute",
+            "name": "Set Provision Result (CT) -> Proxmox Inventory Tracked",
+            "targetStep": "\/api\/3\/workflow_steps\/e431d715-51c4-4f0a-afda-b28c4ce918e3",
+            "sourceStep": "\/api\/3\/workflow_steps\/edc71134-b8a8-4bb8-9346-d389421fa733",
+            "label": null,
+            "isExecuted": false,
+            "group": null,
+            "uuid": "e0ef140a-b7f0-4bf3-a948-184e1b3cf170"
+        },
+        {
+            "@type": "WorkflowRoute",
+            "name": "Set Provision Result (VM) -> Proxmox Inventory Tracked",
+            "targetStep": "\/api\/3\/workflow_steps\/e431d715-51c4-4f0a-afda-b28c4ce918e3",
+            "sourceStep": "\/api\/3\/workflow_steps\/a6bdb97d-3ec6-4426-b732-270cfa965e6b",
+            "label": null,
+            "isExecuted": false,
+            "group": null,
+            "uuid": "5f5dea52-ebe6-4147-8fdb-73cc6164543b"
+        },
+        {
+            "@type": "WorkflowRoute",
+            "name": "Start -> Configuration",
+            "targetStep": "\/api\/3\/workflow_steps\/59179ba3-6937-46c7-a16b-83140ad785cf",
+            "sourceStep": "\/api\/3\/workflow_steps\/7ad39498-48e0-4055-b0ed-68b7522588c7",
+            "label": null,
+            "isExecuted": false,
+            "group": null,
+            "uuid": "b3f40292-c3b7-42a3-91b5-0dba5144a3fd"
+        },
+        {
+            "@type": "WorkflowRoute",
+            "name": "Start Container (API) -> Set Provision Result (CT)",
+            "targetStep": "\/api\/3\/workflow_steps\/edc71134-b8a8-4bb8-9346-d389421fa733",
+            "sourceStep": "\/api\/3\/workflow_steps\/f7cad95e-9401-4abd-839f-92e1607604f5",
+            "label": null,
+            "isExecuted": false,
+            "group": null,
+            "uuid": "6611802a-763a-42b4-ae79-d9328078913e"
+        },
+        {
+            "@type": "WorkflowRoute",
+            "name": "Start VM (API) -> Set Provision Result (VM)",
+            "targetStep": "\/api\/3\/workflow_steps\/a6bdb97d-3ec6-4426-b732-270cfa965e6b",
+            "sourceStep": "\/api\/3\/workflow_steps\/3c76e5b2-5de2-47ec-be31-3e58a5179e5e",
+            "label": null,
+            "isExecuted": false,
+            "group": null,
+            "uuid": "4b38498e-7394-4149-a737-22977f80fc0d"
+        },
+        {
+            "@type": "WorkflowRoute",
+            "name": "Update VM Instance Failure -> Notify Failure",
+            "targetStep": "\/api\/3\/workflow_steps\/02a9fe10-a4f5-4149-a842-f66cbc093d41",
+            "sourceStep": "\/api\/3\/workflow_steps\/5388d19b-8851-48ff-8c8e-b75cce8fb544",
+            "label": null,
+            "isExecuted": false,
+            "group": null,
+            "uuid": "2ad99c01-069f-4f75-8ef3-b89b43ada4c4"
+        },
+        {
+            "@type": "WorkflowRoute",
+            "name": "Update VM Instance Success -> Notify Success",
+            "targetStep": "\/api\/3\/workflow_steps\/3a32a1f0-65d8-4b62-9d76-173f65abf9a7",
+            "sourceStep": "\/api\/3\/workflow_steps\/b17dda10-8ce7-4429-846d-5fbbdecae800",
+            "label": null,
+            "isExecuted": false,
+            "group": null,
+            "uuid": "194bb7a3-92ef-4f1d-ae22-5e52671325df"
         }
     ],
     "groups": [],
-    "priority": "/api/3/picklists/2b563c61-ae2c-41c0-a85a-c9709585e3f2",
-    "playbookOrigin": "/api/3/picklists/15c1e8c9-22bf-4e66-8fbb-0a502d4a4a3f",
+    "priority": "\/api\/3\/picklists\/2b563c61-ae2c-41c0-a85a-c9709585e3f2",
+    "playbookOrigin": "\/api\/3\/picklists\/15c1e8c9-22bf-4e66-8fbb-0a502d4a4a3f",
     "isEditable": true,
-    "uuid": "187eb7e3-6d23-4689-8a8c-ef8cc670eca5",
+    "uuid": "47b990a7-d436-4dd1-89db-a4aeac63c827",
     "owners": [],
     "isPrivate": false,
     "deletedAt": null,

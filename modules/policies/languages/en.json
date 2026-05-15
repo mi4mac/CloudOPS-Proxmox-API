@@ -1,0 +1,27 @@
+{
+    "POLICIES": {
+        "MODULE_DETAILS": {
+            "SINGULAR_NAME": "Policy",
+            "PLURAL_NAME": "Policies"
+        },
+        "FIELDS": {
+            "ASSETS": "Assets",
+            "FORTIGATESERIAL": "FortiGate Serial",
+            "BUSINESSJUSTIFICATION": "Business Justification",
+            "NEXTREVIEWTIME": "Next Review Time",
+            "LASTREVIEWEDTIME": "Last Reviewed Time",
+            "NAME": "Name",
+            "POLICYID": "Policy ID",
+            "SOURCEDATA": "Sourcedata",
+            "DESCRIPTION": "Description",
+            "ACTION": "Action",
+            "NATENABLED": "NAT Enabled",
+            "AUDITSTATUS": "Audit Status",
+            "POLICYSTATUS": "Policy Status",
+            "REVIEWCOMPLETE": "Review Complete",
+            "ISDELETEDONFIREWALL": "isDeletedOnFirewall",
+            "DELETEDDETECTEDAT": "deletedDetectedAt",
+            "LASTSEENAT": "lastSeenAt"
+        }
+    }
+}

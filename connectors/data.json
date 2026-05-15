@@ -1,0 +1,135 @@
+[
+    {
+        "name": "proxmox-api",
+        "label": "API Connector Proxmox",
+        "category": [
+            "Infrastructure"
+        ],
+        "description": "Native FortiSOAR connector for the Proxmox VE API. Enables VM and container provisioning, configuration and deletion via the Proxmox REST API using token-based authentication. Supports arbitrary configurations per connector instance (host, port, token).",
+        "publisher": "Fortinet \/ Custom",
+        "version": "2.0.4",
+        "operation_roles": [],
+        "configurations": [
+            {
+                "id": 2,
+                "config_id": "8c8a8611-a9bf-4d89-b72b-5f738863992e",
+                "status": 1,
+                "name": "Proxmox",
+                "default": true,
+                "config": {
+                    "host": "192.168.222.222",
+                    "node": "pve",
+                    "port": 8006,
+                    "api_token": "EXJ0ULGdr.0x699ffb0c.eTMjRMFGeR9O707wrpmbj9n7j9GTXd7h9zltOz1nW+Rbw8Z6zCc5Aov8Y8oBcNhBfIkIBtkPIHA3CyoZvXBKtiPbnhnfg7R5TIBmdhyL1oXLsA==A0VnY0kEMlWBm4Vs7",
+                    "verify_ssl": false
+                },
+                "remote_status": [],
+                "health_status": [],
+                "connector": 18,
+                "agent": "9ae264187b0fc2efca2da7dc0a9a055d",
+                "teams": []
+            }
+        ],
+        "dataImports": [],
+        "install_mode": "tgz",
+        "installer_path": "proxmox-api_2.0.4.tgz",
+        "ingestionPlaybooks": {
+            "collections": [],
+            "exported_tags": []
+        }
+    },
+    {
+        "name": "docker",
+        "label": "Docker",
+        "category": [
+            "Container Services"
+        ],
+        "description": "FortiSOAR connector for Docker Engine API.",
+        "publisher": "mibe",
+        "version": "2.0.1",
+        "operation_roles": [],
+        "configurations": [
+            {
+                "id": 32,
+                "config_id": "ccb154e2-9a78-48c2-a3e3-c56ef4bd0413",
+                "status": 1,
+                "name": "Docker",
+                "default": true,
+                "config": {
+                    "port": "2375",
+                    "timeout": 60,
+                    "key_path": "",
+                    "password": "EXJ0ULGdr.0x699ffb0c.V\/9t24UR39VScLBt8aKJ2u2sfnF+YmOuQ87OHUuwCsAdOFAQp",
+                    "protocol": "HTTP",
+                    "username": "root",
+                    "cert_path": "",
+                    "rate_limit": 60,
+                    "verify_ssl": false,
+                    "api_version": "v1.46",
+                    "retry_delay": 1,
+                    "access_token": "",
+                    "ca_cert_path": "",
+                    "retry_attempts": 3,
+                    "server_address": "192.168.222.223",
+                    "registry_server": "https:\/\/index.docker.io\/v1\/",
+                    "registry_password": "",
+                    "registry_username": ""
+                },
+                "remote_status": [],
+                "health_status": [],
+                "connector": 55,
+                "agent": "9ae264187b0fc2efca2da7dc0a9a055d",
+                "teams": []
+            }
+        ],
+        "dataImports": [],
+        "install_mode": "tgz",
+        "installer_path": "docker_2.0.1.tgz",
+        "ingestionPlaybooks": {
+            "collections": [],
+            "exported_tags": []
+        }
+    },
+    {
+        "name": "fortigate-firewall",
+        "label": "Fortinet FortiGate",
+        "category": [
+            "Firewall and Network Protection"
+        ],
+        "description": "Fortinet FortiGate enterprise firewall provide high performance, consolidated advanced security and granular visibility for broad protection across the entire digital attack surface.",
+        "publisher": "Fortinet",
+        "version": "5.4.0",
+        "operation_roles": [],
+        "configurations": [
+            {
+                "id": 33,
+                "config_id": "a18df41f-7370-42b3-b2c2-c21162eadd07",
+                "status": 1,
+                "name": "FG90",
+                "default": true,
+                "config": {
+                    "port": 4443,
+                    "vdom": "",
+                    "address": "192.168.222.254",
+                    "api_key": "EXJ0ULGdr.0x699ffb0c.MHVETK7bYivjt5oACHMmyHhul7a72od+TLY2d9RGmGJ5zxRM7fxJ5FDfdCgBXg==HpP0qdtI1qRYlxmwg",
+                    "verify_ssl": false,
+                    "app_block_policy": "default",
+                    "url_block_policy": "LAN"
+                },
+                "remote_status": [],
+                "health_status": [],
+                "connector": 15,
+                "agent": "9ae264187b0fc2efca2da7dc0a9a055d",
+                "teams": []
+            }
+        ],
+        "dataImports": [],
+        "install_mode": "rpm",
+        "rpm_name": "cyops-connector-fortigate-firewall-5.4.0",
+        "installer_path": "cyops-connector-fortigate-firewall-5.4.0",
+        "ingestionPlaybooks": {
+            "collections": [],
+            "exported_tags": []
+        }
+    }
+]

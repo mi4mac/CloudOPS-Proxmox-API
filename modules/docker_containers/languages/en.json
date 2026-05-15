@@ -1,20 +1,20 @@
 {
-  "DOCKER_CONTAINERS": {
-    "MODULE_DETAILS": {
-      "SINGULAR_NAME": "Docker Container",
-      "PLURAL_NAME": "Docker Containers"
-    },
-    "FIELDS": {
-      "DOCKERID": "dockerId",
-      "NAME": "name",
-      "IMAGE": "image",
-      "IMAGE_SIZE_MB": "imageSizeMB",
-      "STATUS": "status",
-      "NODE": "node",
-      "CPU_CORES": "cpuCores",
-      "MEMORY_MB": "memoryMB",
-      "SWAP_MB": "swapMB",
-      "LAST_SEEN": "lastSeen"
+    "DOCKER_CONTAINERS": {
+        "MODULE_DETAILS": {
+            "SINGULAR_NAME": "Docker Container",
+            "PLURAL_NAME": "Docker Containers"
+        },
+        "FIELDS": {
+            "DOCKERID": "Docker ID",
+            "NAME": "Name",
+            "IMAGE": "Image",
+            "STATUS": "Status",
+            "NODE": "Node",
+            "CPUCORES": "CPU Cores",
+            "MEMORYMB": "Memory (MB)",
+            "SWAPMB": "Swap (MB)",
+            "IMAGESIZEMB": "Image Size (MB)",
+            "LASTSEEN": "Last Seen"
+        }
     }
-  }
 }
