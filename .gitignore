@@ -2,6 +2,13 @@
 *.zip
 !/solution-pack-proxmox-api-migration.zip
 !/CloudOPS_Solution_Pack.zip
+
+# Stray connector drops at repo root (use connectors/proxmox-api_2.0.7.tgz and API Connector Proxmox.tgz)
+/proxmox-api_2.0.*.tgz
+
+# No npm project in this repo
+package-lock.json
+node_modules/
 # All-in-one pack is CloudOPS_Solution_Pack.zip; do not sync alternate build name:
 CloudOPS Solution Pack Proxmox_Docker.zip
 # Pack source: do not sync (use CloudOPS_Solution_Pack.zip from repo)
