@@ -181,7 +181,7 @@
                 "params": {
                     "include_config": true
                 },
-                "version": "2.1.0",
+                "version": "2.0.0",
                 "connector": "proxmox-api",
                 "operation": "list_containers",
                 "operationTitle": "List Containers",
@@ -205,7 +205,7 @@
                 "params": {
                     "include_config": true
                 },
-                "version": "2.1.0",
+                "version": "2.0.0",
                 "connector": "proxmox-api",
                 "operation": "list_vms",
                 "operationTitle": "List VMs",
@@ -222,7 +222,7 @@
         {
             "@type": "WorkflowStep",
             "name": "No Sync Log Record",
-            "description": "No 'Inventory-Sync-Log' record found \u2013 report is only visible in execution details.",
+            "description": "No 'Inventory-Sync-Log' record found – report is only visible in execution details.",
             "arguments": {
                 "params": [],
                 "version": "3.6.0",

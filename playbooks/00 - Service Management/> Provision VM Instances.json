@@ -33,7 +33,7 @@
                     "newid": "{{ (vars.steps.Get_Next_VMID.data.data | default(vars.steps.Get_Next_VMID.data)) | int }}",
                     "storage": "{{ globalVars.proxmox_storage | default('local-lvm') }}"
                 },
-                "version": "2.1.0",
+                "version": "2.0.0",
                 "connector": "proxmox-api",
                 "operation": "clone_vm",
                 "operationTitle": "Clone VM",
@@ -99,7 +99,7 @@
                     "vmid": "{{ (vars.steps.Get_Next_VMID.data.data | default(vars.steps.Get_Next_VMID.data)) | int }}",
                     "body_params": "{{ {'cores': vars.cpu_cores | int, 'memory': vars.memory_mb | int, 'net0': 'virtio,bridge=' ~ vars.bridge ~ ',tag=' ~ (vars.vlan | string), 'ipconfig0': 'ip=' ~ vars.vm_ip_address ~ '/24,gw=' ~ vars.gateway, 'ciuser': vars.ci_user, 'cipassword': vars.root_password, 'nameserver': '1.1.1.1'} | tojson }}"
                 },
-                "version": "2.1.0",
+                "version": "2.0.0",
                 "connector": "proxmox-api",
                 "operation": "config_vm",
                 "operationTitle": "Configure VM",
@@ -144,7 +144,7 @@
         {
             "@type": "WorkflowStep",
             "name": "Resize VM Disk API",
-            "description": "Runs only when Custom VM Disk Size = resize. Grows scsi0 to diskGB on the record (target total, grow-only +delta G). Requires connector 2.1.0+ (install via CONNECTOR_INSTALL.md).",
+            "description": "Runs only when Custom VM Disk Size = resize. Grows scsi0 to diskGB on the record (target total, grow-only +delta G). Requires connector 2.0.8+ with disk resize fix. Import connectors/API Connector Proxmox.tgz.",
             "arguments": {
                 "name": "API Connector Proxmox",
                 "config": "''",
@@ -154,7 +154,7 @@
                     "vmid": "{{ (vars.steps.Get_Next_VMID.data.data | default(vars.steps.Get_Next_VMID.data)) | int }}",
                     "target_gb": "{{ vars.input.records[0].diskGB | int }}"
                 },
-                "version": "2.1.0",
+                "version": "2.0.0",
                 "connector": "proxmox-api",
                 "operation": "resize_vm_disk",
                 "operationTitle": "Resize VM Disk",
@@ -179,7 +179,7 @@
                     "node": "{{ globalVars.proxmox_default_node | default('pve') }}",
                     "vmid": "{{ (vars.steps.Get_Next_VMID.data.data | default(vars.steps.Get_Next_VMID.data)) | int }}"
                 },
-                "version": "2.1.0",
+                "version": "2.0.0",
                 "connector": "proxmox-api",
                 "operation": "update_vm_cloudinit",
                 "operationTitle": "Update VM Cloud-Init",
@@ -215,7 +215,7 @@
                     "ostemplate": "{{ vars.prov_ostemplate }}",
                     "unprivileged": 1
                 },
-                "version": "2.1.0",
+                "version": "2.0.0",
                 "connector": "proxmox-api",
                 "operation": "create_container",
                 "operationTitle": "Create Container",
@@ -265,7 +265,7 @@
                 "name": "API Connector Proxmox",
                 "config": "''",
                 "params": [],
-                "version": "2.1.0",
+                "version": "2.0.0",
                 "connector": "proxmox-api",
                 "operation": "get_next_vmid",
                 "operationTitle": "Get Next VMID",
@@ -287,7 +287,7 @@
                 "name": "API Connector Proxmox",
                 "config": "''",
                 "params": [],
-                "version": "2.1.0",
+                "version": "2.0.0",
                 "connector": "proxmox-api",
                 "operation": "get_node_status",
                 "operationTitle": "Get Node Status",
@@ -311,7 +311,7 @@
                 "params": {
                     "storage": "{{ globalVars.proxmox_storage | default('local-lvm') }}"
                 },
-                "version": "2.1.0",
+                "version": "2.0.0",
                 "connector": "proxmox-api",
                 "operation": "get_storage_status",
                 "operationTitle": "Get Storage Status",
@@ -583,7 +583,7 @@
                     "node": "{{ globalVars.proxmox_default_node | default('pve') }}",
                     "vmid": "{{ (vars.steps.Get_Next_VMID.data.data | default(vars.steps.Get_Next_VMID.data)) | int }}"
                 },
-                "version": "2.1.0",
+                "version": "2.0.0",
                 "connector": "proxmox-api",
                 "operation": "start_container",
                 "operationTitle": "Start Container",
@@ -608,7 +608,7 @@
                     "node": "{{ globalVars.proxmox_default_node | default('pve') }}",
                     "vmid": "{{ (vars.steps.Get_Next_VMID.data.data | default(vars.steps.Get_Next_VMID.data)) | int }}"
                 },
-                "version": "2.1.0",
+                "version": "2.0.0",
                 "connector": "proxmox-api",
                 "operation": "start_vm",
                 "operationTitle": "Start VM",

@@ -24,12 +24,11 @@ fi
 echo "Building connector archive..."
 ./build-connector.sh
 
-VERSION="$(python3 -c "import json; print(json.load(open('proxmox-api/info.json'))['version'])")"
-echo "Syncing connectors into ${PACK_DIR}/connectors (proxmox-api ${VERSION})..."
+echo "Syncing connectors into ${PACK_DIR}/connectors..."
 mkdir -p "${PACK_DIR}/connectors"
 cp -f connectors/data.json "${PACK_DIR}/connectors/"
-cp -f "connectors/proxmox-api_${VERSION}.tgz" "${PACK_DIR}/connectors/"
-find "${PACK_DIR}/connectors" -maxdepth 1 -name 'proxmox-api_*.tgz' ! -name "proxmox-api_${VERSION}.tgz" -delete 2>/dev/null || true
+cp -f "connectors/API Connector Proxmox.tgz" "${PACK_DIR}/connectors/"
+rm -f "${PACK_DIR}/connectors"/proxmox-api_*.tgz
 
 for PB in \
     'playbooks/00 - Service Management/> Provision VM Instances.json' \

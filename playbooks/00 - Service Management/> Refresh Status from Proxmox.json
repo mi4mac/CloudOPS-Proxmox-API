@@ -46,7 +46,7 @@
                     "node": "{{ vars.node }}",
                     "vmid": "{{ vars.vmid | int }}"
                 },
-                "version": "2.1.0",
+                "version": "2.0.0",
                 "connector": "proxmox-api",
                 "operation": "get_container_status",
                 "operationTitle": "Get Container Status",
@@ -71,7 +71,7 @@
                     "node": "{{ vars.node }}",
                     "vmid": "{{ vars.vmid | int }}"
                 },
-                "version": "2.1.0",
+                "version": "2.0.0",
                 "connector": "proxmox-api",
                 "operation": "get_vm_status",
                 "operationTitle": "Get VM Status",

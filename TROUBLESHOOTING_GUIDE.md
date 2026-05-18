@@ -69,17 +69,16 @@ The VM Instance **`rootPassword`** field is sent to Proxmox as **`cipassword`** 
 
 ### Connector not updated after import (still **2.0.7**, file time **12:34**)
 
-That timestamp matches the **old** solution pack build that still shipped **`proxmox-api_2.0.7.tgz`**. **`CloudOPS_Solution_Pack.zip` does not replace an already-installed connector.**
+**Cause:** `build-connector.sh` previously built a **broken** archive (files at tarball root) and copied it over **`API Connector Proxmox.tgz`**. FortiSOAR expects **`proxmox-api/info.json`** inside the `.tgz` (see `proxmox-api/README.md`). A bad import leaves the old **2.0.7** installed. The **12:34** time is the old pack/connector file, not a successful upgrade.
 
-Full steps: **[CONNECTOR_INSTALL.md](CONNECTOR_INSTALL.md)**
+**Fix:** Import only **`connectors/API Connector Proxmox.tgz`** from a fresh `./build-connector.sh` run (not `proxmox-api_2.x.tgz` from the solution pack).
 
-1. `git pull` and use **`releases/proxmox-api_2.1.0_INSTALL_THIS.tgz`** (verify: `tar -xOf … info.json | grep version` → **2.1.0**).
-2. FortiSOAR **Content Hub** → upload that `.tgz` (connector import, not solution pack).
-3. Check **Delete all existing versions**.
-4. **Connectors** → **API Connector Proxmox** must show **2.1.0** (description mentions **build 2026-05-18**).
-5. Then import the new **`CloudOPS_Solution_Pack.zip`** if needed.
+```bash
+tar -tzf "connectors/API Connector Proxmox.tgz" | head -3    # must show proxmox-api/...
+tar -xOf "connectors/API Connector Proxmox.tgz" proxmox-api/info.json | grep '"version"'  # 2.0.8
+```
 
-FortiSOAR upgrades connectors by **version number**, not zip file date.
+FortiSOAR: **Content Hub** → upload **`API Connector Proxmox.tgz`** → **Delete all existing versions** → confirm version **2.0.8**. Solution pack import alone does not replace connector code.
 
 ### Lock timeout on Config VM (`lock-<vmid>.conf`)
 
