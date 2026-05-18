@@ -190,7 +190,7 @@
                 "step_variables": [],
                 "pass_parent_env": true,
                 "pass_input_record": false,
-                "workflowReference": "/api/3/workflows/187eb7e3-6d23-4689-8a8c-ef8cc670eca5"
+                "workflowReference": "/api/3/workflows/bf87e4ff-0497-4e2e-b091-9cf7e54dced5"
             },
             "status": null,
             "top": "1000",

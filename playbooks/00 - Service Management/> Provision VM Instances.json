@@ -67,7 +67,7 @@
             "name": "Configuration",
             "description": null,
             "arguments": {
-                "disk_gb": "{{vars.input.records[0].diskGB or 5}}",
+                "disk_gb": "{{vars.input.records[0].diskGB or 10}}",
                 "swap_mb": "{{vars.input.records[0].swapMB or 512}}",
                 "vm_name": "{{vars.input.records[0].name}}",
                 "cpu_cores": "{{vars.input.records[0].cpuCores or 1}}",
@@ -97,7 +97,7 @@
                 "params": {
                     "node": "{{ globalVars.proxmox_default_node | default('pve') }}",
                     "vmid": "{{ (vars.steps.Get_Next_VMID.data.data | default(vars.steps.Get_Next_VMID.data)) | int }}",
-                    "body_params": "{{ {'cores': vars.cpu_cores | int, 'memory': vars.memory_mb | int, 'net0': 'virtio,bridge=' ~ vars.bridge ~ ',tag=' ~ (vars.vlan | string), 'ipconfig0': 'ip=' ~ vars.vm_ip_address ~ '/24,gw=' ~ vars.gateway, 'scsi0': (globalVars.proxmox_storage | default('local-lvm')) ~ ':' ~ (vars.disk_gb | int), 'ciuser': vars.ci_user, 'cipassword': vars.root_password, 'nameserver': '1.1.1.1'} | tojson }}"
+                    "body_params": "{{ {'cores': vars.cpu_cores | int, 'memory': vars.memory_mb | int, 'net0': 'virtio,bridge=' ~ vars.bridge ~ ',tag=' ~ (vars.vlan | string), 'ipconfig0': 'ip=' ~ vars.vm_ip_address ~ '/24,gw=' ~ vars.gateway, 'ciuser': vars.ci_user, 'cipassword': vars.root_password, 'nameserver': '1.1.1.1'} | tojson }}"
                 },
                 "version": "2.0.0",
                 "connector": "proxmox-api",
@@ -136,7 +136,7 @@
             "left": "485",
             "stepType": "/api/3/workflow_step_types/0bfed618-0316-11e7-93ae-92361f002671",
             "group": null,
-            "uuid": "e8f4a1c2-3b4d-5e6f-9a0b-1c2d3e4f5a6b"
+            "uuid": "8f2e41c6-9d3a-4b7e-a1c5-6e9f0d8b2c4a"
         },
         {
             "@type": "WorkflowStep",
@@ -654,7 +654,7 @@
         {
             "@type": "WorkflowRoute",
             "name": "Config VM (API) -> Update Cloud-Init (API)",
-            "targetStep": "/api/3/workflow_steps/e8f4a1c2-3b4d-5e6f-9a0b-1c2d3e4f5a6b",
+            "targetStep": "/api/3/workflow_steps/8f2e41c6-9d3a-4b7e-a1c5-6e9f0d8b2c4a",
             "sourceStep": "/api/3/workflow_steps/32375dc0-92c7-489e-b8db-48c22b8caf89",
             "label": null,
             "isExecuted": false,
@@ -665,11 +665,11 @@
             "@type": "WorkflowRoute",
             "name": "Update Cloud-Init (API) -> Start VM (API)",
             "targetStep": "/api/3/workflow_steps/c56a6e2a-1ea1-46fc-8bdb-b24b77ecff8b",
-            "sourceStep": "/api/3/workflow_steps/e8f4a1c2-3b4d-5e6f-9a0b-1c2d3e4f5a6b",
+            "sourceStep": "/api/3/workflow_steps/8f2e41c6-9d3a-4b7e-a1c5-6e9f0d8b2c4a",
             "label": null,
             "isExecuted": false,
             "group": null,
-            "uuid": "f1a2b3c4-d5e6-4789-f012-34567890abcd"
+            "uuid": "7b8e92f1-3c4d-4a6e-9f0b-1d2e3f4a5b6c"
         },
         {
             "@type": "WorkflowRoute",

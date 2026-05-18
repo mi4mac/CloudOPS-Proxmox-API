@@ -596,7 +596,7 @@
                 "buttonClass": "btn btn-default btn-sm"
             },
             "dataSourceFilters": null,
-            "defaultValue": null,
+            "defaultValue": 10,
             "tooltip": "Requested disk size in GB",
             "visibility": true,
             "htmlEscape": false,

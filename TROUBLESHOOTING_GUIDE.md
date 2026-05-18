@@ -6,6 +6,23 @@ This guide helps you troubleshoot issues with the Proxmox API integration in For
 
 ---
 
+## Solution pack import: “identifier uuid is missing for Workflow”
+
+**Symptom:** Importing **`CloudOPS_Solution_Pack.zip`** (or playbooks) fails with `The identifier uuid is missing for a query of App\Entity\Workflow\Workflow`.
+
+**Cause:** A **Reference playbook** step points at a workflow UUID that is **not included** in the pack (for example **> Manage Service Request** → **Provision VM Instances** referenced a deleted/stale UUID).
+
+**Fix:** Use a pack build from this repo after the UUID alignment fix, or in FortiSOAR open the parent playbook and re-select the sub-playbook so FortiSOAR writes the correct `workflowReference`. Known mappings in this pack:
+
+| Sub-playbook | Workflow UUID |
+|--------------|----------------|
+| > Provision VM Instances | `bf87e4ff-0497-4e2e-b091-9cf7e54dced5` |
+| > AD User Enrichment | `cdf181f0-4066-4f71-a5a6-bef1914bf9b6` |
+| > Destroy VM Instance | `7828492e-ba6c-47b4-9965-0111b4f6729e` |
+| Import Fortigate Policies (refresh step) | `a5c7a48e-6030-4547-a5d2-265740a2002f` |
+
+---
+
 ## Errors in VM Instance Logs (Provision / Destroy)
 
 When a provision or destroy run fails, the connector’s error message (for example a Proxmox API error) is written into the **Logs** field of the VM Instance record:
@@ -37,6 +54,16 @@ The **> Provision VM Instances** playbook uses connector **2.0.6** or later for 
 The VM Instance **`rootPassword`** field is sent to Proxmox as **`cipassword`** for **`ciuser`**. The success email uses the same username.
 
 **Template requirements:** QEMU template with a **cloud-init** drive (`ide2 … cloudinit`), virtio NIC, and a cloud image that supports cloud-init (see [Cloud-Init Support](https://pve.proxmox.com/wiki/Cloud-Init_Support)).
+
+### “No bootable disk” after playbook provision (manual `qm` works)
+
+**Symptom:** VM starts via FortiSOAR but Proxmox shows **no bootable disk**; the same template works with manual `qm clone` / `qm set` (network + cloud-init only).
+
+**Cause:** **Config VM (API)** used to send `scsi0: local-lvm:<diskGB>`, which creates a **new empty disk** on `scsi0` and replaces the cloned system disk. Manual commands do not set `scsi0`.
+
+**Fix:** The playbook no longer sets `scsi0` on configure (only CPU, RAM, `net0`, `ipconfig0`, `ciuser`, `cipassword`, `nameserver`). Re-import the pack or edit **Config VM (API)** in FortiSOAR to match.
+
+**Disk size:** The VM Instance **diskGB** field does not resize the QEMU disk yet (containers still use `rootfs`). To grow a VM disk after provision, use `qm resize <vmid> scsi0 +<n>G` on Proxmox or add a resize step later.
 
 ### Lock timeout on Config VM (`lock-<vmid>.conf`)
 
