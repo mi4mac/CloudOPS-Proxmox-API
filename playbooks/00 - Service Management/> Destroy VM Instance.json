@@ -256,7 +256,9 @@
             "arguments": {
                 "name": "Proxmox VE Hypervisor",
                 "config": "''",
-                "params": [],
+                "params": {
+                    "node": "{{ globalVars.proxmox_default_node | default('pve') }}"
+                },
                 "version": "2.0.0",
                 "connector": "proxmox-ve",
                 "operation": "list_containers",
@@ -278,7 +280,9 @@
             "arguments": {
                 "name": "Proxmox VE Hypervisor",
                 "config": "''",
-                "params": [],
+                "params": {
+                    "node": "{{ globalVars.proxmox_default_node | default('pve') }}"
+                },
                 "version": "2.0.0",
                 "connector": "proxmox-ve",
                 "operation": "list_vms",

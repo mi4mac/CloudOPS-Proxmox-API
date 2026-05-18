@@ -179,6 +179,7 @@
                 "name": "Proxmox VE Hypervisor",
                 "config": "''",
                 "params": {
+                    "node": "{{ globalVars.proxmox_default_node | default('pve') }}",
                     "include_config": true
                 },
                 "version": "2.0.0",
@@ -203,6 +204,7 @@
                 "name": "Proxmox VE Hypervisor",
                 "config": "''",
                 "params": {
+                    "node": "{{ globalVars.proxmox_default_node | default('pve') }}",
                     "include_config": true
                 },
                 "version": "2.0.0",
