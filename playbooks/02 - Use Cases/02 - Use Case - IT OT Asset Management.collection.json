@@ -1940,7 +1940,7 @@
         {
           "@type": "Workflow",
           "triggerLimit": null,
-          "name": "Tag as Most Essential Function (MEF)",
+          "name": "Tag as Most Essential Function MEF",
           "aliasName": null,
           "tag": null,
           "description": "Playbook tags asset as Most Essential Function(MEF)",

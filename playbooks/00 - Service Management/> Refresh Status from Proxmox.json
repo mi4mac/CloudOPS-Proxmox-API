@@ -37,7 +37,7 @@
         },
         {
             "@type": "WorkflowStep",
-            "name": "Get Container Status (API)",
+            "name": "Get Container Status API",
             "description": null,
             "arguments": {
                 "name": "API Connector Proxmox",
@@ -62,7 +62,7 @@
         },
         {
             "@type": "WorkflowStep",
-            "name": "Get VM Status (API)",
+            "name": "Get VM Status API",
             "description": null,
             "arguments": {
                 "name": "API Connector Proxmox",
@@ -123,13 +123,13 @@
                         "option": "Container",
                         "step_iri": "/api/3/workflow_steps/a5724460-f8bc-4bdd-b889-bea1552c23cd",
                         "condition": "{{ 'ct' in vars.vm_type or vars.vm_type == 'lxc' }}",
-                        "step_name": "Get Container Status (API)"
+                        "step_name": "Get Container Status API"
                     },
                     {
                         "option": "VM",
                         "default": true,
                         "step_iri": "/api/3/workflow_steps/898c8ee6-cc06-41b2-9d97-88554219ee41",
-                        "step_name": "Get VM Status (API)"
+                        "step_name": "Get VM Status API"
                     }
                 ],
                 "step_variables": []
@@ -146,10 +146,10 @@
             "name": "Set Refresh Result",
             "description": null,
             "arguments": {
-                "log_msg": "{%- set is_ct = 'ct' in vars.vm_type or vars.vm_type == 'lxc' -%}{%- set s = vars.steps['Get Container Status (API)'] if is_ct else vars.steps['Get VM Status (API)'] -%}{%- if s and not (s.get('Error message') or s.get('error')) -%}<p>Refreshed from Proxmox: {{ s.data.data.status | default('unknown') }}</p>{%- else -%}<p>Refresh failed: {{ (s.get('Error message') or s.get('error') or 'No status response') if s else 'No status step' }}</p>{%- endif -%}",
-                "refresh_ok": "{%- set is_ct = 'ct' in vars.vm_type or vars.vm_type == 'lxc' -%}{%- set s = vars.steps['Get Container Status (API)'] if is_ct else vars.steps['Get VM Status (API)'] -%}{%- if s and not (s.get('Error message') or s.get('error')) -%}true{%- else -%}false{%- endif -%}",
+                "log_msg": "{%- set is_ct = 'ct' in vars.vm_type or vars.vm_type == 'lxc' -%}{%- set s = vars.steps['Get Container Status API'] if is_ct else vars.steps['Get VM Status API'] -%}{%- if s and not (s.get('Error message') or s.get('error')) -%}<p>Refreshed from Proxmox: {{ s.data.data.status | default('unknown') }}</p>{%- else -%}<p>Refresh failed: {{ (s.get('Error message') or s.get('error') or 'No status response') if s else 'No status step' }}</p>{%- endif -%}",
+                "refresh_ok": "{%- set is_ct = 'ct' in vars.vm_type or vars.vm_type == 'lxc' -%}{%- set s = vars.steps['Get Container Status API'] if is_ct else vars.steps['Get VM Status API'] -%}{%- if s and not (s.get('Error message') or s.get('error')) -%}true{%- else -%}false{%- endif -%}",
                 "status_iri": "",
-                "proxmox_status": "{%- set is_ct = 'ct' in vars.vm_type or vars.vm_type == 'lxc' -%}{%- set s = vars.steps['Get Container Status (API)'] if is_ct else vars.steps['Get VM Status (API)'] -%}{{ s.data.data.status | default('') }}"
+                "proxmox_status": "{%- set is_ct = 'ct' in vars.vm_type or vars.vm_type == 'lxc' -%}{%- set s = vars.steps['Get Container Status API'] if is_ct else vars.steps['Get VM Status API'] -%}{{ s.data.data.status | default('') }}"
             },
             "status": null,
             "top": "705",

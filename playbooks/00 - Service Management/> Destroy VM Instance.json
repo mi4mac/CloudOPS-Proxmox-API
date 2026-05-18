@@ -99,7 +99,7 @@
         },
         {
             "@type": "WorkflowStep",
-            "name": "Destroy Container (API)",
+            "name": "Destroy Container API",
             "description": null,
             "arguments": {
                 "name": "API Connector Proxmox",
@@ -163,14 +163,14 @@
                         "option": "VM",
                         "step_iri": "/api/3/workflow_steps/25db9212-d604-475e-98f9-9a70d899965d",
                         "condition": "{{ ((vars.vm_type | default('')) | lower) != 'lxc' and 'ct' not in ((vars.vm_type | default('')) | lower) }}",
-                        "step_name": "Stop VM (API)"
+                        "step_name": "Stop VM API"
                     },
                     {
                         "option": "Container",
                         "default": true,
                         "step_iri": "/api/3/workflow_steps/906d5b70-42e4-4702-aefe-1b3a4f57691f",
                         "condition": "{{ ((vars.vm_type | default('')) | lower) == 'lxc' or 'ct' in ((vars.vm_type | default('')) | lower) }}",
-                        "step_name": "Stop Container (API)"
+                        "step_name": "Stop Container API"
                     }
                 ],
                 "step_variables": []
@@ -184,7 +184,7 @@
         },
         {
             "@type": "WorkflowStep",
-            "name": "Destroy VM (API)",
+            "name": "Destroy VM API",
             "description": null,
             "arguments": {
                 "name": "API Connector Proxmox",
@@ -240,7 +240,7 @@
             "name": "Get CMD Result",
             "description": "Set cmd_result from destroy step outcome; only 'successfully destroyed' if destroy API actually succeeded.",
             "arguments": {
-                "cmd_result": "{%- if vars.steps.get('Destroy Container (API)') and not (vars.steps['Destroy Container (API)'].get('Error message') or vars.steps['Destroy Container (API)'].get('error')) -%}successfully destroyed{%- elif vars.steps.get('Destroy VM (API)') and not (vars.steps['Destroy VM (API)'].get('Error message') or vars.steps['Destroy VM (API)'].get('error')) -%}successfully destroyed{%- else -%}{{ vars.cmd_result | default('destroy failed') }}{% endif %}"
+                "cmd_result": "{%- if vars.steps.get('Destroy Container API') and not (vars.steps['Destroy Container API'].get('Error message') or vars.steps['Destroy Container API'].get('error')) -%}successfully destroyed{%- elif vars.steps.get('Destroy VM API') and not (vars.steps['Destroy VM API'].get('Error message') or vars.steps['Destroy VM API'].get('error')) -%}successfully destroyed{%- else -%}{{ vars.cmd_result | default('destroy failed') }}{% endif %}"
             },
             "status": null,
             "top": "2190",
@@ -477,7 +477,7 @@
             "name": "Set Destroy Failure Result",
             "description": "Capture connector error into cmd_result so the VM record log shows the real failure.",
             "arguments": {
-                "cmd_result": "{{ vars.steps['Stop VM (API)']['Error message'] | default(vars.steps['Stop VM (API)'].error | default(vars.steps['Destroy VM (API)']['Error message'] | default(vars.steps['Destroy VM (API)'].error | default(vars.steps['Stop Container (API)']['Error message'] | default(vars.steps['Stop Container (API)'].error | default(vars.steps['Destroy Container (API)']['Error message'] | default(vars.steps['Destroy Container (API)'].error | default(vars.cmd_result | default('Destroy failed')))))))) }}"
+                "cmd_result": "{{ vars.steps['Stop VM API']['Error message'] | default(vars.steps['Stop VM API'].error | default(vars.steps['Destroy VM API']['Error message'] | default(vars.steps['Destroy VM API'].error | default(vars.steps['Stop Container API']['Error message'] | default(vars.steps['Stop Container API'].error | default(vars.steps['Destroy Container API']['Error message'] | default(vars.steps['Destroy Container API'].error | default(vars.cmd_result | default('Destroy failed')))))))) }}"
             },
             "status": null,
             "top": "2460",
@@ -550,7 +550,7 @@
         },
         {
             "@type": "WorkflowStep",
-            "name": "Stop Container (API)",
+            "name": "Stop Container API",
             "description": "Stop the container before destroy so Proxmox accepts delete.",
             "arguments": {
                 "name": "API Connector Proxmox",
@@ -575,7 +575,7 @@
         },
         {
             "@type": "WorkflowStep",
-            "name": "Stop VM (API)",
+            "name": "Stop VM API",
             "description": "Stop the VM before destroy so Proxmox accepts delete.",
             "arguments": {
                 "name": "API Connector Proxmox",
@@ -792,7 +792,7 @@
         },
         {
             "@type": "WorkflowRoute",
-            "name": "Destroy Container (API) -> Get CMD Result",
+            "name": "Destroy Container API -> Get CMD Result",
             "targetStep": "/api/3/workflow_steps/5ba445d1-4fe0-43d3-8dab-34caebb6056c",
             "sourceStep": "/api/3/workflow_steps/e2c4a569-552f-4f15-8428-e74483c561e9",
             "label": null,
@@ -822,7 +822,7 @@
         },
         {
             "@type": "WorkflowRoute",
-            "name": "Destroy via API Type -> Stop Container (API)",
+            "name": "Destroy via API Type -> Stop Container API",
             "targetStep": "/api/3/workflow_steps/906d5b70-42e4-4702-aefe-1b3a4f57691f",
             "sourceStep": "/api/3/workflow_steps/30b803ca-00c9-4306-85c2-28159bf6d2bc",
             "label": "Container",
@@ -832,7 +832,7 @@
         },
         {
             "@type": "WorkflowRoute",
-            "name": "Destroy via API Type -> Stop VM (API)",
+            "name": "Destroy via API Type -> Stop VM API",
             "targetStep": "/api/3/workflow_steps/25db9212-d604-475e-98f9-9a70d899965d",
             "sourceStep": "/api/3/workflow_steps/30b803ca-00c9-4306-85c2-28159bf6d2bc",
             "label": "VM",
@@ -842,7 +842,7 @@
         },
         {
             "@type": "WorkflowRoute",
-            "name": "Destroy VM (API) -> Get CMD Result",
+            "name": "Destroy VM API -> Get CMD Result",
             "targetStep": "/api/3/workflow_steps/5ba445d1-4fe0-43d3-8dab-34caebb6056c",
             "sourceStep": "/api/3/workflow_steps/cca2253d-ecd4-4506-9f36-0d99970fbc76",
             "label": null,
@@ -982,7 +982,7 @@
         },
         {
             "@type": "WorkflowRoute",
-            "name": "Stop Container (API) -> Wait 15 seconds CT",
+            "name": "Stop Container API -> Wait 15 seconds CT",
             "targetStep": "/api/3/workflow_steps/62e8ad1f-5cec-4dfc-87af-43f93acfba57",
             "sourceStep": "/api/3/workflow_steps/906d5b70-42e4-4702-aefe-1b3a4f57691f",
             "label": null,
@@ -992,7 +992,7 @@
         },
         {
             "@type": "WorkflowRoute",
-            "name": "Stop VM (API) -> Wait 15 seconds VM",
+            "name": "Stop VM API -> Wait 15 seconds VM",
             "targetStep": "/api/3/workflow_steps/a84594b9-d313-4b73-ad25-8aa1b65b0f9a",
             "sourceStep": "/api/3/workflow_steps/25db9212-d604-475e-98f9-9a70d899965d",
             "label": null,
@@ -1042,7 +1042,7 @@
         },
         {
             "@type": "WorkflowRoute",
-            "name": "Wait 15 seconds CT -> Destroy Container (API)",
+            "name": "Wait 15 seconds CT -> Destroy Container API",
             "targetStep": "/api/3/workflow_steps/e2c4a569-552f-4f15-8428-e74483c561e9",
             "sourceStep": "/api/3/workflow_steps/62e8ad1f-5cec-4dfc-87af-43f93acfba57",
             "label": null,
@@ -1052,7 +1052,7 @@
         },
         {
             "@type": "WorkflowRoute",
-            "name": "Wait 15 seconds VM -> Destroy VM (API)",
+            "name": "Wait 15 seconds VM -> Destroy VM API",
             "targetStep": "/api/3/workflow_steps/cca2253d-ecd4-4506-9f36-0d99970fbc76",
             "sourceStep": "/api/3/workflow_steps/a84594b9-d313-4b73-ad25-8aa1b65b0f9a",
             "label": null,

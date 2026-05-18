@@ -22,6 +22,7 @@ This repository contains a **FortiSOAR solution pack** and a **native Proxmox co
   - `TOKEN_CAPABILITIES.md` – Proxmox API token capabilities and required permissions.
   - `PROXMOX_9.1.5_SPECIFIC_NOTES.md` – Environment‑specific Proxmox 9.1.5 notes.
   - `TESTING_GUIDE.md` – End‑to‑end and regression test scenarios.
+  - `VM_PROVISIONING.md` – Rocky9-VM provision flow, disk GB rules, connector versions.
   - `TROUBLESHOOTING_GUIDE.md` – Common issues and troubleshooting steps.
   - `proxmox-api/playbooks/Proxmox API Samples/README.md` – Sample playbooks for each connector operation.
   - `docs/internal/PROJEKT_STATUS.md` – Internal project status for this migration.

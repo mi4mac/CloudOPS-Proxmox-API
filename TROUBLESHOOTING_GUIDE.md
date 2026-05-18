@@ -40,12 +40,12 @@ The **> Provision VM Instances** playbook uses connector **2.0.6** or later for 
 
 | Step | Proxmox equivalent | Purpose |
 |------|-------------------|---------|
-| Clone VM (API) | `qm clone` (full) | Clone template; connector **waits** for the async clone task to finish |
-| Config VM (API) | `qm set` | CPU, RAM, `net0`, `ipconfig0`, **`ciuser`**, **`cipassword`**, `nameserver` (does **not** set `scsi0`) |
+| Clone VM API | `qm clone` (full) | Clone template; connector **waits** for the async clone task to finish |
+| Config VM API | `qm set` | CPU, RAM, `net0`, `ipconfig0`, **`ciuser`**, **`cipassword`**, `nameserver` (does **not** set `scsi0`) |
 | Custom VM Disk Size | (decision) | **Resize** only if **diskGB** is set and ≠ **proxmox_default_disk_gb** (10); else keep template disk |
-| Resize VM Disk (API) | `qm resize scsi0 …` | Grow boot disk to **diskGB** (grow-only; skips if template disk is already larger) |
-| Update Cloud-Init (API) | `qm cloudinit update` | Regenerate cloud-init drive after config changes |
-| Start VM (API) | `qm start` | Boot the guest |
+| Resize VM Disk API | `qm resize scsi0 …` | Grow boot disk to **diskGB** (grow-only; skips if template disk is already larger) |
+| Update Cloud-Init API | `qm cloudinit update` | Regenerate cloud-init drive after config changes |
+| Start VM API | `qm start` | Boot the guest |
 
 **Global variables (optional):**
 
@@ -61,11 +61,11 @@ The VM Instance **`rootPassword`** field is sent to Proxmox as **`cipassword`** 
 
 **Symptom:** VM starts via FortiSOAR but Proxmox shows **no bootable disk**; the same template works with manual `qm clone` / `qm set` (network + cloud-init only).
 
-**Cause:** **Config VM (API)** used to send `scsi0: local-lvm:<diskGB>`, which creates a **new empty disk** on `scsi0` and replaces the cloned system disk. Manual commands do not set `scsi0`.
+**Cause:** **Config VM API** used to send `scsi0: local-lvm:<diskGB>`, which creates a **new empty disk** on `scsi0` and replaces the cloned system disk. Manual commands do not set `scsi0`.
 
-**Fix:** The playbook no longer sets `scsi0` on configure (only CPU, RAM, `net0`, `ipconfig0`, `ciuser`, `cipassword`, `nameserver`). Re-import the pack or edit **Config VM (API)** in FortiSOAR to match.
+**Fix:** The playbook no longer sets `scsi0` on configure (only CPU, RAM, `net0`, `ipconfig0`, `ciuser`, `cipassword`, `nameserver`). Re-import the pack or edit **Config VM API** in FortiSOAR to match.
 
-**Disk size:** **Resize VM Disk (API)** runs only when **diskGB** on the record is not empty and not **10** (`proxmox_default_disk_gb`). Empty or **10** keeps the cloned template size (avoids unintended resize to 20 GB). Set **20**, **32**, etc. to grow. Containers still use **rootfs** at create. Connector **2.0.7+** required.
+**Disk size:** **Resize VM Disk API** runs only when **diskGB** on the record is not empty and not **10** (`proxmox_default_disk_gb`). Empty or **10** keeps the cloned template size (avoids unintended resize to 20 GB). Set **20**, **32**, etc. to grow. See [VM_PROVISIONING.md](VM_PROVISIONING.md). Containers still use **rootfs** at create. Connector **2.0.7+** required.
 
 ### Lock timeout on Config VM (`lock-<vmid>.conf`)
 
@@ -85,7 +85,7 @@ The VM Instance **`rootPassword`** field is sent to Proxmox as **`cipassword`** 
 
 **Checks:**
 
-1. Confirm **Update Cloud-Init (API)** ran successfully after **Config VM**.
+1. Confirm **Update Cloud-Init API** ran successfully after **Config VM API**.
 2. On Proxmox: `qm cloudinit dump <vmid> user`
 3. Align **`proxmox_ci_user`** with your template (e.g. `root` vs `cloud-user`).
 4. Ensure the record **`rootPassword`** is set before provisioning.

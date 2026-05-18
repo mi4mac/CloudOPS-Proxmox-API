@@ -20,7 +20,7 @@
     "steps": [
         {
             "@type": "WorkflowStep",
-            "name": "Clone VM (API)",
+            "name": "Clone VM API",
             "description": null,
             "arguments": {
                 "name": "API Connector Proxmox",
@@ -89,7 +89,7 @@
         },
         {
             "@type": "WorkflowStep",
-            "name": "Config VM (API)",
+            "name": "Config VM API",
             "description": null,
             "arguments": {
                 "name": "API Connector Proxmox",
@@ -123,13 +123,13 @@
                         "option": "resize",
                         "step_iri": "/api/3/workflow_steps/c4e8a1b2-3f5d-4e6a-9b0c-1d2e3f4a5b7d",
                         "condition": "{{ vars.input.records[0].diskGB is not none and (vars.input.records[0].diskGB | string | trim) != '' and (vars.input.records[0].diskGB | int) != (globalVars.proxmox_default_disk_gb | default(10) | int) }}",
-                        "step_name": "Resize VM Disk (API)"
+                        "step_name": "Resize VM Disk API"
                     },
                     {
                         "option": "skip",
                         "default": true,
                         "step_iri": "/api/3/workflow_steps/8f2e41c6-9d3a-4b7e-a1c5-6e9f0d8b2c4a",
-                        "step_name": "Update Cloud-Init (API)"
+                        "step_name": "Update Cloud-Init API"
                     }
                 ],
                 "step_variables": []
@@ -143,7 +143,7 @@
         },
         {
             "@type": "WorkflowStep",
-            "name": "Resize VM Disk (API)",
+            "name": "Resize VM Disk API",
             "description": "Runs only when Custom VM Disk Size = resize. Grows scsi0 to diskGB on the record (target total, grow-only). Requires connector 2.0.7+.",
             "arguments": {
                 "name": "API Connector Proxmox",
@@ -170,7 +170,7 @@
         },
         {
             "@type": "WorkflowStep",
-            "name": "Update Cloud-Init (API)",
+            "name": "Update Cloud-Init API",
             "description": "Regenerate cloud-init ISO after config (qm cloudinit update).",
             "arguments": {
                 "name": "API Connector Proxmox",
@@ -195,7 +195,7 @@
         },
         {
             "@type": "WorkflowStep",
-            "name": "Create Container (API)",
+            "name": "Create Container API",
             "description": null,
             "arguments": {
                 "name": "API Connector Proxmox",
@@ -391,13 +391,13 @@
                         "option": "Container",
                         "step_iri": "/api/3/workflow_steps/4ce3dc10-95a6-465a-9bea-687700801c1d",
                         "condition": "{{ ((vars.is_container | string | lower) == 'true' or vars.is_container == true) and true or false }}",
-                        "step_name": "Create Container (API)"
+                        "step_name": "Create Container API"
                     },
                     {
                         "option": "VM",
                         "default": true,
                         "step_iri": "/api/3/workflow_steps/6a07cfac-9ac7-440f-9bc0-b2f44087c844",
-                        "step_name": "Clone VM (API)"
+                        "step_name": "Clone VM API"
                     }
                 ],
                 "step_variables": []
@@ -469,7 +469,7 @@
             "name": "Set Provision Failure Result",
             "description": "Capture connector error into cmd_result so the VM record log shows the real failure.",
             "arguments": {
-                "cmd_result": "{%- if vars.available_disk is defined and vars.available_ram is defined and (vars.available_disk | int < vars.minimum_disk_gb | int or vars.available_ram | int < vars.minimum_ram_mb | int) -%}Insufficient Proxmox node resources: disk {{ vars.available_disk }} GB available (min {{ vars.minimum_disk_gb }} GB), RAM {{ vars.available_ram }} MB available (min {{ vars.minimum_ram_mb }} MB){%- else -%}{%- set ns = namespace(err=none) -%}{%- for s in ['Get_Next_VMID', 'Create Container (API)', 'Start Container (API)', 'Clone VM (API)', 'Config VM (API)', 'Resize VM Disk (API)', 'Update Cloud-Init (API)', 'Start VM (API)'] -%}{%- if not ns.err and vars.steps[s] is defined -%}{%- set ns.err = vars.steps[s]['Error message'] | default(vars.steps[s].error, true) -%}{%- endif -%}{%- endfor -%}{{ ns.err | default(vars.cmd_result, true) | default('Provisioning failed', true) }}{%- endif -%}"
+                "cmd_result": "{%- if vars.available_disk is defined and vars.available_ram is defined and (vars.available_disk | int < vars.minimum_disk_gb | int or vars.available_ram | int < vars.minimum_ram_mb | int) -%}Insufficient Proxmox node resources: disk {{ vars.available_disk }} GB available (min {{ vars.minimum_disk_gb }} GB), RAM {{ vars.available_ram }} MB available (min {{ vars.minimum_ram_mb }} MB){%- else -%}{%- set ns = namespace(err=none) -%}{%- for s in ['Get_Next_VMID', 'Create Container API', 'Start Container API', 'Clone VM API', 'Config VM API', 'Resize VM Disk API', 'Update Cloud-Init API', 'Start VM API'] -%}{%- if not ns.err and vars.steps[s] is defined -%}{%- set ns.err = vars.steps[s]['Error message'] | default(vars.steps[s].error, true) -%}{%- endif -%}{%- endfor -%}{{ ns.err | default(vars.cmd_result, true) | default('Provisioning failed', true) }}{%- endif -%}"
             },
             "status": null,
             "top": "1920",
@@ -500,7 +500,7 @@
         },
         {
             "@type": "WorkflowStep",
-            "name": "Set Provision Result (CT)",
+            "name": "Set Provision Result CT",
             "description": null,
             "arguments": {
                 "cmd_result": "PROXMOX_ID={{ vars.steps.Get_Next_VMID.data.data | default(vars.steps.Get_Next_VMID.data) }}\nVM {{ vars.vm_name }} has been provisioned successfully",
@@ -515,7 +515,7 @@
         },
         {
             "@type": "WorkflowStep",
-            "name": "Set Provision Result (VM)",
+            "name": "Set Provision Result VM",
             "description": null,
             "arguments": {
                 "cmd_result": "PROXMOX_ID={{ vars.steps.Get_Next_VMID.data.data | default(vars.steps.Get_Next_VMID.data) }}\nVM {{ vars.vm_name }} has been provisioned successfully",
@@ -574,7 +574,7 @@
         },
         {
             "@type": "WorkflowStep",
-            "name": "Start Container (API)",
+            "name": "Start Container API",
             "description": null,
             "arguments": {
                 "name": "API Connector Proxmox",
@@ -599,7 +599,7 @@
         },
         {
             "@type": "WorkflowStep",
-            "name": "Start VM (API)",
+            "name": "Start VM API",
             "description": null,
             "arguments": {
                 "name": "API Connector Proxmox",
@@ -678,7 +678,7 @@
     "routes": [
         {
             "@type": "WorkflowRoute",
-            "name": "Clone VM (API) -> Config VM (API)",
+            "name": "Clone VM API -> Config VM API",
             "targetStep": "/api/3/workflow_steps/32375dc0-92c7-489e-b8db-48c22b8caf89",
             "sourceStep": "/api/3/workflow_steps/6a07cfac-9ac7-440f-9bc0-b2f44087c844",
             "label": null,
@@ -708,7 +708,7 @@
         },
         {
             "@type": "WorkflowRoute",
-            "name": "Config VM (API) -> Custom VM Disk Size",
+            "name": "Config VM API -> Custom VM Disk Size",
             "targetStep": "/api/3/workflow_steps/f9a0b1c2-3d4e-4f5a-9b6c-7d8e9f0a1b2c",
             "sourceStep": "/api/3/workflow_steps/32375dc0-92c7-489e-b8db-48c22b8caf89",
             "label": null,
@@ -718,7 +718,7 @@
         },
         {
             "@type": "WorkflowRoute",
-            "name": "Custom VM Disk Size -> Resize VM Disk (API)",
+            "name": "Custom VM Disk Size -> Resize VM Disk API",
             "targetStep": "/api/3/workflow_steps/c4e8a1b2-3f5d-4e6a-9b0c-1d2e3f4a5b7d",
             "sourceStep": "/api/3/workflow_steps/f9a0b1c2-3d4e-4f5a-9b6c-7d8e9f0a1b2c",
             "label": "resize",
@@ -728,7 +728,7 @@
         },
         {
             "@type": "WorkflowRoute",
-            "name": "Custom VM Disk Size -> Update Cloud-Init (API)",
+            "name": "Custom VM Disk Size -> Update Cloud-Init API",
             "targetStep": "/api/3/workflow_steps/8f2e41c6-9d3a-4b7e-a1c5-6e9f0d8b2c4a",
             "sourceStep": "/api/3/workflow_steps/f9a0b1c2-3d4e-4f5a-9b6c-7d8e9f0a1b2c",
             "label": "skip",
@@ -738,7 +738,7 @@
         },
         {
             "@type": "WorkflowRoute",
-            "name": "Resize VM Disk (API) -> Update Cloud-Init (API)",
+            "name": "Resize VM Disk API -> Update Cloud-Init API",
             "targetStep": "/api/3/workflow_steps/8f2e41c6-9d3a-4b7e-a1c5-6e9f0d8b2c4a",
             "sourceStep": "/api/3/workflow_steps/c4e8a1b2-3f5d-4e6a-9b0c-1d2e3f4a5b7d",
             "label": null,
@@ -748,7 +748,7 @@
         },
         {
             "@type": "WorkflowRoute",
-            "name": "Update Cloud-Init (API) -> Start VM (API)",
+            "name": "Update Cloud-Init API -> Start VM API",
             "targetStep": "/api/3/workflow_steps/c56a6e2a-1ea1-46fc-8bdb-b24b77ecff8b",
             "sourceStep": "/api/3/workflow_steps/8f2e41c6-9d3a-4b7e-a1c5-6e9f0d8b2c4a",
             "label": null,
@@ -758,7 +758,7 @@
         },
         {
             "@type": "WorkflowRoute",
-            "name": "Create Container (API) -> Start Container (API)",
+            "name": "Create Container API -> Start Container API",
             "targetStep": "/api/3/workflow_steps/1e65b00b-8a3c-4ed3-a027-bad82f880e9e",
             "sourceStep": "/api/3/workflow_steps/4ce3dc10-95a6-465a-9bea-687700801c1d",
             "label": null,
@@ -818,7 +818,7 @@
         },
         {
             "@type": "WorkflowRoute",
-            "name": "Provision Type -> Clone VM (API)",
+            "name": "Provision Type -> Clone VM API",
             "targetStep": "/api/3/workflow_steps/6a07cfac-9ac7-440f-9bc0-b2f44087c844",
             "sourceStep": "/api/3/workflow_steps/5ab276aa-22d6-4f06-9b24-052a21ef73b6",
             "label": "VM",
@@ -828,7 +828,7 @@
         },
         {
             "@type": "WorkflowRoute",
-            "name": "Provision Type -> Create Container (API)",
+            "name": "Provision Type -> Create Container API",
             "targetStep": "/api/3/workflow_steps/4ce3dc10-95a6-465a-9bea-687700801c1d",
             "sourceStep": "/api/3/workflow_steps/5ab276aa-22d6-4f06-9b24-052a21ef73b6",
             "label": "Container",
@@ -888,7 +888,7 @@
         },
         {
             "@type": "WorkflowRoute",
-            "name": "Set Provision Result (CT) -> Proxmox Inventory Tracked",
+            "name": "Set Provision Result CT -> Proxmox Inventory Tracked",
             "targetStep": "/api/3/workflow_steps/ca87fe31-c132-4b9a-a594-cf9f99645b38",
             "sourceStep": "/api/3/workflow_steps/c28151c7-0b28-46da-8d4c-92774fd75e45",
             "label": null,
@@ -898,7 +898,7 @@
         },
         {
             "@type": "WorkflowRoute",
-            "name": "Set Provision Result (VM) -> Proxmox Inventory Tracked",
+            "name": "Set Provision Result VM -> Proxmox Inventory Tracked",
             "targetStep": "/api/3/workflow_steps/ca87fe31-c132-4b9a-a594-cf9f99645b38",
             "sourceStep": "/api/3/workflow_steps/b93923ed-6cd1-46f1-9554-b4baa2823b54",
             "label": null,
@@ -918,7 +918,7 @@
         },
         {
             "@type": "WorkflowRoute",
-            "name": "Start Container (API) -> Set Provision Result (CT)",
+            "name": "Start Container API -> Set Provision Result CT",
             "targetStep": "/api/3/workflow_steps/c28151c7-0b28-46da-8d4c-92774fd75e45",
             "sourceStep": "/api/3/workflow_steps/1e65b00b-8a3c-4ed3-a027-bad82f880e9e",
             "label": null,
@@ -928,7 +928,7 @@
         },
         {
             "@type": "WorkflowRoute",
-            "name": "Start VM (API) -> Set Provision Result (VM)",
+            "name": "Start VM API -> Set Provision Result VM",
             "targetStep": "/api/3/workflow_steps/b93923ed-6cd1-46f1-9554-b4baa2823b54",
             "sourceStep": "/api/3/workflow_steps/c56a6e2a-1ea1-46fc-8bdb-b24b77ecff8b",
             "label": null,
@@ -960,7 +960,7 @@
     "groups": [
         {
             "@type": "WorkflowGroup",
-            "name": "Info — VM Disk (GB)",
+            "name": "Info - VM Disk GB",
             "description": "Disk (GB) on the VM Instance record (diskGB)\n\n• Rocky9-VM: Resize runs only if diskGB is set and not equal to proxmox_default_disk_gb (10). Empty or 10 = keep template disk size. Any other value (e.g. 20, 32) grows scsi0 to that target (grow-only).\n• LXC containers: diskGB sets rootfs at create (default 10 if empty).\n\nConfig VM never replaces scsi0.",
             "type": "note",
             "isCollapsed": false,

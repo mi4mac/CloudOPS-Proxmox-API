@@ -244,7 +244,7 @@
     "routes": [
         {
             "@type": "WorkflowRoute",
-            "name": "Create Policy Records -> Link Policies to Firewall Assets (by Serial)",
+            "name": "Create Policy Records -> Link Policies to Firewall Assets by Serial",
             "targetStep": "/api/3/workflow_steps/8a89b80a-d2a4-4c03-8e8d-a82e0f0197a3",
             "sourceStep": "/api/3/workflow_steps/94eabf86-ee04-4f49-bf1a-3c234196107a",
             "label": null,

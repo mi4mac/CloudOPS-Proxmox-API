@@ -134,7 +134,7 @@ This guide describes detailed test scenarios for the Proxmox API migration in Fo
 
 2. Run **> Provision VM Instances** (or full approval flow).
 
-3. **Expected playbook path:** Clone VM → Config VM → **Custom VM Disk Size** (**skip**) → Update Cloud-Init → Start VM. **Resize VM Disk** must **not** run.
+3. **Expected playbook path:** Clone VM API → Config VM API → **Custom VM Disk Size** (**skip**) → Update Cloud-Init API → Start VM API. **Resize VM Disk API** must **not** run.
 
 4. On Proxmox, `qm config <VMID>` — `scsi0` size should match the **template** (not forced to 20 GB).
 
@@ -153,7 +153,7 @@ This guide describes detailed test scenarios for the Proxmox API migration in Fo
 
 2. Run provision.
 
-3. **Expected playbook path:** Clone VM → Config VM → **Custom VM Disk Size** (**resize**) → **Resize VM Disk (API)** → Update Cloud-Init → Start VM.
+3. **Expected playbook path:** Clone VM API → Config VM API → **Custom VM Disk Size** (**resize**) → **Resize VM Disk API** → Update Cloud-Init API → Start VM API.
 
 4. On Proxmox: `qm config <VMID>` — boot disk grown toward **20 GB** (grow-only).
 
