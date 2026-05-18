@@ -142,6 +142,24 @@ If you want to override the built‑in defaults, create the following global var
 - **Encrypted:** ❌ No  
 - **Description:** Linux account name for Proxmox **`ciuser`** / **`cipassword`** during VM provisioning. Must match what your cloud template supports (`root` or `cloud-user` for Rocky GenericCloud). The playbook maps the VM Instance **`rootPassword`** field to **`cipassword`**.
 
+#### 2.14 Proxmox default disk size (VM resize threshold)
+
+- **Name:** `proxmox_default_disk_gb`  
+- **Value:** `10`  
+- **Default Value:** `10`  
+- **Type:** String  
+- **Encrypted:** ❌ No  
+- **Description:** For **Rocky9-VM**, **Resize VM Disk** runs only when the VM Instance **Disk (GB)** field is set to a value **other than** this number. Empty or **10** keeps the cloned template disk unchanged.
+
+#### 2.15 Proxmox VM boot disk id
+
+- **Name:** `proxmox_vm_boot_disk`  
+- **Value:** `scsi0`  
+- **Default Value:** `scsi0`  
+- **Type:** String  
+- **Encrypted:** ❌ No  
+- **Description:** Disk key passed to **`resize_vm_disk`** (usually **`scsi0`** for Rocky QEMU templates).
+
 ---
 
 ## Verification (optional but recommended)
@@ -191,6 +209,8 @@ You can access the variables in playbooks like this:
 {{globalVars.proxmox_template_debian13_ct      | default('local:vztmpl/debian-13-standard_13.1-2_amd64.tar.zst')}}
 {{globalVars.proxmox_template_rockylinux9_ct   | default('local:vztmpl/rockylinux-9-default_20240912_amd64.tar.xz')}}
 {{globalVars.proxmox_ci_user                  | default('root')}}
+{{globalVars.proxmox_default_disk_gb          | default(10)}}
+{{globalVars.proxmox_vm_boot_disk             | default('scsi0')}}
 ```
 
 ---

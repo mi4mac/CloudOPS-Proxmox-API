@@ -53,7 +53,7 @@ To upgrade from a previous version of this pack:
 
 VM provisioning (Rocky9-VM)
 ---------------------------
-For **Rocky9-VM**, **> Provision VM Instances** runs: **Clone VM** (waits for task) → **Config VM** → **Resize VM Disk** (to **diskGB**) → **Update Cloud-Init** → **Start VM**. Optional globals: `proxmox_template_rocky9_vm`, `proxmox_ci_user`, `proxmox_vm_boot_disk` (default `scsi0`). See `TROUBLESHOOTING_GUIDE.md` (VM provisioning section) and `TESTING_GUIDE.md` (Rocky9 VM test).
+For **Rocky9-VM**, **> Provision VM Instances** runs: **Clone VM** (waits for task) → **Config VM** → **Custom VM Disk Size** (resize only if **diskGB** is set and ≠ `proxmox_default_disk_gb`, default **10**) → **Update Cloud-Init** → **Start VM**. Leave **Disk (GB)** empty or **10** to keep the template disk; set **20**, **32**, etc. to grow. Optional globals: `proxmox_template_rocky9_vm`, `proxmox_ci_user`, `proxmox_vm_boot_disk`, `proxmox_default_disk_gb`. See `TROUBLESHOOTING_GUIDE.md` and `TESTING_GUIDE.md`.
 
 Post-upgrade quick test
 -----------------------

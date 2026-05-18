@@ -119,50 +119,48 @@ This guide describes detailed test scenarios for the Proxmox API migration in Fo
 
 ---
 
-### 4. VM creation: Rocky9 VM
+### 4. VM creation: Rocky9 VM (default disk — no resize)
 
-**Goal:** Test VM creation via the API (including clone).
+**Goal:** Provision with template disk size only (**Disk (GB)** empty or **10**).
 
 **Steps:**
 
-1. Create a VM Instance request:
-   - Name: `test-rocky9-vm-01`
-   - VM Type: `Rocky9-VM` (picklist value; case-sensitive in playbook)
-   - CPU Cores: `2`
-   - Memory: `2048 MB`
-   - Disk: `20 GB`
-   - IP Address: `10.255.255.133`
-   - Root Password: (e.g. `fortinet` or a test password)
+1. Create a VM Instance:
+   - Name: `test-rocky9-vm-default-disk`
+   - VM Type: `Rocky9-VM`
+   - CPU / Memory as needed
+   - **Disk (GB):** leave empty or set **10**
+   - IP and root password as usual
 
-2. Run the Provision playbook (or full approval flow).
+2. Run **> Provision VM Instances** (or full approval flow).
 
-3. **Expected results:**
-   - ✅ Playbook steps: Clone VM → Config VM → **Update Cloud-Init** → Start VM (Clone may take several minutes on full clone).
-   - ✅ VM template is cloned.
-   - ✅ VM is configured (including `ciuser` / `cipassword`).
-   - ✅ VM is started.
-   - ✅ Proxmox ID is stored.
-   - ✅ Status: `Active`.
-   - ✅ Logs contain a success message.
-   - ✅ Success email lists host, username (`proxmox_ci_user`, default `root`), and password.
+3. **Expected playbook path:** Clone VM → Config VM → **Custom VM Disk Size** (**skip**) → Update Cloud-Init → Start VM. **Resize VM Disk** must **not** run.
 
-4. **Verification on Proxmox:**
+4. On Proxmox, `qm config <VMID>` — `scsi0` size should match the **template** (not forced to 20 GB).
 
-   ```bash
-   qm list | grep test-rocky9-vm-01
-   qm status <VMID>
-   qm config <VMID>
-   qm cloudinit dump <VMID> user
-   ```
+---
 
-5. **Verification login:** Console or SSH as the configured user (`root` by default) with the **rootPassword** from the FortiSOAR record.
+### 4b. VM creation: Rocky9 VM (custom disk resize)
 
-**Success criteria:**
+**Goal:** Grow disk when **Disk (GB)** is not the default.
 
-- VM exists on Proxmox.
-- VM is running (`status: running`).
-- VM has the correct configuration (CPU, memory, disk, IP, network).
-- Login works with the password from the VM Instance record (if `proxmox_ci_user` matches the template).
+**Steps:**
+
+1. Create a VM Instance:
+   - Name: `test-rocky9-vm-20gb`
+   - VM Type: `Rocky9-VM`
+   - **Disk (GB):** `20` (or any value ≠ `proxmox_default_disk_gb`, default **10**)
+
+2. Run provision.
+
+3. **Expected playbook path:** Clone VM → Config VM → **Custom VM Disk Size** (**resize**) → **Resize VM Disk (API)** → Update Cloud-Init → Start VM.
+
+4. On Proxmox: `qm config <VMID>` — boot disk grown toward **20 GB** (grow-only).
+
+**Common checks (both tests):**
+
+- ✅ `ciuser` / `cipassword`, VM **Active**, login with **rootPassword**
+- ✅ `qm cloudinit dump <VMID> user`
 
 ---
 
