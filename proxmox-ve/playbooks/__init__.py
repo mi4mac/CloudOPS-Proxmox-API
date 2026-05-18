@@ -1,2 +1,2 @@
 # -*- coding: utf-8 -*-
-# API Connector Proxmox - Playbooks package
+# Proxmox VE Hypervisor - Playbooks package

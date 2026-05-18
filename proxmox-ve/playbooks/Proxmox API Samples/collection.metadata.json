@@ -1,8 +1,8 @@
 {
   "@context": "/api/3/contexts/WorkflowCollection",
   "@type": "WorkflowCollection",
-  "name": "Proxmox API Samples",
-  "description": "Sample playbooks for the Proxmox VE Hypervisor – test connection, get next VMID, clone VM.",
+  "name": "Sample - Proxmox VE Hypervisor - 2.0.8",
+  "description": "Sample playbooks for the Proxmox VE Hypervisor connector (version 2.0.8).",
   "visible": true,
   "image": null,
   "uuid": "b100c200-d300-e400-f500-617181920212",

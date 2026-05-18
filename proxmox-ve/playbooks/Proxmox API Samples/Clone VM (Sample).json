@@ -58,7 +58,7 @@
                     "storage": "local-lvm",
                     "full": true
                 },
-                "version": "1.0.0",
+                "version": "2.0.8",
                 "connector": "proxmox-ve",
                 "operation": "clone_vm",
                 "operationTitle": "Clone VM",

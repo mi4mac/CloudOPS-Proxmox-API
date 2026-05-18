@@ -54,7 +54,7 @@
                     "node": "pve",
                     "vmid": 100
                 },
-                "version": "1.0.0",
+                "version": "2.0.8",
                 "connector": "proxmox-ve",
                 "operation": "stop_vm",
                 "operationTitle": "Stop VM",
@@ -80,7 +80,7 @@
                     "vmid": 100,
                     "purge": true
                 },
-                "version": "1.0.0",
+                "version": "2.0.8",
                 "connector": "proxmox-ve",
                 "operation": "destroy_vm",
                 "operationTitle": "Destroy VM",

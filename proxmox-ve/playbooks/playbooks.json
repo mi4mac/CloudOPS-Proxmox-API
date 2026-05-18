@@ -4,7 +4,7 @@
         {
             "uuid": "b100c200-d300-e400-f500-617181920212",
             "@type": "WorkflowCollection",
-            "name": "Sample - Proxmox VE Hypervisor - 1.1.0",
+            "name": "Sample - Proxmox VE Hypervisor - 2.0.8",
             "description": "Sample playbooks for Proxmox VE Hypervisor: version, next VMID, list VMs/containers, nodes, task status, clone/create, config, start/stop, destroy, generic API request.",
             "visible": true,
             "image": null,
@@ -62,7 +62,7 @@
                                 "name": "Proxmox VE Hypervisor",
                                 "config": "''",
                                 "params": {},
-                                "version": "1.0.0",
+                                "version": "2.0.8",
                                 "connector": "proxmox-ve",
                                 "operation": "get_version",
                                 "operationTitle": "Get Version",
@@ -135,7 +135,7 @@
                                 "name": "Proxmox VE Hypervisor",
                                 "config": "''",
                                 "params": {},
-                                "version": "1.0.0",
+                                "version": "2.0.8",
                                 "connector": "proxmox-ve",
                                 "operation": "get_next_vmid",
                                 "operationTitle": "Get Next VMID",
@@ -215,7 +215,7 @@
                                     "storage": "local-lvm",
                                     "full": true
                                 },
-                                "version": "1.0.0",
+                                "version": "2.0.8",
                                 "connector": "proxmox-ve",
                                 "operation": "clone_vm",
                                 "operationTitle": "Clone VM",
@@ -291,7 +291,7 @@
                                     "node": "pve",
                                     "vmid": 100
                                 },
-                                "version": "1.0.0",
+                                "version": "2.0.8",
                                 "connector": "proxmox-ve",
                                 "operation": "stop_vm",
                                 "operationTitle": "Stop VM",
@@ -316,7 +316,7 @@
                                     "vmid": 100,
                                     "purge": true
                                 },
-                                "version": "1.0.0",
+                                "version": "2.0.8",
                                 "connector": "proxmox-ve",
                                 "operation": "destroy_vm",
                                 "operationTitle": "Destroy VM",
@@ -409,7 +409,7 @@
                                     "swap": 0,
                                     "nameserver": "1.1.1.1"
                                 },
-                                "version": "1.0.0",
+                                "version": "2.0.8",
                                 "connector": "proxmox-ve",
                                 "operation": "create_container",
                                 "operationTitle": "Create Container",
@@ -489,7 +489,7 @@
                                         "nameserver": "1.1.1.1"
                                     }
                                 },
-                                "version": "1.0.0",
+                                "version": "2.0.8",
                                 "connector": "proxmox-ve",
                                 "operation": "config_vm",
                                 "operationTitle": "Configure VM",
@@ -565,7 +565,7 @@
                                     "node": "pve",
                                     "vmid": 100
                                 },
-                                "version": "1.0.0",
+                                "version": "2.0.8",
                                 "connector": "proxmox-ve",
                                 "operation": "start_vm",
                                 "operationTitle": "Start VM",
@@ -641,7 +641,7 @@
                                     "node": "pve",
                                     "vmid": 200
                                 },
-                                "version": "1.0.0",
+                                "version": "2.0.8",
                                 "connector": "proxmox-ve",
                                 "operation": "start_container",
                                 "operationTitle": "Start Container",
@@ -717,7 +717,7 @@
                                     "node": "pve",
                                     "vmid": 200
                                 },
-                                "version": "1.0.0",
+                                "version": "2.0.8",
                                 "connector": "proxmox-ve",
                                 "operation": "stop_container",
                                 "operationTitle": "Stop Container",
@@ -793,7 +793,7 @@
                                     "node": "pve",
                                     "vmid": 200
                                 },
-                                "version": "1.0.0",
+                                "version": "2.0.8",
                                 "connector": "proxmox-ve",
                                 "operation": "stop_container",
                                 "operationTitle": "Stop Container",
@@ -817,7 +817,7 @@
                                     "node": "pve",
                                     "vmid": 200
                                 },
-                                "version": "1.0.0",
+                                "version": "2.0.8",
                                 "connector": "proxmox-ve",
                                 "operation": "destroy_container",
                                 "operationTitle": "Destroy Container",
@@ -902,7 +902,7 @@
                                     "method": "GET",
                                     "url_path": "nodes/pve/status"
                                 },
-                                "version": "1.0.0",
+                                "version": "2.0.8",
                                 "connector": "proxmox-ve",
                                 "operation": "api_request",
                                 "operationTitle": "API Request (Generic)",
@@ -977,7 +977,7 @@
                                 "params": {
                                     "node": "pve"
                                 },
-                                "version": "1.0.0",
+                                "version": "2.0.8",
                                 "connector": "proxmox-ve",
                                 "operation": "list_vms",
                                 "operationTitle": "List VMs",
@@ -1052,7 +1052,7 @@
                                 "params": {
                                     "node": "pve"
                                 },
-                                "version": "1.0.0",
+                                "version": "2.0.8",
                                 "connector": "proxmox-ve",
                                 "operation": "list_containers",
                                 "operationTitle": "List Containers",
@@ -1125,7 +1125,7 @@
                                 "name": "Proxmox VE Hypervisor",
                                 "config": "''",
                                 "params": {},
-                                "version": "1.0.0",
+                                "version": "2.0.8",
                                 "connector": "proxmox-ve",
                                 "operation": "get_nodes",
                                 "operationTitle": "Get Nodes",
@@ -1201,7 +1201,7 @@
                                     "node": "pve",
                                     "upid": "UPID:pve:00001234:5678:90ABCDEF:qmclone:2000:root@pam:"
                                 },
-                                "version": "1.0.0",
+                                "version": "2.0.8",
                                 "connector": "proxmox-ve",
                                 "operation": "get_task_status",
                                 "operationTitle": "Get Task Status",

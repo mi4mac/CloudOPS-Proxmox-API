@@ -2,7 +2,7 @@
   "name": "proxmox-ve",
   "version": "2.0.8",
   "label": "Proxmox VE Hypervisor",
-  "description": "Proxmox VE connector, Enables VM and container provisioning, configuration and deletion via the Proxmox REST API using token-based authentication.",
+  "description": "Proxmox VE connector. Enables VM and container provisioning, configuration and deletion via the Proxmox REST API using token-based authentication.",
   "publisher": "Fortinet SE",
   "contributor": "Michael Ibe",
   "cs_approved": false,
@@ -635,7 +635,7 @@
         {
           "name": "include_config",
           "title": "Include config",
-          "type": "boolean",
+          "type": "checkbox",
           "required": false,
           "description": "If true, fetch config (disks, network) for each VM (more API calls)"
         }
@@ -673,7 +673,7 @@
         {
           "name": "include_config",
           "title": "Include config",
-          "type": "boolean",
+          "type": "checkbox",
           "required": false,
           "description": "If true, fetch config (disks, network) for each container (more API calls)"
         }
@@ -711,7 +711,7 @@
         {
           "name": "vmid",
           "title": "VMID",
-          "type": "number",
+          "type": "integer",
           "required": true,
           "description": "VMID of the VM"
         }
@@ -737,7 +737,7 @@
         {
           "name": "vmid",
           "title": "VMID",
-          "type": "number",
+          "type": "integer",
           "required": true,
           "description": "VMID of the container"
         }

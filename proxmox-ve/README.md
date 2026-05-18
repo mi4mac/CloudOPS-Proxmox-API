@@ -64,7 +64,7 @@ No global variables are required – everything is stored in the connector confi
 ### Generic
 - **API Request (Generic)** – Arbitrary API call (GET/POST/PUT/DELETE)
 
-For each operation there are **sample playbooks** in the collection `Sample - Proxmox VE Hypervisor - 1.0.0`. Token capabilities and permission requirements: `TOKEN_CAPABILITIES.md` in the project root.  
+For each operation there are **sample playbooks** in the collection `Sample - Proxmox VE Hypervisor - 2.0.8`.  
 
 ## Import into FortiSOAR
 
@@ -106,4 +106,4 @@ For each operation there are **sample playbooks** in the collection `Sample - Pr
 
 ---
 
-*Connector version 2.0.4 | Built for Proxmox VE 9.x*
+*Connector version 2.0.8 | Built for Proxmox VE 9.x*
