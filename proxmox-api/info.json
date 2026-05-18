@@ -1,6 +1,6 @@
 {
   "name": "proxmox-api",
-  "version": "2.0.4",
+  "version": "2.0.5",
   "label": "API Connector Proxmox",
   "description": "Native FortiSOAR connector for the Proxmox VE API. Enables VM and container provisioning, configuration and deletion via the Proxmox REST API using token-based authentication. Supports arbitrary configurations per connector instance (host, port, token).",
   "publisher": "Fortinet / Custom",
@@ -103,7 +103,8 @@
         {"name": "newid", "title": "New VMID", "type": "integer", "required": true, "description": "VMID of the new VM"},
         {"name": "name", "title": "Name", "type": "text", "required": true, "description": "Name of the new VM"},
         {"name": "storage", "title": "Storage", "type": "text", "required": false, "description": "Storage for the VM disk"},
-        {"name": "full", "title": "Full Clone", "type": "checkbox", "required": false, "value": true, "description": "Full clone (1) or linked clone (0)"}
+        {"name": "full", "title": "Full Clone", "type": "checkbox", "required": false, "value": true, "description": "Full clone (1) or linked clone (0)"},
+        {"name": "timeout", "title": "Clone wait timeout (seconds)", "type": "integer", "required": false, "description": "Max seconds to wait for clone task (default 1800). Increase for large full clones."}
       ],
       "output_schema": {"upid": "", "data": null}
     },

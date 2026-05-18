@@ -79,7 +79,7 @@ def _request(config, method, path, data=None, json_body=None):
         raise ConnectorError("Request failed: {}".format(str(e)))
 
 
-def _wait_for_task(config, node, upid, timeout=300, interval=2):
+def _wait_for_task(config, node, upid, timeout=300, interval=2, task_label="task"):
     """Poll task status until stopped or timeout. UPID format: UPID:node:pid:..."""
     upid_enc = quote(upid, safe="")
     path = "nodes/{}/tasks/{}/status".format(node, upid_enc)
@@ -92,10 +92,10 @@ def _wait_for_task(config, node, upid, timeout=300, interval=2):
         exitstatus = data.get("exitstatus")
         if status == "stopped":
             if exitstatus not in ("OK", "0", 0, None):
-                raise ConnectorError("Container create task failed: exitstatus={}".format(exitstatus))
+                raise ConnectorError("{} failed: exitstatus={}".format(task_label, exitstatus))
             return
         time.sleep(interval)
-    raise ConnectorError("Timeout waiting for container create task ({}s)".format(timeout))
+    raise ConnectorError("Timeout waiting for {} ({}s)".format(task_label, timeout))
 
 
 def _check_health(config):
@@ -115,7 +115,7 @@ def get_next_vmid(config, params):
 
 
 def clone_vm(config, params):
-    """POST /api2/json/nodes/{node}/qemu/{vmid}/clone."""
+    """POST /api2/json/nodes/{node}/qemu/{vmid}/clone. Waits for async clone task (UPID) before returning."""
     node = params.get("node") or config.get("node")
     vmid = params.get("vmid")
     if not node or vmid is None:
@@ -127,7 +127,12 @@ def clone_vm(config, params):
         "storage": params.get("storage") or "",
         "full": 1 if params.get("full", True) else 0,
     }
-    return _request(config, "POST", path, data=data)
+    out = _request(config, "POST", path, data=data)
+    upid = out.get("data") if isinstance(out.get("data"), str) and (out.get("data") or "").strip().startswith("UPID:") else None
+    if upid:
+        wait_timeout = int(params.get("timeout") or config.get("clone_timeout") or 1800)
+        _wait_for_task(config, node, upid.strip(), timeout=wait_timeout, task_label="VM clone")
+    return out
 
 
 def create_container(config, params):
@@ -161,7 +166,7 @@ def create_container(config, params):
     upid = out.get("data") if isinstance(out.get("data"), str) and (out.get("data") or "").strip().startswith("UPID:") else None
     if upid:
         try:
-            _wait_for_task(config, node, upid.strip())
+            _wait_for_task(config, node, upid.strip(), task_label="Container create")
         except ConnectorError:
             time.sleep(30)  # fallback: wait 30s then try config PUT anyway
     else:

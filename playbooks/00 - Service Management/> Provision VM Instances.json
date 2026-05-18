@@ -29,8 +29,8 @@
                     "full": true,
                     "name": "{{ vars.vm_name }}",
                     "node": "{{ globalVars.proxmox_default_node | default('pve') }}",
-                    "vmid": "{{ vars.prov_template_vmid | int }}",
-                    "newid": "{{ vars.steps.Get_Next_VMID.data.data | int }}",
+                    "vmid": "{{ (vars.prov_template_vmid | default(globalVars.proxmox_template_rocky9_vm | default(9000))) | int }}",
+                    "newid": "{{ (vars.steps.Get_Next_VMID.data.data | default(vars.steps.Get_Next_VMID.data)) | int }}",
                     "storage": "{{ globalVars.proxmox_storage | default('local-lvm') }}"
                 },
                 "version": "2.0.0",
@@ -96,7 +96,7 @@
                 "config": "''",
                 "params": {
                     "node": "{{ globalVars.proxmox_default_node | default('pve') }}",
-                    "vmid": "{{ vars.steps.Get_Next_VMID.data.data | int }}",
+                    "vmid": "{{ (vars.steps.Get_Next_VMID.data.data | default(vars.steps.Get_Next_VMID.data)) | int }}",
                     "body_params": "{\"cores\": {{ vars.cpu_cores | int }}, \"memory\": {{ vars.memory_mb | int }}, \"net0\": \"virtio,bridge={{ vars.bridge }},tag={{ vars.vlan }}\", \"ipconfig0\": \"ip={{ vars.vm_ip_address }}/24,gw={{ vars.gateway }}\", \"scsi0\": \"{{ globalVars.proxmox_storage | default('local-lvm') }}:{{ vars.disk_gb | int }}\"}"
                 },
                 "version": "2.0.0",
@@ -124,7 +124,7 @@
                     "net0": "name=eth0,bridge={{ vars.bridge }},tag={{ vars.vlan }},ip={{ vars.vm_ip_address }}/24,gw={{ vars.gateway }}",
                     "node": "{{ globalVars.proxmox_default_node | default('pve') }}",
                     "swap": "{{ vars.swap_mb | int }}",
-                    "vmid": "{{ vars.steps.Get_Next_VMID.data.data | int }}",
+                    "vmid": "{{ (vars.steps.Get_Next_VMID.data.data | default(vars.steps.Get_Next_VMID.data)) | int }}",
                     "cores": "{{ vars.cpu_cores | int }}",
                     "memory": "{{ vars.memory_mb | int }}",
                     "rootfs": "{{ globalVars.proxmox_storage | default('local-lvm') }}:{{ vars.disk_gb | int }}",
@@ -422,8 +422,8 @@
             "name": "Set Provision Result (CT)",
             "description": null,
             "arguments": {
-                "cmd_result": "PROXMOX_ID={{ vars.steps.Get_Next_VMID.data.data }}\nVM {{ vars.vm_name }} has been provisioned successfully",
-                "proxmox_id": "{{ vars.steps.Get_Next_VMID.data.data }}"
+                "cmd_result": "PROXMOX_ID={{ vars.steps.Get_Next_VMID.data.data | default(vars.steps.Get_Next_VMID.data) }}\nVM {{ vars.vm_name }} has been provisioned successfully",
+                "proxmox_id": "{{ vars.steps.Get_Next_VMID.data.data | default(vars.steps.Get_Next_VMID.data) }}"
             },
             "status": null,
             "top": "1650",
@@ -437,8 +437,8 @@
             "name": "Set Provision Result (VM)",
             "description": null,
             "arguments": {
-                "cmd_result": "PROXMOX_ID={{ vars.steps.Get_Next_VMID.data.data }}\nVM {{ vars.vm_name }} has been provisioned successfully",
-                "proxmox_id": "{{ vars.steps.Get_Next_VMID.data.data }}"
+                "cmd_result": "PROXMOX_ID={{ vars.steps.Get_Next_VMID.data.data | default(vars.steps.Get_Next_VMID.data) }}\nVM {{ vars.vm_name }} has been provisioned successfully",
+                "proxmox_id": "{{ vars.steps.Get_Next_VMID.data.data | default(vars.steps.Get_Next_VMID.data) }}"
             },
             "status": null,
             "top": "1650",
@@ -500,7 +500,7 @@
                 "config": "''",
                 "params": {
                     "node": "{{ globalVars.proxmox_default_node | default('pve') }}",
-                    "vmid": "{{ vars.steps.Get_Next_VMID.data.data | int }}"
+                    "vmid": "{{ (vars.steps.Get_Next_VMID.data.data | default(vars.steps.Get_Next_VMID.data)) | int }}"
                 },
                 "version": "2.0.0",
                 "connector": "proxmox-api",
@@ -525,7 +525,7 @@
                 "config": "''",
                 "params": {
                     "node": "{{ globalVars.proxmox_default_node | default('pve') }}",
-                    "vmid": "{{ vars.steps.Get_Next_VMID.data.data | int }}"
+                    "vmid": "{{ (vars.steps.Get_Next_VMID.data.data | default(vars.steps.Get_Next_VMID.data)) | int }}"
                 },
                 "version": "2.0.0",
                 "connector": "proxmox-api",
