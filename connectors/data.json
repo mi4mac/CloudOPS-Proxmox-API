@@ -7,7 +7,7 @@
         ],
         "description": "Native FortiSOAR connector for the Proxmox VE API. Enables VM and container provisioning, configuration and deletion via the Proxmox REST API using token-based authentication. Supports arbitrary configurations per connector instance (host, port, token).",
         "publisher": "Fortinet \/ Custom",
-        "version": "2.0.6",
+        "version": "2.0.7",
         "operation_roles": [],
         "configurations": [
             {
@@ -32,7 +32,7 @@
         ],
         "dataImports": [],
         "install_mode": "tgz",
-        "installer_path": "proxmox-api_2.0.6.tgz",
+        "installer_path": "proxmox-api_2.0.7.tgz",
         "ingestionPlaybooks": {
             "collections": [],
             "exported_tags": []

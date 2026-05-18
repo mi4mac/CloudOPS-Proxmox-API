@@ -115,6 +115,33 @@
         },
         {
             "@type": "WorkflowStep",
+            "name": "Resize VM Disk (API)",
+            "description": "Grow boot disk to diskGB from the VM Instance (qm resize scsi0).",
+            "arguments": {
+                "name": "API Connector Proxmox",
+                "config": "''",
+                "params": {
+                    "disk": "{{ globalVars.proxmox_vm_boot_disk | default('scsi0') }}",
+                    "node": "{{ globalVars.proxmox_default_node | default('pve') }}",
+                    "vmid": "{{ (vars.steps.Get_Next_VMID.data.data | default(vars.steps.Get_Next_VMID.data)) | int }}",
+                    "target_gb": "{{ vars.disk_gb | int }}"
+                },
+                "version": "2.0.0",
+                "connector": "proxmox-api",
+                "operation": "resize_vm_disk",
+                "operationTitle": "Resize VM Disk",
+                "pickFromTenant": false,
+                "step_variables": []
+            },
+            "status": null,
+            "top": "1415",
+            "left": "485",
+            "stepType": "/api/3/workflow_step_types/0bfed618-0316-11e7-93ae-92361f002671",
+            "group": null,
+            "uuid": "c4e8a1b2-3f5d-4e6a-9b0c-1d2e3f4a5b7d"
+        },
+        {
+            "@type": "WorkflowStep",
             "name": "Update Cloud-Init (API)",
             "description": "Regenerate cloud-init ISO after config (qm cloudinit update).",
             "arguments": {
@@ -414,7 +441,7 @@
             "name": "Set Provision Failure Result",
             "description": "Capture connector error into cmd_result so the VM record log shows the real failure.",
             "arguments": {
-                "cmd_result": "{%- if vars.available_disk is defined and vars.available_ram is defined and (vars.available_disk | int < vars.minimum_disk_gb | int or vars.available_ram | int < vars.minimum_ram_mb | int) -%}Insufficient Proxmox node resources: disk {{ vars.available_disk }} GB available (min {{ vars.minimum_disk_gb }} GB), RAM {{ vars.available_ram }} MB available (min {{ vars.minimum_ram_mb }} MB){%- else -%}{%- set ns = namespace(err=none) -%}{%- for s in ['Get_Next_VMID', 'Create Container (API)', 'Start Container (API)', 'Clone VM (API)', 'Config VM (API)', 'Update Cloud-Init (API)', 'Start VM (API)'] -%}{%- if not ns.err and vars.steps[s] is defined -%}{%- set ns.err = vars.steps[s]['Error message'] | default(vars.steps[s].error, true) -%}{%- endif -%}{%- endfor -%}{{ ns.err | default(vars.cmd_result, true) | default('Provisioning failed', true) }}{%- endif -%}"
+                "cmd_result": "{%- if vars.available_disk is defined and vars.available_ram is defined and (vars.available_disk | int < vars.minimum_disk_gb | int or vars.available_ram | int < vars.minimum_ram_mb | int) -%}Insufficient Proxmox node resources: disk {{ vars.available_disk }} GB available (min {{ vars.minimum_disk_gb }} GB), RAM {{ vars.available_ram }} MB available (min {{ vars.minimum_ram_mb }} MB){%- else -%}{%- set ns = namespace(err=none) -%}{%- for s in ['Get_Next_VMID', 'Create Container (API)', 'Start Container (API)', 'Clone VM (API)', 'Config VM (API)', 'Resize VM Disk (API)', 'Update Cloud-Init (API)', 'Start VM (API)'] -%}{%- if not ns.err and vars.steps[s] is defined -%}{%- set ns.err = vars.steps[s]['Error message'] | default(vars.steps[s].error, true) -%}{%- endif -%}{%- endfor -%}{{ ns.err | default(vars.cmd_result, true) | default('Provisioning failed', true) }}{%- endif -%}"
             },
             "status": null,
             "top": "1920",
@@ -653,13 +680,23 @@
         },
         {
             "@type": "WorkflowRoute",
-            "name": "Config VM (API) -> Update Cloud-Init (API)",
-            "targetStep": "/api/3/workflow_steps/8f2e41c6-9d3a-4b7e-a1c5-6e9f0d8b2c4a",
+            "name": "Config VM (API) -> Resize VM Disk (API)",
+            "targetStep": "/api/3/workflow_steps/c4e8a1b2-3f5d-4e6a-9b0c-1d2e3f4a5b7d",
             "sourceStep": "/api/3/workflow_steps/32375dc0-92c7-489e-b8db-48c22b8caf89",
             "label": null,
             "isExecuted": false,
             "group": null,
             "uuid": "a1daead1-223e-4536-8650-09f8d1ca8b38"
+        },
+        {
+            "@type": "WorkflowRoute",
+            "name": "Resize VM Disk (API) -> Update Cloud-Init (API)",
+            "targetStep": "/api/3/workflow_steps/8f2e41c6-9d3a-4b7e-a1c5-6e9f0d8b2c4a",
+            "sourceStep": "/api/3/workflow_steps/c4e8a1b2-3f5d-4e6a-9b0c-1d2e3f4a5b7d",
+            "label": null,
+            "isExecuted": false,
+            "group": null,
+            "uuid": "d8f7c3e1-4a2b-4c9d-8e1f-6a0b5c4d3e2f"
         },
         {
             "@type": "WorkflowRoute",

@@ -1,6 +1,6 @@
 {
   "name": "proxmox-api",
-  "version": "2.0.6",
+  "version": "2.0.7",
   "label": "API Connector Proxmox",
   "description": "Native FortiSOAR connector for the Proxmox VE API. Enables VM and container provisioning, configuration and deletion via the Proxmox REST API using token-based authentication. Supports arbitrary configurations per connector instance (host, port, token).",
   "publisher": "Fortinet / Custom",
@@ -162,6 +162,24 @@
         {"name": "body_params", "title": "Body Parameters", "type": "json", "required": true, "description": "Parameters as JSON object (for example ipconfig0, nameserver, ciuser)"}
       ],
       "output_schema": {}
+    },
+    {
+      "operation": "resize_vm_disk",
+      "title": "Resize VM Disk",
+      "description": "Resizes a QEMU disk (qm resize). Use target_gb to grow to the requested size, or size for explicit +10G / 32G.",
+      "category": "investigation",
+      "is_config_required": true,
+      "visible": true,
+      "enabled": true,
+      "parameters": [
+        {"name": "node", "title": "Node", "type": "text", "required": true, "description": "Proxmox node name"},
+        {"name": "vmid", "title": "VMID", "type": "integer", "required": true, "description": "VMID of the VM"},
+        {"name": "disk", "title": "Disk", "type": "text", "required": false, "value": "scsi0", "description": "Disk id (default scsi0)"},
+        {"name": "target_gb", "title": "Target size (GB)", "type": "integer", "required": false, "description": "Grow boot disk to this size in GB (skips if already larger)"},
+        {"name": "size", "title": "Size", "type": "text", "required": false, "description": "Explicit resize, e.g. +10G or 32G (used when target_gb is omitted)"},
+        {"name": "timeout", "title": "Resize wait timeout (seconds)", "type": "integer", "required": false, "description": "Max seconds to wait for resize task (default 600)"}
+      ],
+      "output_schema": {"skipped": false, "message": ""}
     },
     {
       "operation": "update_vm_cloudinit",

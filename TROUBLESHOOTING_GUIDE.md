@@ -27,7 +27,7 @@ This guide helps you troubleshoot issues with the Proxmox API integration in For
 
 When a provision or destroy run fails, the connector’s error message (for example a Proxmox API error) is written into the **Logs** field of the VM Instance record:
 
-- **Provision:** On error, **Set Provision Failure Result** runs (it reads the error from Get Next VMID, Create Container, Start Container, Clone VM, Config VM, Update Cloud-Init, or Start VM). Then **Update VM Instance Failure** writes `cmd_result` into the Logs. On success, **Set Provision Result (CT/VM)** goes directly to **Update VM Instance Success** (status “Active”, Proxmox ID and Logs).
+- **Provision:** On error, **Set Provision Failure Result** runs (it reads the error from Get Next VMID, Create Container, Start Container, Clone VM, Config VM, Resize VM Disk, Update Cloud-Init, or Start VM). Then **Update VM Instance Failure** writes `cmd_result` into the Logs. On success, **Set Provision Result (CT/VM)** goes directly to **Update VM Instance Success** (status “Active”, Proxmox ID and Logs).
 - **Destroy:** Similarly, **Set Destroy Failure Result** (errors from Stop/Destroy VM or container) and **Update Failed Destroyed VM**.
 
 This way you can see the exact Proxmox or connector error directly on the VM Instance record (for example `API error 403: Permission check failed …`). In addition, the playbook execution view contains detailed step logs for each connector step.
@@ -41,7 +41,8 @@ The **> Provision VM Instances** playbook uses connector **2.0.6** or later for 
 | Step | Proxmox equivalent | Purpose |
 |------|-------------------|---------|
 | Clone VM (API) | `qm clone` (full) | Clone template; connector **waits** for the async clone task to finish |
-| Config VM (API) | `qm set` | CPU, RAM, disk, `net0`, `ipconfig0`, **`ciuser`**, **`cipassword`**, `nameserver` |
+| Config VM (API) | `qm set` | CPU, RAM, `net0`, `ipconfig0`, **`ciuser`**, **`cipassword`**, `nameserver` (does **not** set `scsi0`) |
+| Resize VM Disk (API) | `qm resize scsi0 …` | Grow boot disk to **diskGB** (grow-only; skips if template disk is already larger) |
 | Update Cloud-Init (API) | `qm cloudinit update` | Regenerate cloud-init drive after config changes |
 | Start VM (API) | `qm start` | Boot the guest |
 
@@ -63,7 +64,7 @@ The VM Instance **`rootPassword`** field is sent to Proxmox as **`cipassword`** 
 
 **Fix:** The playbook no longer sets `scsi0` on configure (only CPU, RAM, `net0`, `ipconfig0`, `ciuser`, `cipassword`, `nameserver`). Re-import the pack or edit **Config VM (API)** in FortiSOAR to match.
 
-**Disk size:** The VM Instance **diskGB** field does not resize the QEMU disk yet (containers still use `rootfs`). To grow a VM disk after provision, use `qm resize <vmid> scsi0 +<n>G` on Proxmox or add a resize step later.
+**Disk size:** **Resize VM Disk (API)** grows `scsi0` (or `proxmox_vm_boot_disk`) to **diskGB** after configure. Containers still use **rootfs** at create time. Connector **2.0.7+** required for `resize_vm_disk`.
 
 ### Lock timeout on Config VM (`lock-<vmid>.conf`)
 

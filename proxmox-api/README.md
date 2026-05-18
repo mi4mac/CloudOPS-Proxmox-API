@@ -47,6 +47,7 @@ No global variables are required – everything is stored in the connector confi
 - **Clone VM** – Clone a VM from a template (waits for the async clone task by default)  
 - **Create Container** – Create an LXC container  
 - **Configure VM** – Configure VM (cloud-init, networking, `ciuser` / `cipassword`)  
+- **Resize VM Disk** – Grow a QEMU disk (`qm resize`; use `target_gb` for grow-only)  
 - **Update VM Cloud-Init** – Regenerate cloud-init drive (`qm cloudinit update`)  
 - **Start/Stop VM** – Start/stop VM  
 - **Start/Stop Container** – Start/stop container  

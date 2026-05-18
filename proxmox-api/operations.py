@@ -8,6 +8,8 @@ from connectors.core.connector import get_logger, ConnectorError
 import requests
 import time
 import json
+import math
+import re
 from urllib.parse import quote
 
 logger = get_logger("API Connector Proxmox")
@@ -225,6 +227,67 @@ def config_vm(config, params):
     else:
         raise ConnectorError("body_params must be a JSON object or JSON string")
     return _request(config, "PUT", path, data=data)
+
+
+def _disk_size_gb_from_config_value(disk_value):
+    """Parse Proxmox disk config (scsi0/virtio0) size in GB, or None if unknown."""
+    if not disk_value:
+        return None
+    s = str(disk_value)
+    m = re.search(r"size=(\d+)", s, re.I)
+    if m:
+        return int(m.group(1)) / (1024.0 ** 3)
+    return None
+
+
+def resize_vm_disk(config, params):
+    """PUT /api2/json/nodes/{node}/qemu/{vmid}/resize (qm resize). Grows disk when target_gb exceeds current size."""
+    node = params.get("node") or config.get("node")
+    vmid = params.get("vmid")
+    disk = params.get("disk") or "scsi0"
+    size = params.get("size")
+    target_gb = params.get("target_gb")
+    if not node or vmid is None:
+        raise ConnectorError("node and vmid are required")
+    if target_gb is not None and not size:
+        try:
+            target_gb = int(target_gb)
+        except (TypeError, ValueError):
+            raise ConnectorError("target_gb must be an integer")
+        cfg_resp = get_vm_config(config, {"node": node, "vmid": vmid})
+        cfg = cfg_resp.get("data") if isinstance(cfg_resp.get("data"), dict) else cfg_resp
+        disk_val = cfg.get(disk) if isinstance(cfg, dict) else None
+        current_gb = _disk_size_gb_from_config_value(disk_val)
+        if current_gb is None:
+            logger.warning(
+                "Could not read current %s size for VM %s; resizing to %sG",
+                disk,
+                vmid,
+                target_gb,
+            )
+            size = "{}G".format(target_gb)
+        elif target_gb <= int(math.floor(current_gb + 0.001)):
+            return {
+                "success": 1,
+                "skipped": True,
+                "message": "disk already {:.2f} GB (target {} GB)".format(current_gb, target_gb),
+            }
+        else:
+            delta = max(1, int(math.ceil(target_gb - current_gb)))
+            size = "+{}G".format(delta)
+    if not size:
+        raise ConnectorError("size or target_gb is required")
+    path = "nodes/{}/qemu/{}/resize".format(node, vmid)
+    out = _request(config, "PUT", path, data={"disk": disk, "size": size})
+    upid = (
+        out.get("data")
+        if isinstance(out.get("data"), str) and str(out.get("data", "")).strip().startswith("UPID:")
+        else None
+    )
+    if upid:
+        wait_timeout = int(params.get("timeout") or config.get("resize_timeout") or 600)
+        _wait_for_task(config, node, upid.strip(), timeout=wait_timeout, task_label="VM disk resize")
+    return out
 
 
 def update_vm_cloudinit(config, params):
@@ -597,6 +660,7 @@ operations = {
     "create_container": create_container,
     "config_container": config_container,
     "config_vm": config_vm,
+    "resize_vm_disk": resize_vm_disk,
     "update_vm_cloudinit": update_vm_cloudinit,
     "start_vm": start_vm,
     "stop_vm": stop_vm,
