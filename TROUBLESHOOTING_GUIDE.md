@@ -67,20 +67,19 @@ The VM Instance **`rootPassword`** field is sent to Proxmox as **`cipassword`** 
 
 **Disk size:** **Resize VM Disk API** runs only when **diskGB** on the record is not empty and not **10** (`proxmox_default_disk_gb`). Empty or **10** keeps the cloned template size (avoids unintended resize to 20 GB). Set **20**, **32**, etc. to grow. The connector grows with **`+delta G`** to the **target total** (e.g. 10 GB template + **11 GB** request → `+1G` → 11 GB). Use connector **2.0.9+** (resize fix in **2.0.8**); older **2.0.7** could apply **`11G`** as “add 11 GB” → **22 GB**. See [VM_PROVISIONING.md](VM_PROVISIONING.md). Containers still use **rootfs** at create.
 
-### Connector not updated after import (still old version / 11 GB → 22 GB)
+### Connector not updated after import (still **2.0.7**, file time **12:34**)
 
-FortiSOAR upgrades connectors by **version number**, not file date. Re-importing **`2.0.8`** when **2.0.8** is already installed does **not** replace Python code. Importing only the solution pack may also skip the connector if the pack’s connector metadata matches what is installed.
+That timestamp matches the **old** solution pack build that still shipped **`proxmox-api_2.0.7.tgz`**. **`CloudOPS_Solution_Pack.zip` does not replace an already-installed connector.**
 
-**Fix:**
+Full steps: **[CONNECTOR_INSTALL.md](CONNECTOR_INSTALL.md)**
 
-1. Pull latest repo and run `./build-connector.sh` (or `./build-pack.sh`).
-2. In FortiSOAR: **Content Hub** → upload **`connectors/API Connector Proxmox.tgz`**.
-3. On import, enable **Delete all existing versions** *or* install **2.0.9** (newer than 2.0.8).
-4. Confirm under **Connectors** → **API Connector Proxmox** that version is **2.0.9**.
-5. Optional (SSH on FortiSOAR app host):  
-   `/opt/cyops-integrations/.env/bin/python /opt/cyops-integrations/integrations/manage.py reimport_connector -n proxmox-api -cv -migrate`
+1. `git pull` and use **`releases/proxmox-api_2.1.0_INSTALL_THIS.tgz`** (verify: `tar -xOf … info.json | grep version` → **2.1.0**).
+2. FortiSOAR **Content Hub** → upload that `.tgz` (connector import, not solution pack).
+3. Check **Delete all existing versions**.
+4. **Connectors** → **API Connector Proxmox** must show **2.1.0** (description mentions **build 2026-05-18**).
+5. Then import the new **`CloudOPS_Solution_Pack.zip`** if needed.
 
-Re-import the solution pack afterward if you need playbook changes; connector code must be updated separately as above.
+FortiSOAR upgrades connectors by **version number**, not zip file date.
 
 ### Lock timeout on Config VM (`lock-<vmid>.conf`)
 

@@ -1,8 +1,8 @@
 {
   "name": "proxmox-api",
-  "version": "2.0.9",
+  "version": "2.1.0",
   "label": "API Connector Proxmox",
-  "description": "Native FortiSOAR connector for the Proxmox VE API. Enables VM and container provisioning, configuration and deletion via the Proxmox REST API using token-based authentication. Supports arbitrary configurations per connector instance (host, port, token).",
+  "description": "Native FortiSOAR connector for the Proxmox VE API (build 2026-05-18, disk resize +delta G). Enables VM and container provisioning, configuration and deletion via the Proxmox REST API using token-based authentication.",
   "publisher": "Fortinet / Custom",
   "cs_approved": false,
   "cs_compatible": true,

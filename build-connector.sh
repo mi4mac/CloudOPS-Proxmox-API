@@ -37,5 +37,10 @@ cp -f "$TGZ" "$ALIAS"
 # Drop stale versioned archives (keep docker + current proxmox tgz)
 find "$OUT_DIR" -maxdepth 1 -name 'proxmox-api_*.tgz' ! -name "proxmox-api_${VERSION}.tgz" -delete 2>/dev/null || true
 
-ls -la "$TGZ" "$ALIAS"
+RELEASE_DIR="releases"
+mkdir -p "$RELEASE_DIR"
+cp -f "$TGZ" "${RELEASE_DIR}/proxmox-api_${VERSION}_INSTALL_THIS.tgz"
+shasum -a 256 "$TGZ" | tee "${RELEASE_DIR}/proxmox-api_${VERSION}.sha256"
+ls -la "$TGZ" "$ALIAS" "${RELEASE_DIR}/proxmox-api_${VERSION}_INSTALL_THIS.tgz"
 echo "Connector ${VERSION} built ($(date -u +%Y-%m-%dT%H:%M:%SZ))."
+echo "FortiSOAR: upload ${RELEASE_DIR}/proxmox-api_${VERSION}_INSTALL_THIS.tgz (not the solution pack)."

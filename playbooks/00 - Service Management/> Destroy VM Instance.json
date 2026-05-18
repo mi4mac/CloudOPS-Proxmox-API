@@ -109,7 +109,7 @@
                     "vmid": "{{ vars.proxmox_id | int }}",
                     "force": true
                 },
-                "version": "2.0.0",
+                "version": "2.1.0",
                 "connector": "proxmox-api",
                 "operation": "destroy_container",
                 "operationTitle": "Destroy Container",
@@ -194,7 +194,7 @@
                     "vmid": "{{ vars.proxmox_id | int }}",
                     "purge": true
                 },
-                "version": "2.0.0",
+                "version": "2.1.0",
                 "connector": "proxmox-api",
                 "operation": "destroy_vm",
                 "operationTitle": "Destroy VM",
@@ -257,7 +257,7 @@
                 "name": "API Connector Proxmox",
                 "config": "''",
                 "params": [],
-                "version": "2.0.0",
+                "version": "2.1.0",
                 "connector": "proxmox-api",
                 "operation": "list_containers",
                 "operationTitle": "List Containers",
@@ -279,7 +279,7 @@
                 "name": "API Connector Proxmox",
                 "config": "''",
                 "params": [],
-                "version": "2.0.0",
+                "version": "2.1.0",
                 "connector": "proxmox-api",
                 "operation": "list_vms",
                 "operationTitle": "List VMs",
@@ -302,7 +302,7 @@
                 "input": {
                     "schema": {
                         "title": "Manual VM Destruction Approval",
-                        "description": "VM Instance '{{vars.vm_name}}' does not have a deleteAfter date or the date has not been reached yet.\n\n\u26a0\ufe0f WARNING: This will permanently destroy the VM/Container.\n\nProxmox ID: {{vars.proxmox_id}}\nVM Type: {{vars.vm_type}}\n\nPlease confirm that you want to proceed with the destruction.",
+                        "description": "VM Instance '{{vars.vm_name}}' does not have a deleteAfter date or the date has not been reached yet.\n\n⚠️ WARNING: This will permanently destroy the VM/Container.\n\nProxmox ID: {{vars.proxmox_id}}\nVM Type: {{vars.vm_type}}\n\nPlease confirm that you want to proceed with the destruction.",
                         "inputVariables": [
                             {
                                 "name": "confirmDestroy",
@@ -559,7 +559,7 @@
                     "node": "{{ globalVars.proxmox_default_node | default('pve') }}",
                     "vmid": "{{ vars.proxmox_id | int }}"
                 },
-                "version": "2.0.0",
+                "version": "2.1.0",
                 "connector": "proxmox-api",
                 "operation": "stop_container",
                 "operationTitle": "Stop Container",
@@ -584,7 +584,7 @@
                     "node": "{{ globalVars.proxmox_default_node | default('pve') }}",
                     "vmid": "{{ vars.proxmox_id | int }}"
                 },
-                "version": "2.0.0",
+                "version": "2.1.0",
                 "connector": "proxmox-api",
                 "operation": "stop_vm",
                 "operationTitle": "Stop VM",

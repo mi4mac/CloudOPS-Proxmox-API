@@ -35,7 +35,7 @@ Contents
 
 Installation
 ------------
-1. Import the connector package `API Connector Proxmox.tgz` in FortiSOAR.
+1. Import the connector package **`releases/proxmox-api_2.1.0_INSTALL_THIS.tgz`** (see [CONNECTOR_INSTALL.md](CONNECTOR_INSTALL.md)) — **not** only the solution pack.
 2. Import the Docker connector package `docker-2.0.1.tgz` in FortiSOAR.
 3. Configure the `proxmox-api` connector with the correct **host**, **port**, and **API token** (these values are read from the connector configuration, not from global variables). Use connector version **2.0.9** or later for VM provisioning (clone wait, disk resize with correct `+delta G`, cloud-init update, `ciuser`/`cipassword` on configure).
 4. Configure the `docker` connector with the correct Docker Engine API endpoint (for example `http://192.168.222.223:2375`) and verify **Get Version** / **Get Info** succeed.

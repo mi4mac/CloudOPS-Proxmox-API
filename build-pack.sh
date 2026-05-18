@@ -31,11 +31,16 @@ cp -f connectors/data.json "${PACK_DIR}/connectors/"
 cp -f "connectors/proxmox-api_${VERSION}.tgz" "${PACK_DIR}/connectors/"
 find "${PACK_DIR}/connectors" -maxdepth 1 -name 'proxmox-api_*.tgz' ! -name "proxmox-api_${VERSION}.tgz" -delete 2>/dev/null || true
 
-PB_SRC='playbooks/00 - Service Management/> Provision VM Instances.json'
-PB_DST="${PACK_DIR}/${PB_SRC}"
-if [[ -f "$PB_SRC" && -f "$PB_DST" ]]; then
-    cp -f "$PB_SRC" "$PB_DST"
-fi
+for PB in \
+    'playbooks/00 - Service Management/> Provision VM Instances.json' \
+    'playbooks/00 - Service Management/> Destroy VM Instance.json' \
+    'playbooks/00 - Service Management/> Refresh Proxmox Inventory.json' \
+    'playbooks/00 - Service Management/> Refresh Status from Proxmox.json'
+do
+    if [[ -f "$PB" && -f "${PACK_DIR}/${PB}" ]]; then
+        cp -f "$PB" "${PACK_DIR}/${PB}"
+    fi
+done
 
 echo "Updating solution pack export date..."
 python3 <<'PY'

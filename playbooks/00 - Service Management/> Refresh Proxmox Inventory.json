@@ -181,7 +181,7 @@
                 "params": {
                     "include_config": true
                 },
-                "version": "1.1.0",
+                "version": "2.1.0",
                 "connector": "proxmox-api",
                 "operation": "list_containers",
                 "operationTitle": "List Containers",
@@ -205,7 +205,7 @@
                 "params": {
                     "include_config": true
                 },
-                "version": "1.1.0",
+                "version": "2.1.0",
                 "connector": "proxmox-api",
                 "operation": "list_vms",
                 "operationTitle": "List VMs",
