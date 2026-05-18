@@ -291,12 +291,29 @@ def _current_vm_disk_size_gb(config, node, vmid, disk="scsi0", assume_gb=None):
     return None
 
 
+def _validate_resize_size(size):
+    """Proxmox treats bare '11G' as add 11 GB; require leading + or -."""
+    if size is None:
+        return None
+    s = str(size).strip()
+    if not s:
+        return None
+    if s[0] in "+-":
+        return s
+    if re.match(r"^\d+(\.\d+)?\s*G(B)?$", s, re.I):
+        raise ConnectorError(
+            "Resize size '{}' is interpreted by Proxmox as ADD that many GB. "
+            "Use '+NG' (e.g. +1G) or target_gb with assume_current_gb.".format(s)
+        )
+    return s
+
+
 def resize_vm_disk(config, params):
     """PUT /api2/json/nodes/{node}/qemu/{vmid}/resize (qm resize). Grows disk when target_gb exceeds current size."""
     node = params.get("node") or config.get("node")
     vmid = params.get("vmid")
     disk = params.get("disk") or "scsi0"
-    size = params.get("size")
+    size = _validate_resize_size(params.get("size"))
     target_gb = params.get("target_gb")
     if not node or vmid is None:
         raise ConnectorError("node and vmid are required")
@@ -329,6 +346,21 @@ def resize_vm_disk(config, params):
                 "message": "disk already {:.2f} GB (target {} GB)".format(current_gb, target_gb),
             }
         delta = max(1, int(math.ceil(target_gb - current_gb)))
+        # Mis-read current size (~0) would send +{target}G and double the disk (e.g. 10+11=21).
+        if assume_gb is not None and delta >= target_gb:
+            try:
+                fallback_current = float(int(assume_gb))
+                if fallback_current >= 1:
+                    logger.warning(
+                        "VM %s resize: delta %s G suspicious; using assume_current_gb=%s",
+                        vmid,
+                        delta,
+                        assume_gb,
+                    )
+                    current_gb = fallback_current
+                    delta = max(1, int(math.ceil(target_gb - current_gb)))
+            except (TypeError, ValueError):
+                pass
         size = "+{}G".format(delta)
         resize_meta = {
             "current_gb": round(current_gb, 2),
