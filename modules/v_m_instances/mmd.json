@@ -597,7 +597,7 @@
             },
             "dataSourceFilters": null,
             "defaultValue": 10,
-            "tooltip": "Requested disk size in GB",
+            "tooltip": "Disk size in GB. Rocky9-VM: target total boot disk after provision (grow-only; playbook resizes scsi0). CT: rootfs size at create. Default 10.",
             "visibility": true,
             "htmlEscape": false,
             "orphanRemoval": null,

@@ -4,7 +4,7 @@
     "name": "> Provision VM Instances",
     "aliasName": null,
     "tag": null,
-    "description": "Create VM Instances",
+    "description": "Create VM Instances. For Rocky9-VM, the VM Instance field Disk (GB) (diskGB) is the target total boot disk size after clone (grow-only resize on scsi0); containers use the same field for rootfs at create. Default 10 GB if unset.",
     "isActive": true,
     "debug": false,
     "singleRecordExecution": false,
@@ -65,7 +65,7 @@
         {
             "@type": "WorkflowStep",
             "name": "Configuration",
-            "description": null,
+            "description": "Reads VM Instance sizing. disk_gb = Disk (GB) on the record (default 10). Used for VM grow-only resize and CT rootfs.",
             "arguments": {
                 "disk_gb": "{{vars.input.records[0].diskGB or 10}}",
                 "swap_mb": "{{vars.input.records[0].swapMB or 512}}",
@@ -116,7 +116,7 @@
         {
             "@type": "WorkflowStep",
             "name": "Resize VM Disk (API)",
-            "description": "Grow boot disk to diskGB from the VM Instance (qm resize scsi0).",
+            "description": "Rocky9-VM only (VM path). Grows scsi0 to the Disk (GB) value on the VM Instance (target total size, not an add-on of that many GB). Skips if the cloned template disk is already >= diskGB; never shrinks. Example: template 8 GB + diskGB 10 → +2G. Requires connector 2.0.7+.",
             "arguments": {
                 "name": "API Connector Proxmox",
                 "config": "''",
@@ -356,7 +356,7 @@
         {
             "@type": "WorkflowStep",
             "name": "Provision Type",
-            "description": "Route to Container or VM provisioning.",
+            "description": "Route to Container or VM provisioning. VM path uses Disk (GB) for post-clone resize; CT path uses it for rootfs size at create.",
             "arguments": {
                 "conditions": [
                     {
@@ -909,7 +909,25 @@
             "uuid": "0ad6d468-c9a9-485f-8dc0-f7310ef5a54a"
         }
     ],
-    "groups": [],
+    "groups": [
+        {
+            "@type": "WorkflowGroup",
+            "name": "Info — VM Disk (GB)",
+            "description": "Disk (GB) on the VM Instance record (diskGB)\n\n• Rocky9-VM: target total boot disk size (scsi0). The playbook grows the cloned disk to this value only (grow-only). If the template is already larger, resize is skipped. Disks are not shrunk.\n• LXC containers: same field sets rootfs size at create (not resize).\n• Default if empty on the record: 10 GB.\n\nSet diskGB on the request/record before provision; Config VM does not replace the boot disk.",
+            "type": "note",
+            "isCollapsed": false,
+            "hasTriggerStep": false,
+            "hideInLogs": true,
+            "metadata": [],
+            "reusable": false,
+            "top": "1180",
+            "left": "720",
+            "height": "200",
+            "width": "420",
+            "uuid": "e3b7c4a1-9f2e-4d6b-8c0a-1f5e6d7a8b9c",
+            "recordTags": []
+        }
+    ],
     "priority": "/api/3/picklists/2b563c61-ae2c-41c0-a85a-c9709585e3f2",
     "playbookOrigin": "/api/3/picklists/15c1e8c9-22bf-4e66-8fbb-0a502d4a4a3f",
     "isEditable": true,
