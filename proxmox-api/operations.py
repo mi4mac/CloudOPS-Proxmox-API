@@ -229,32 +229,65 @@ def config_vm(config, params):
     return _request(config, "PUT", path, data=data)
 
 
+def _parse_proxmox_size_gb(size_token):
+    """Parse Proxmox size tokens: 10G, 32G, 10GB, or byte counts (10737418240)."""
+    if size_token is None:
+        return None
+    s = str(size_token).strip()
+    if not s:
+        return None
+    m = re.match(r"^(\d+(?:\.\d+)?)\s*([KMGT])?B?$", s, re.I)
+    if not m:
+        return None
+    num = float(m.group(1))
+    unit = (m.group(2) or "").upper()
+    if unit == "T":
+        return num * 1024.0
+    if unit == "G":
+        return num
+    if unit == "M":
+        return num / 1024.0
+    if unit == "K":
+        return num / (1024.0 ** 2)
+    # No unit: large values are bytes; small integers are GB (template shorthand).
+    if num >= 1024 * 1024:
+        return num / (1024.0 ** 3)
+    return num
+
+
 def _disk_size_gb_from_config_value(disk_value):
     """Parse Proxmox disk config (scsi0/virtio0) size in GB, or None if unknown."""
     if not disk_value:
         return None
     s = str(disk_value)
-    m = re.search(r"size=(\d+)", s, re.I)
+    m = re.search(r"size=(\S+)", s, re.I)
     if m:
-        return int(m.group(1)) / (1024.0 ** 3)
+        return _parse_proxmox_size_gb(m.group(1))
     return None
 
 
-def _current_vm_disk_size_gb(config, node, vmid, disk="scsi0"):
+def _current_vm_disk_size_gb(config, node, vmid, disk="scsi0", assume_gb=None):
     """Best-effort boot disk size in GB from qemu config, then status/current maxdisk."""
     cfg_resp = get_vm_config(config, {"node": node, "vmid": vmid})
     cfg = cfg_resp.get("data") if isinstance(cfg_resp.get("data"), dict) else cfg_resp
     if isinstance(cfg, dict):
         current_gb = _disk_size_gb_from_config_value(cfg.get(disk))
-        if current_gb is not None:
+        if current_gb is not None and current_gb >= 1:
             return current_gb
     try:
         status_resp = get_vm_status(config, {"node": node, "vmid": vmid})
         data = status_resp.get("data") if isinstance(status_resp.get("data"), dict) else status_resp
         if isinstance(data, dict) and data.get("maxdisk") is not None:
-            return int(data["maxdisk"]) / (1024.0 ** 3)
+            maxdisk_gb = int(data["maxdisk"]) / (1024.0 ** 3)
+            if maxdisk_gb >= 1:
+                return maxdisk_gb
     except ConnectorError as e:
         logger.warning("Could not read VM %s status for disk size: %s", vmid, str(e))
+    if assume_gb is not None:
+        try:
+            return float(int(assume_gb))
+        except (TypeError, ValueError):
+            pass
     return None
 
 
@@ -267,12 +300,18 @@ def resize_vm_disk(config, params):
     target_gb = params.get("target_gb")
     if not node or vmid is None:
         raise ConnectorError("node and vmid are required")
+    resize_meta = None
     if target_gb is not None and not size:
         try:
             target_gb = int(target_gb)
         except (TypeError, ValueError):
             raise ConnectorError("target_gb must be an integer")
-        current_gb = _current_vm_disk_size_gb(config, node, vmid, disk)
+        assume_gb = params.get("assume_current_gb")
+        if assume_gb is None:
+            assume_gb = params.get("default_disk_gb")
+        current_gb = _current_vm_disk_size_gb(
+            config, node, vmid, disk, assume_gb=assume_gb
+        )
         if current_gb is None:
             return {
                 "success": 1,
@@ -291,10 +330,18 @@ def resize_vm_disk(config, params):
             }
         delta = max(1, int(math.ceil(target_gb - current_gb)))
         size = "+{}G".format(delta)
+        resize_meta = {
+            "current_gb": round(current_gb, 2),
+            "target_gb": target_gb,
+            "delta_gb": delta,
+            "size": size,
+        }
     if not size:
         raise ConnectorError("size or target_gb is required")
     path = "nodes/{}/qemu/{}/resize".format(node, vmid)
     out = _request(config, "PUT", path, data={"disk": disk, "size": size})
+    if resize_meta and isinstance(out, dict):
+        out["resize"] = resize_meta
     upid = (
         out.get("data")
         if isinstance(out.get("data"), str) and str(out.get("data", "")).strip().startswith("UPID:")

@@ -65,7 +65,7 @@ The VM Instance **`rootPassword`** field is sent to Proxmox as **`cipassword`** 
 
 **Fix:** The playbook no longer sets `scsi0` on configure (only CPU, RAM, `net0`, `ipconfig0`, `ciuser`, `cipassword`, `nameserver`). Re-import the pack or edit **Config VM API** in FortiSOAR to match.
 
-**Disk size:** **Resize VM Disk API** runs only when **diskGB** on the record is not empty and not **10** (`proxmox_default_disk_gb`). Empty or **10** keeps the cloned template size (avoids unintended resize to 20 GB). Set **20**, **32**, etc. to grow. The connector grows with **`+delta G`** to the **target total** (e.g. 10 GB template + **11 GB** request → `+1G` → 11 GB). Use connector **2.0.9+** (resize fix in **2.0.8**); older **2.0.7** could apply **`11G`** as “add 11 GB” → **22 GB**. See [VM_PROVISIONING.md](VM_PROVISIONING.md). Containers still use **rootfs** at create.
+**Disk size:** **Resize VM Disk API** runs only when **diskGB** on the record is not empty and not **10** (`proxmox_default_disk_gb`). Empty or **10** keeps the cloned template size. The connector must parse **`size=10G`** in `qm config` correctly (not as bytes); otherwise it sent **`+11G`** on a 10 GB disk → **21 GB**. Re-import **`API Connector Proxmox.tgz` (2.0.8)** after pull. Playbook passes **`assume_current_gb`** (default 10) as fallback. Check playbook step output: `resize.size` should be **`+1G`** for diskGB **11**. See [VM_PROVISIONING.md](VM_PROVISIONING.md).
 
 ### Connector not updated after import (still **2.0.7**, file time **12:34**)
 

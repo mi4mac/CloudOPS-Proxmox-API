@@ -176,6 +176,7 @@
         {"name": "vmid", "title": "VMID", "type": "integer", "required": true, "description": "VMID of the VM"},
         {"name": "disk", "title": "Disk", "type": "text", "required": false, "value": "scsi0", "description": "Disk id (default scsi0)"},
         {"name": "target_gb", "title": "Target size (GB)", "type": "integer", "required": false, "description": "Grow boot disk to this size in GB (skips if already larger)"},
+        {"name": "assume_current_gb", "title": "Assume current size (GB)", "type": "integer", "required": false, "description": "Fallback when qm config has no readable size (e.g. template default 10)"},
         {"name": "size", "title": "Size", "type": "text", "required": false, "description": "Explicit resize, e.g. +10G or 32G (used when target_gb is omitted)"},
         {"name": "timeout", "title": "Resize wait timeout (seconds)", "type": "integer", "required": false, "description": "Max seconds to wait for resize task (default 600)"}
       ],

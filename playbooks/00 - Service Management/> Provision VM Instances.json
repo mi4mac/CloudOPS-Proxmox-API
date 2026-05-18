@@ -152,7 +152,8 @@
                     "disk": "{{ globalVars.proxmox_vm_boot_disk | default('scsi0') }}",
                     "node": "{{ globalVars.proxmox_default_node | default('pve') }}",
                     "vmid": "{{ (vars.steps.Get_Next_VMID.data.data | default(vars.steps.Get_Next_VMID.data)) | int }}",
-                    "target_gb": "{{ vars.input.records[0].diskGB | int }}"
+                    "target_gb": "{{ vars.input.records[0].diskGB | int }}",
+                    "assume_current_gb": "{{ globalVars.proxmox_default_disk_gb | default(10) | int }}"
                 },
                 "version": "2.0.0",
                 "connector": "proxmox-api",
