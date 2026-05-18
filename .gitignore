@@ -2,6 +2,7 @@
 *.zip
 !/solution-pack-proxmox-api-migration.zip
 !/CloudOPS_Solution_Pack.zip
+!/releases/API_Connector_Proxmox_Pack.zip
 
 # Stray connector drops at repo root (use connectors/proxmox-api_2.1.0.tgz or releases/*_INSTALL_THIS.tgz)
 /proxmox-api_2.0.*.tgz

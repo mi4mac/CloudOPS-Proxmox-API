@@ -9,8 +9,9 @@ After `git pull`, use **one** of these (same content):
 
 | File | Purpose |
 |------|---------|
-| `releases/proxmox-api_2.1.0_INSTALL_THIS.tgz` | **Recommended** — obvious name |
-| `connectors/API Connector Proxmox.tgz` | Alias of the same build |
+| `releases/proxmox-api_2.1.0_INSTALL_THIS.tgz` | **Recommended** — upload this in FortiSOAR |
+| `releases/API_Connector_Proxmox_Pack.zip` | Zip of the `.tgz` + `.sha256` (unzip, then upload the `.tgz`) |
+| `connectors/API Connector Proxmox.tgz` | Same build (from `./build-connector.sh`) |
 | `connectors/proxmox-api_2.1.0.tgz` | Versioned name |
 
 Verify before upload (must print **2.1.0**):
