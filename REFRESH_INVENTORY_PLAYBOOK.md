@@ -54,7 +54,7 @@ Behaviour:
 
 ## Prerequisites
 
-- **proxmox-api** connector (version **2.0.4** or later) with a configured **Default Node Name**.
+- **proxmox-ve** connector (version **2.0.4** or later) with a configured **Default Node Name**.
   - The connector’s `list_vms` / `list_containers` operations must support `include_config` and compute `disksSummary` and `interfacesSummary`.
 - FortiSOAR **cyops_utilities** connector (for `make_cyops_request`, `no_op`).
 

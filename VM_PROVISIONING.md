@@ -6,7 +6,7 @@ See also: [PACK_README.md](PACK_README.md), [TROUBLESHOOTING_GUIDE.md](TROUBLESH
 
 ## Prerequisites
 
-- FortiSOAR with **API Connector Proxmox** **2.0.9+** (from `CloudOPS_Solution_Pack.zip` or `API Connector Proxmox.tgz`)
+- FortiSOAR with **Proxmox VE Hypervisor** **2.0.9+** (from `CloudOPS_Solution_Pack.zip` or `Proxmox VE Hypervisor.tgz`)
 - Proxmox user/role/token with clone, config, cloud-init, resize, and power permissions ([TOKEN_CAPABILITIES.md](TOKEN_CAPABILITIES.md))
 - Rocky 9 **QEMU template** with cloud-init drive (`ide2`), virtio NIC, `qemu-guest-agent` recommended
 - Globals (optional): `proxmox_template_rocky9_vm`, `proxmox_ci_user`, `proxmox_default_disk_gb`, `proxmox_vm_boot_disk`, network/storage globals in [SCHRITT_2_GLOBAL_VARIABLES.md](SCHRITT_2_GLOBAL_VARIABLES.md)

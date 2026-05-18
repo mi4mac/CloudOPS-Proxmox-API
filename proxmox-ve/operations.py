@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-API Connector Proxmox - operations.
+Proxmox VE Hypervisor - operations.
 Proxmox VE REST API calls with token authentication.
 """
 
@@ -12,7 +12,7 @@ import math
 import re
 from urllib.parse import quote
 
-logger = get_logger("API Connector Proxmox")
+logger = get_logger("Proxmox VE Hypervisor")
 
 BASE_PATH = "/api2/json"
 

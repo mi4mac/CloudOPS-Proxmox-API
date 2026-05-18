@@ -102,7 +102,7 @@
             "name": "Destroy Container API",
             "description": null,
             "arguments": {
-                "name": "API Connector Proxmox",
+                "name": "Proxmox VE Hypervisor",
                 "config": "''",
                 "params": {
                     "node": "{{ globalVars.proxmox_default_node | default('pve') }}",
@@ -110,7 +110,7 @@
                     "force": true
                 },
                 "version": "2.0.0",
-                "connector": "proxmox-api",
+                "connector": "proxmox-ve",
                 "operation": "destroy_container",
                 "operationTitle": "Destroy Container",
                 "pickFromTenant": false,
@@ -187,7 +187,7 @@
             "name": "Destroy VM API",
             "description": null,
             "arguments": {
-                "name": "API Connector Proxmox",
+                "name": "Proxmox VE Hypervisor",
                 "config": "''",
                 "params": {
                     "node": "{{ globalVars.proxmox_default_node | default('pve') }}",
@@ -195,7 +195,7 @@
                     "purge": true
                 },
                 "version": "2.0.0",
-                "connector": "proxmox-api",
+                "connector": "proxmox-ve",
                 "operation": "destroy_vm",
                 "operationTitle": "Destroy VM",
                 "pickFromTenant": false,
@@ -254,11 +254,11 @@
             "name": "List Containers Lookup",
             "description": "Fetch containers from Proxmox to resolve VMID by name.",
             "arguments": {
-                "name": "API Connector Proxmox",
+                "name": "Proxmox VE Hypervisor",
                 "config": "''",
                 "params": [],
                 "version": "2.0.0",
-                "connector": "proxmox-api",
+                "connector": "proxmox-ve",
                 "operation": "list_containers",
                 "operationTitle": "List Containers",
                 "pickFromTenant": false,
@@ -276,11 +276,11 @@
             "name": "List VMs Lookup",
             "description": "Fetch VMs from Proxmox to resolve VMID by name when record has no Proxmox ID.",
             "arguments": {
-                "name": "API Connector Proxmox",
+                "name": "Proxmox VE Hypervisor",
                 "config": "''",
                 "params": [],
                 "version": "2.0.0",
-                "connector": "proxmox-api",
+                "connector": "proxmox-ve",
                 "operation": "list_vms",
                 "operationTitle": "List VMs",
                 "pickFromTenant": false,
@@ -553,14 +553,14 @@
             "name": "Stop Container API",
             "description": "Stop the container before destroy so Proxmox accepts delete.",
             "arguments": {
-                "name": "API Connector Proxmox",
+                "name": "Proxmox VE Hypervisor",
                 "config": "''",
                 "params": {
                     "node": "{{ globalVars.proxmox_default_node | default('pve') }}",
                     "vmid": "{{ vars.proxmox_id | int }}"
                 },
                 "version": "2.0.0",
-                "connector": "proxmox-api",
+                "connector": "proxmox-ve",
                 "operation": "stop_container",
                 "operationTitle": "Stop Container",
                 "pickFromTenant": false,
@@ -578,14 +578,14 @@
             "name": "Stop VM API",
             "description": "Stop the VM before destroy so Proxmox accepts delete.",
             "arguments": {
-                "name": "API Connector Proxmox",
+                "name": "Proxmox VE Hypervisor",
                 "config": "''",
                 "params": {
                     "node": "{{ globalVars.proxmox_default_node | default('pve') }}",
                     "vmid": "{{ vars.proxmox_id | int }}"
                 },
                 "version": "2.0.0",
-                "connector": "proxmox-api",
+                "connector": "proxmox-ve",
                 "operation": "stop_vm",
                 "operationTitle": "Stop VM",
                 "pickFromTenant": false,

@@ -1,6 +1,6 @@
 # Proxmox API Samples
 
-This playbook collection is shipped with the **API Connector Proxmox** connector. There is a sample playbook for each connector operation.
+This playbook collection is shipped with the **Proxmox VE Hypervisor** connector. There is a sample playbook for each connector operation.
 
 ## Playbooks (All Operations)
 
@@ -20,7 +20,7 @@ This playbook collection is shipped with the **API Connector Proxmox** connector
 
 ## Usage
 
-1. Import the **API Connector Proxmox** (`proxmox-api`) into FortiSOAR and create a connector configuration (host, port, API token).
+1. Import the **Proxmox VE Hypervisor** (`proxmox-ve`) into FortiSOAR and create a connector configuration (host, port, API token).
 2. When running a sample playbook, select the appropriate **connector configuration**.
 3. In the sample steps, adjust parameters (node, vmid, name, url_path, …) for your environment or pass them via variables.
 

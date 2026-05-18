@@ -1,12 +1,12 @@
 [
     {
-        "name": "proxmox-api",
-        "label": "API Connector Proxmox",
+        "name": "proxmox-ve",
+        "label": "Proxmox VE Hypervisor",
         "category": [
             "Infrastructure"
         ],
-        "description": "Native FortiSOAR connector for the Proxmox VE API. Enables VM and container provisioning, configuration and deletion via the Proxmox REST API using token-based authentication. Supports arbitrary configurations per connector instance (host, port, token).",
-        "publisher": "Fortinet \/ Custom",
+        "description": "Proxmox VE connector, Enables VM and container provisioning, configuration and deletion via the Proxmox REST API using token-based authentication.",
+        "publisher": "Fortinet SE",
         "version": "2.0.8",
         "operation_roles": [],
         "configurations": [
@@ -32,7 +32,7 @@
         ],
         "dataImports": [],
         "install_mode": "tgz",
-        "installer_path": "API Connector Proxmox.tgz",
+        "installer_path": "Proxmox VE Hypervisor.tgz",
         "ingestionPlaybooks": {
             "collections": [],
             "exported_tags": []

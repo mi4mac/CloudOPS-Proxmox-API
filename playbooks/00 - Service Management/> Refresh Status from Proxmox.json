@@ -40,14 +40,14 @@
             "name": "Get Container Status API",
             "description": null,
             "arguments": {
-                "name": "API Connector Proxmox",
+                "name": "Proxmox VE Hypervisor",
                 "config": "''",
                 "params": {
                     "node": "{{ vars.node }}",
                     "vmid": "{{ vars.vmid | int }}"
                 },
                 "version": "2.0.0",
-                "connector": "proxmox-api",
+                "connector": "proxmox-ve",
                 "operation": "get_container_status",
                 "operationTitle": "Get Container Status",
                 "pickFromTenant": false,
@@ -65,14 +65,14 @@
             "name": "Get VM Status API",
             "description": null,
             "arguments": {
-                "name": "API Connector Proxmox",
+                "name": "Proxmox VE Hypervisor",
                 "config": "''",
                 "params": {
                     "node": "{{ vars.node }}",
                     "vmid": "{{ vars.vmid | int }}"
                 },
                 "version": "2.0.0",
-                "connector": "proxmox-api",
+                "connector": "proxmox-ve",
                 "operation": "get_vm_status",
                 "operationTitle": "Get VM Status",
                 "pickFromTenant": false,

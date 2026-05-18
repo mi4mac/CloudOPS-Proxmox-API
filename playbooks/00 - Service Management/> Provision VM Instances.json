@@ -23,7 +23,7 @@
             "name": "Clone VM API",
             "description": null,
             "arguments": {
-                "name": "API Connector Proxmox",
+                "name": "Proxmox VE Hypervisor",
                 "config": "''",
                 "params": {
                     "full": true,
@@ -34,7 +34,7 @@
                     "storage": "{{ globalVars.proxmox_storage | default('local-lvm') }}"
                 },
                 "version": "2.0.0",
-                "connector": "proxmox-api",
+                "connector": "proxmox-ve",
                 "operation": "clone_vm",
                 "operationTitle": "Clone VM",
                 "pickFromTenant": false,
@@ -92,7 +92,7 @@
             "name": "Config VM API",
             "description": null,
             "arguments": {
-                "name": "API Connector Proxmox",
+                "name": "Proxmox VE Hypervisor",
                 "config": "''",
                 "params": {
                     "node": "{{ globalVars.proxmox_default_node | default('pve') }}",
@@ -100,7 +100,7 @@
                     "body_params": "{{ {'cores': vars.cpu_cores | int, 'memory': vars.memory_mb | int, 'net0': 'virtio,bridge=' ~ vars.bridge ~ ',tag=' ~ (vars.vlan | string), 'ipconfig0': 'ip=' ~ vars.vm_ip_address ~ '/24,gw=' ~ vars.gateway, 'ciuser': vars.ci_user, 'cipassword': vars.root_password, 'nameserver': '1.1.1.1'} | tojson }}"
                 },
                 "version": "2.0.0",
-                "connector": "proxmox-api",
+                "connector": "proxmox-ve",
                 "operation": "config_vm",
                 "operationTitle": "Configure VM",
                 "pickFromTenant": false,
@@ -146,7 +146,7 @@
             "name": "Resize VM Disk API",
             "description": "Runs only when Custom VM Disk Size = resize. Sends explicit +delta G (diskGB minus proxmox_default_disk_gb) so Proxmox never gets bare 11G (add 11 GB).",
             "arguments": {
-                "name": "API Connector Proxmox",
+                "name": "Proxmox VE Hypervisor",
                 "config": "''",
                 "params": {
                     "disk": "{{ globalVars.proxmox_vm_boot_disk | default('scsi0') }}",
@@ -155,7 +155,7 @@
                     "size": "+{{ ((vars.input.records[0].diskGB | int) - (globalVars.proxmox_default_disk_gb | default(10) | int)) | int }}G"
                 },
                 "version": "2.0.0",
-                "connector": "proxmox-api",
+                "connector": "proxmox-ve",
                 "operation": "resize_vm_disk",
                 "operationTitle": "Resize VM Disk",
                 "pickFromTenant": false,
@@ -173,14 +173,14 @@
             "name": "Update Cloud-Init API",
             "description": "Regenerate cloud-init ISO after config (qm cloudinit update).",
             "arguments": {
-                "name": "API Connector Proxmox",
+                "name": "Proxmox VE Hypervisor",
                 "config": "''",
                 "params": {
                     "node": "{{ globalVars.proxmox_default_node | default('pve') }}",
                     "vmid": "{{ (vars.steps.Get_Next_VMID.data.data | default(vars.steps.Get_Next_VMID.data)) | int }}"
                 },
                 "version": "2.0.0",
-                "connector": "proxmox-api",
+                "connector": "proxmox-ve",
                 "operation": "update_vm_cloudinit",
                 "operationTitle": "Update VM Cloud-Init",
                 "pickFromTenant": false,
@@ -198,7 +198,7 @@
             "name": "Create Container API",
             "description": null,
             "arguments": {
-                "name": "API Connector Proxmox",
+                "name": "Proxmox VE Hypervisor",
                 "config": "''",
                 "params": {
                     "net0": "name=eth0,bridge={{ vars.bridge }},tag={{ vars.vlan }},ip={{ vars.vm_ip_address }}/24,gw={{ vars.gateway }}",
@@ -216,7 +216,7 @@
                     "unprivileged": 1
                 },
                 "version": "2.0.0",
-                "connector": "proxmox-api",
+                "connector": "proxmox-ve",
                 "operation": "create_container",
                 "operationTitle": "Create Container",
                 "pickFromTenant": false,
@@ -262,11 +262,11 @@
             "name": "Get Next VMID",
             "description": "Get next available VMID from Proxmox cluster.",
             "arguments": {
-                "name": "API Connector Proxmox",
+                "name": "Proxmox VE Hypervisor",
                 "config": "''",
                 "params": [],
                 "version": "2.0.0",
-                "connector": "proxmox-api",
+                "connector": "proxmox-ve",
                 "operation": "get_next_vmid",
                 "operationTitle": "Get Next VMID",
                 "pickFromTenant": false,
@@ -284,11 +284,11 @@
             "name": "Get Node Status",
             "description": null,
             "arguments": {
-                "name": "API Connector Proxmox",
+                "name": "Proxmox VE Hypervisor",
                 "config": "''",
                 "params": [],
                 "version": "2.0.0",
-                "connector": "proxmox-api",
+                "connector": "proxmox-ve",
                 "operation": "get_node_status",
                 "operationTitle": "Get Node Status",
                 "pickFromTenant": false,
@@ -306,13 +306,13 @@
             "name": "Get Storage Status",
             "description": null,
             "arguments": {
-                "name": "API Connector Proxmox",
+                "name": "Proxmox VE Hypervisor",
                 "config": "''",
                 "params": {
                     "storage": "{{ globalVars.proxmox_storage | default('local-lvm') }}"
                 },
                 "version": "2.0.0",
-                "connector": "proxmox-api",
+                "connector": "proxmox-ve",
                 "operation": "get_storage_status",
                 "operationTitle": "Get Storage Status",
                 "pickFromTenant": false,
@@ -577,14 +577,14 @@
             "name": "Start Container API",
             "description": null,
             "arguments": {
-                "name": "API Connector Proxmox",
+                "name": "Proxmox VE Hypervisor",
                 "config": "''",
                 "params": {
                     "node": "{{ globalVars.proxmox_default_node | default('pve') }}",
                     "vmid": "{{ (vars.steps.Get_Next_VMID.data.data | default(vars.steps.Get_Next_VMID.data)) | int }}"
                 },
                 "version": "2.0.0",
-                "connector": "proxmox-api",
+                "connector": "proxmox-ve",
                 "operation": "start_container",
                 "operationTitle": "Start Container",
                 "pickFromTenant": false,
@@ -602,14 +602,14 @@
             "name": "Start VM API",
             "description": null,
             "arguments": {
-                "name": "API Connector Proxmox",
+                "name": "Proxmox VE Hypervisor",
                 "config": "''",
                 "params": {
                     "node": "{{ globalVars.proxmox_default_node | default('pve') }}",
                     "vmid": "{{ (vars.steps.Get_Next_VMID.data.data | default(vars.steps.Get_Next_VMID.data)) | int }}"
                 },
                 "version": "2.0.0",
-                "connector": "proxmox-api",
+                "connector": "proxmox-ve",
                 "operation": "start_vm",
                 "operationTitle": "Start VM",
                 "pickFromTenant": false,

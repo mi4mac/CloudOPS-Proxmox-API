@@ -27,19 +27,15 @@ echo "Building connector archive..."
 echo "Syncing connectors into ${PACK_DIR}/connectors..."
 mkdir -p "${PACK_DIR}/connectors"
 cp -f connectors/data.json "${PACK_DIR}/connectors/"
-cp -f "connectors/API Connector Proxmox.tgz" "${PACK_DIR}/connectors/"
-rm -f "${PACK_DIR}/connectors"/proxmox-api_*.tgz
+cp -f "connectors/Proxmox VE Hypervisor.tgz" "${PACK_DIR}/connectors/"
+rm -f "${PACK_DIR}/connectors"/proxmox-api_*.tgz "${PACK_DIR}/connectors"/"API Connector Proxmox.tgz"
 
-for PB in \
-    'playbooks/00 - Service Management/> Provision VM Instances.json' \
-    'playbooks/00 - Service Management/> Destroy VM Instance.json' \
-    'playbooks/00 - Service Management/> Refresh Proxmox Inventory.json' \
-    'playbooks/00 - Service Management/> Refresh Status from Proxmox.json'
-do
-    if [[ -f "$PB" && -f "${PACK_DIR}/${PB}" ]]; then
-        cp -f "$PB" "${PACK_DIR}/${PB}"
-    fi
-done
+if [[ -d "playbooks/00 - Service Management" && -d "${PACK_DIR}/playbooks/00 - Service Management" ]]; then
+    cp -f playbooks/00\ -\ Service\ Management/*.json "${PACK_DIR}/playbooks/00 - Service Management/"
+fi
+if [[ -f playbooks/globalVariables.json && -f "${PACK_DIR}/playbooks/globalVariables.json" ]]; then
+    cp -f playbooks/globalVariables.json "${PACK_DIR}/playbooks/"
+fi
 
 echo "Updating solution pack export date..."
 python3 <<'PY'

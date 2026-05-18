@@ -65,20 +65,20 @@ The VM Instance **`rootPassword`** field is sent to Proxmox as **`cipassword`** 
 
 **Fix:** The playbook no longer sets `scsi0` on configure (only CPU, RAM, `net0`, `ipconfig0`, `ciuser`, `cipassword`, `nameserver`). Re-import the pack or edit **Config VM API** in FortiSOAR to match.
 
-**Disk size / 10+11=21 GB:** Proxmox treats bare **`11G`** as *add* 11 GB, not “make 11 GB total”. The provision playbook now sends explicit **`+1G`** when diskGB is **11** and default is **10** (`+{{ diskGB - proxmox_default_disk_gb }}G`). Re-import **`CloudOPS_Solution_Pack.zip`** (playbook) and **`API Connector Proxmox.tgz`** (connector). In the **Resize VM Disk API** step input, **`size`** must show **`+1G`**, not `target_gb: 11`. See [VM_PROVISIONING.md](VM_PROVISIONING.md).
+**Disk size / 10+11=21 GB:** Proxmox treats bare **`11G`** as *add* 11 GB, not “make 11 GB total”. The provision playbook now sends explicit **`+1G`** when diskGB is **11** and default is **10** (`+{{ diskGB - proxmox_default_disk_gb }}G`). Re-import **`CloudOPS_Solution_Pack.zip`** (playbook) and **`Proxmox VE Hypervisor.tgz`** (connector). In the **Resize VM Disk API** step input, **`size`** must show **`+1G`**, not `target_gb: 11`. See [VM_PROVISIONING.md](VM_PROVISIONING.md).
 
 ### Connector not updated after import (still **2.0.7**, file time **12:34**)
 
-**Cause:** `build-connector.sh` previously built a **broken** archive (files at tarball root) and copied it over **`API Connector Proxmox.tgz`**. FortiSOAR expects **`proxmox-api/info.json`** inside the `.tgz` (see `proxmox-api/README.md`). A bad import leaves the old **2.0.7** installed. The **12:34** time is the old pack/connector file, not a successful upgrade.
+**Cause:** `build-connector.sh` previously built a **broken** archive (files at tarball root) and copied it over **`Proxmox VE Hypervisor.tgz`**. FortiSOAR expects **`proxmox-ve/info.json`** inside the `.tgz` (see `proxmox-ve/README.md`). A bad import leaves the old **2.0.7** installed. The **12:34** time is the old pack/connector file, not a successful upgrade.
 
-**Fix:** Import only **`connectors/API Connector Proxmox.tgz`** from a fresh `./build-connector.sh` run (not `proxmox-api_2.x.tgz` from the solution pack).
+**Fix:** Import only **`connectors/Proxmox VE Hypervisor.tgz`** from a fresh `./build-connector.sh` run (not `proxmox-ve_2.x.tgz` from the solution pack).
 
 ```bash
-tar -tzf "connectors/API Connector Proxmox.tgz" | head -3    # must show proxmox-api/...
-tar -xOf "connectors/API Connector Proxmox.tgz" proxmox-api/info.json | grep '"version"'  # 2.0.8
+tar -tzf "connectors/Proxmox VE Hypervisor.tgz" | head -3    # must show proxmox-ve/...
+tar -xOf "connectors/Proxmox VE Hypervisor.tgz" proxmox-ve/info.json | grep '"version"'  # 2.0.8
 ```
 
-FortiSOAR: **Content Hub** → upload **`API Connector Proxmox.tgz`** → **Delete all existing versions** → confirm version **2.0.8**. Solution pack import alone does not replace connector code.
+FortiSOAR: **Content Hub** → upload **`Proxmox VE Hypervisor.tgz`** → **Delete all existing versions** → confirm version **2.0.8**. Solution pack import alone does not replace connector code.
 
 ### Lock timeout on Config VM (`lock-<vmid>.conf`)
 
@@ -269,13 +269,13 @@ Then run the provisioning playbook again.
 
 **Background:**
 
-- The native Python connector `proxmox-api` supports multiple **connector configurations** (per server/cluster).
+- The native Python connector `proxmox-ve` supports multiple **connector configurations** (per server/cluster).
 - This pack uses a fixed connector configuration per playbook. A single playbook run therefore cannot dynamically switch between multiple Proxmox configurations.
 - The data model has an additional field `proxmoxCluster` that logically labels which cluster/connector a VM belongs to (for example `lab`, `prod`).
 
 **Recommended approach:**
 
-1. **Create one `proxmox-api` configuration per Proxmox server**, for example:
+1. **Create one `proxmox-ve` configuration per Proxmox server**, for example:
    - `proxmox-lab` (host/token for lab)
    - `proxmox-prod` (host/token for prod)
 

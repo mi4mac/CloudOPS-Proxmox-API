@@ -1,11 +1,11 @@
-# API Connector Proxmox
+# Proxmox VE Hypervisor
 
 Native FortiSOAR connector for the **Proxmox VE REST API**. One connector instance represents a configuration (host, port, API token); you can create multiple configurations (for example per environment or per customer).
 
 ## Structure (FortiSOAR connector package)
 
 ```
-proxmox-api/
+proxmox-ve/
 ├── connector.py       # Connector class (execute, check_health)
 ├── operations.py      # Proxmox API operations
 ├── info.json          # Metadata, configuration, operations
@@ -64,13 +64,13 @@ No global variables are required – everything is stored in the connector confi
 ### Generic
 - **API Request (Generic)** – Arbitrary API call (GET/POST/PUT/DELETE)
 
-For each operation there are **sample playbooks** in the collection `Sample - API Connector Proxmox - 1.0.0`. Token capabilities and permission requirements: `TOKEN_CAPABILITIES.md` in the project root.  
+For each operation there are **sample playbooks** in the collection `Sample - Proxmox VE Hypervisor - 1.0.0`. Token capabilities and permission requirements: `TOKEN_CAPABILITIES.md` in the project root.  
 
 ## Import into FortiSOAR
 
 1. Package the folder as `.tgz`:
    ```bash
-   tar -czvf "API Connector Proxmox.tgz" "proxmox-api/"
+   tar -czvf "Proxmox VE Hypervisor.tgz" "proxmox-ve/"
    ```
 2. In FortiSOAR: **Content Hub** or **Connectors** → **Add Connector** → select the file.
 3. Create a configuration (host, port, API token) and save.

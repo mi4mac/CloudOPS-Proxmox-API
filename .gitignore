@@ -4,8 +4,9 @@
 !/CloudOPS_Solution_Pack.zip
 releases/
 
-# Stray connector drops at repo root (use connectors/API Connector Proxmox.tgz)
+# Stray connector drops at repo root (use connectors/Proxmox VE Hypervisor.tgz)
 /proxmox-api_2.0.*.tgz
+/proxmox-ve_2.0.*.tgz
 
 # No npm project in this repo
 package-lock.json

@@ -4,7 +4,7 @@ This repository contains a **FortiSOAR solution pack** and a **native Proxmox co
 
 ## What’s included
 
-- `proxmox-api/` – Python connector for the Proxmox VE API (`API Connector Proxmox.tgz` is built from this folder, current connector version **2.0.9**). Run `./build-connector.sh` or `./build-pack.sh` before import.
+- `proxmox-ve/` – Python connector for the Proxmox VE API (`Proxmox VE Hypervisor.tgz` is built from this folder, current connector version **2.0.9**). Run `./build-connector.sh` or `./build-pack.sh` before import.
 - `**CloudOPS_Solution_Pack.zip`** – All-in-one importable solution pack (the only pack artifact in the repo). It includes:
   - **VM Instances**, **Network Interfaces**, and **Proxmox Inventory** modules.
   - Playbooks for request → approve → provision → destroy → cleanup, plus **> Refresh Proxmox Inventory**.
@@ -12,7 +12,7 @@ This repository contains a **FortiSOAR solution pack** and a **native Proxmox co
 - **Policy playbooks (FortiGate)** – **Policies** module, **SOC Review** dashboard, and **00 - Policy Playbooks**: **Import Fortigate Policies**, **PB_REF_LinkPolicyToFirewallAsset_BySerial**, **Archive Deleted Firewall Policies**, **Review Policy** (Mark as Approved / **Mark as Denied** → disable on FortiGate, **Refresh Firewall Policies**), **> Update comments on Fortigate**, and **Enable Policy**. See the **Policy playbooks (FortiGate)** section and `POLICY_PLAYBOOKS.md` for setup, post-import config UUID steps, asset-linking behavior, and stale-policy lifecycle options.
   - **Docker inventory (optional)** – **Docker Containers** module, navigation entry, roles, and the **> Refresh Docker Inventory** playbook are also shipped in the pack; use them with the Docker connector to sync Docker Engine containers into FortiSOAR. See **Optional: Docker inventory integration** below.
 - Other prebuilt content:
-  - `API Connector Proxmox.tgz` – Importable Proxmox connector package.
+  - `Proxmox VE Hypervisor.tgz` – Importable Proxmox connector package.
   - `docker-2.0.1.tgz` – Importable Docker connector package (from the `mi4mac/docker` connector).
 - Documentation (English):
   - `PACK_README.md` – Pack overview, installation & upgrade.
@@ -24,7 +24,7 @@ This repository contains a **FortiSOAR solution pack** and a **native Proxmox co
   - `TESTING_GUIDE.md` – End‑to‑end and regression test scenarios.
   - `VM_PROVISIONING.md` – Rocky9-VM provision flow, disk GB rules, connector versions.
   - `TROUBLESHOOTING_GUIDE.md` – Common issues and troubleshooting steps.
-  - `proxmox-api/playbooks/Proxmox API Samples/README.md` – Sample playbooks for each connector operation.
+  - `proxmox-ve/playbooks/Proxmox API Samples/README.md` – Sample playbooks for each connector operation.
   - `docs/internal/PROJEKT_STATUS.md` – Internal project status for this migration.
   - `docs/internal/IMPLEMENTIERUNGS_CHECKLISTE.md` – Internal implementation checklist (SSH → API migration).
   - `docs/FAZ_ASSET_INGEST_PRODUCTION_RUNBOOK.md` – Production hardening checklist for FAZ asset ingest and duplicate cleanup playbooks.
@@ -38,7 +38,7 @@ This repository contains a **FortiSOAR solution pack** and a **native Proxmox co
     - Create an API token for that user and assign the role/ACLs.
 2. **Connectors**
   - Proxmox:
-   Import `API Connector Proxmox.tgz` into FortiSOAR and create at least one configuration (host, port, API token).
+   Import `Proxmox VE Hypervisor.tgz` into FortiSOAR and create at least one configuration (host, port, API token).
   - Docker:
     - Import `docker-2.0.1.tgz` (Docker connector) into FortiSOAR.
     - Configure it to talk to your Docker Engine API endpoint (for example `http://10.0.0.100:2375`) and verify **Get Version** / **Get Info** succeed.

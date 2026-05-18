@@ -2,7 +2,7 @@
 
 ## Overview
 
-As of the current pack version, the **Proxmox API connection** (host, port, token) is configured **only on the `proxmox-api` connector configuration** and is **no longer read from global variables**.  
+As of the current pack version, the **Proxmox API connection** (host, port, token) is configured **only on the `proxmox-ve` connector configuration** and is **no longer read from global variables**.  
 
 The global variables described below are now **optional overrides** for defaults used by the playbooks (node, storage, network, templates). The pack works out of the box with the connector configuration alone; use these globals only if you want to centralize or override those defaults.
 
@@ -237,7 +237,7 @@ Each VM instance record has an additional field `proxmoxCluster`. Typical values
 - `lab` – lab / test cluster  
 - `prod` – production cluster  
 
-This field is a **logical label** that indicates which Proxmox cluster a VM instance belongs to. The actual mapping from `proxmoxCluster` to a specific `proxmox-api` connector configuration (host/token) is handled in FortiSOAR, for example by using separate playbooks per cluster.
+This field is a **logical label** that indicates which Proxmox cluster a VM instance belongs to. The actual mapping from `proxmoxCluster` to a specific `proxmox-ve` connector configuration (host/token) is handled in FortiSOAR, for example by using separate playbooks per cluster.
 
 **Recommendation:**
 

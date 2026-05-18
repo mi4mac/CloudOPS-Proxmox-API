@@ -176,13 +176,13 @@
             "name": "List Containers",
             "description": "Lists all LXC containers on the connector's default node.",
             "arguments": {
-                "name": "API Connector Proxmox",
+                "name": "Proxmox VE Hypervisor",
                 "config": "''",
                 "params": {
                     "include_config": true
                 },
                 "version": "2.0.0",
-                "connector": "proxmox-api",
+                "connector": "proxmox-ve",
                 "operation": "list_containers",
                 "operationTitle": "List Containers",
                 "pickFromTenant": false,
@@ -200,13 +200,13 @@
             "name": "List VMs",
             "description": "Lists all VMs on the connector's default node.",
             "arguments": {
-                "name": "API Connector Proxmox",
+                "name": "Proxmox VE Hypervisor",
                 "config": "''",
                 "params": {
                     "include_config": true
                 },
                 "version": "2.0.0",
-                "connector": "proxmox-api",
+                "connector": "proxmox-ve",
                 "operation": "list_vms",
                 "operationTitle": "List VMs",
                 "pickFromTenant": false,

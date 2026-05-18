@@ -23,7 +23,7 @@ This guide describes detailed test scenarios for the Proxmox API migration in Fo
 
 2. **FortiSOAR**
    - [ ] Global variables created (optional: `proxmox_template_rocky9_vm`, `proxmox_ci_user`).
-   - [ ] Proxmox API connector **2.0.6** or later installed (`API Connector Proxmox.tgz`).
+   - [ ] Proxmox API connector **2.0.6** or later installed (`Proxmox VE Hypervisor.tgz`).
    - [ ] Provision playbook migrated.
    - [ ] Destroy playbook migrated.
 
