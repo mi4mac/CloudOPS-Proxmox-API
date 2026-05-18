@@ -97,7 +97,7 @@
                 "params": {
                     "node": "{{ globalVars.proxmox_default_node | default('pve') }}",
                     "vmid": "{{ (vars.steps.Get_Next_VMID.data.data | default(vars.steps.Get_Next_VMID.data)) | int }}",
-                    "body_params": "{\"cores\": {{ vars.cpu_cores | int }}, \"memory\": {{ vars.memory_mb | int }}, \"net0\": \"virtio,bridge={{ vars.bridge }},tag={{ vars.vlan }}\", \"ipconfig0\": \"ip={{ vars.vm_ip_address }}/24,gw={{ vars.gateway }}\", \"scsi0\": \"{{ globalVars.proxmox_storage | default('local-lvm') }}:{{ vars.disk_gb | int }}\"}"
+                    "body_params": "{{ {'cores': vars.cpu_cores | int, 'memory': vars.memory_mb | int, 'net0': 'virtio,bridge=' ~ vars.bridge ~ ',tag=' ~ (vars.vlan | string), 'ipconfig0': 'ip=' ~ vars.vm_ip_address ~ '/24,gw=' ~ vars.gateway, 'scsi0': (globalVars.proxmox_storage | default('local-lvm')) ~ ':' ~ (vars.disk_gb | int), 'ciuser': vars.ci_user, 'cipassword': vars.root_password, 'nameserver': '1.1.1.1'} | tojson }}"
                 },
                 "version": "2.0.0",
                 "connector": "proxmox-api",
@@ -112,6 +112,31 @@
             "stepType": "/api/3/workflow_step_types/0bfed618-0316-11e7-93ae-92361f002671",
             "group": null,
             "uuid": "32375dc0-92c7-489e-b8db-48c22b8caf89"
+        },
+        {
+            "@type": "WorkflowStep",
+            "name": "Update Cloud-Init (API)",
+            "description": "Regenerate cloud-init ISO after config (qm cloudinit update).",
+            "arguments": {
+                "name": "API Connector Proxmox",
+                "config": "''",
+                "params": {
+                    "node": "{{ globalVars.proxmox_default_node | default('pve') }}",
+                    "vmid": "{{ (vars.steps.Get_Next_VMID.data.data | default(vars.steps.Get_Next_VMID.data)) | int }}"
+                },
+                "version": "2.0.0",
+                "connector": "proxmox-api",
+                "operation": "update_vm_cloudinit",
+                "operationTitle": "Update VM Cloud-Init",
+                "pickFromTenant": false,
+                "step_variables": []
+            },
+            "status": null,
+            "top": "1450",
+            "left": "485",
+            "stepType": "/api/3/workflow_step_types/0bfed618-0316-11e7-93ae-92361f002671",
+            "group": null,
+            "uuid": "e8f4a1c2-3b4d-5e6f-9a0b-1c2d3e4f5a6b"
         },
         {
             "@type": "WorkflowStep",
@@ -280,7 +305,7 @@
             "arguments": {
                 "config": "247a6087-d893-4cbd-b84a-29c18e7b0fc1",
                 "params": {
-                    "body": "<p>Dear {{vars.input.records[0].requestor.firstname}}</p>\n<p>Your VM Instance has been provisioned successfully</p>\n<ul>\n<li>Host: {{vars.vm_ip_address}}</li>\n<li>Username: root</li>\n<li>Password: {{vars.root_password}}</li>\n</ul>\n<p>&nbsp;</p>\n<p>Cloud Ops Team</p>",
+                    "body": "<p>Dear {{vars.input.records[0].requestor.firstname}}</p>\n<p>Your VM Instance has been provisioned successfully</p>\n<ul>\n<li>Host: {{vars.vm_ip_address}}</li>\n<li>Username: {{ vars.ci_user | default('root') }}</li>\n<li>Password: {{vars.root_password}}</li>\n</ul>\n<p>&nbsp;</p>\n<p>Cloud Ops Team</p>",
                     "subject": "VM Instance Request Provisioning Success",
                     "iri_list": "",
                     "cc_recipients": "{{globalVars.infrastructure_team_email}}",
@@ -389,7 +414,7 @@
             "name": "Set Provision Failure Result",
             "description": "Capture connector error into cmd_result so the VM record log shows the real failure.",
             "arguments": {
-                "cmd_result": "{%- if vars.available_disk is defined and vars.available_ram is defined and (vars.available_disk | int < vars.minimum_disk_gb | int or vars.available_ram | int < vars.minimum_ram_mb | int) -%}Insufficient Proxmox node resources: disk {{ vars.available_disk }} GB available (min {{ vars.minimum_disk_gb }} GB), RAM {{ vars.available_ram }} MB available (min {{ vars.minimum_ram_mb }} MB){%- else -%}{%- set ns = namespace(err=none) -%}{%- for s in ['Get_Next_VMID', 'Create Container (API)', 'Start Container (API)', 'Clone VM (API)', 'Config VM (API)', 'Start VM (API)'] -%}{%- if not ns.err and vars.steps[s] is defined -%}{%- set ns.err = vars.steps[s]['Error message'] | default(vars.steps[s].error, true) -%}{%- endif -%}{%- endfor -%}{{ ns.err | default(vars.cmd_result, true) | default('Provisioning failed', true) }}{%- endif -%}"
+                "cmd_result": "{%- if vars.available_disk is defined and vars.available_ram is defined and (vars.available_disk | int < vars.minimum_disk_gb | int or vars.available_ram | int < vars.minimum_ram_mb | int) -%}Insufficient Proxmox node resources: disk {{ vars.available_disk }} GB available (min {{ vars.minimum_disk_gb }} GB), RAM {{ vars.available_ram }} MB available (min {{ vars.minimum_ram_mb }} MB){%- else -%}{%- set ns = namespace(err=none) -%}{%- for s in ['Get_Next_VMID', 'Create Container (API)', 'Start Container (API)', 'Clone VM (API)', 'Config VM (API)', 'Update Cloud-Init (API)', 'Start VM (API)'] -%}{%- if not ns.err and vars.steps[s] is defined -%}{%- set ns.err = vars.steps[s]['Error message'] | default(vars.steps[s].error, true) -%}{%- endif -%}{%- endfor -%}{{ ns.err | default(vars.cmd_result, true) | default('Provisioning failed', true) }}{%- endif -%}"
             },
             "status": null,
             "top": "1920",
@@ -408,7 +433,8 @@
                 "gateway": "{{ globalVars.proxmox_gateway | default('10.255.255.1') }}",
                 "is_container": "{{ 'CT' in (vars.input.records[0].vMType.itemValue or '') }}",
                 "prov_ostemplate": "{%- if vars.input.records[0].vMType.itemValue == 'Debian13-CT' -%}{{ globalVars.proxmox_template_debian13_ct | default('local:vztmpl/debian-13-standard_13.1-2_amd64.tar.zst') }}{%- elif vars.input.records[0].vMType.itemValue == 'Ubuntu2204-CT' -%}{{ globalVars.proxmox_template_ubuntu2204_ct | default('local:vztmpl/ubuntu-22.04-standard_22.04-1_amd64.tar.zst') }}{%- elif vars.input.records[0].vMType.itemValue == 'RockyLinux9-CT' -%}{{ globalVars.proxmox_template_rockylinux9_ct | default('local:vztmpl/rockylinux-9-default_20240912_amd64.tar.xz') }}{%- else -%}{%- endif -%}",
-                "prov_template_vmid": "{{ globalVars.proxmox_template_rocky9_vm | default(9000) }}"
+                "prov_template_vmid": "{{ globalVars.proxmox_template_rocky9_vm | default(9000) }}",
+                "ci_user": "{{ globalVars.proxmox_ci_user | default('root') }}"
             },
             "status": null,
             "top": "840",
@@ -627,13 +653,23 @@
         },
         {
             "@type": "WorkflowRoute",
-            "name": "Config VM (API) -> Start VM (API)",
-            "targetStep": "/api/3/workflow_steps/c56a6e2a-1ea1-46fc-8bdb-b24b77ecff8b",
+            "name": "Config VM (API) -> Update Cloud-Init (API)",
+            "targetStep": "/api/3/workflow_steps/e8f4a1c2-3b4d-5e6f-9a0b-1c2d3e4f5a6b",
             "sourceStep": "/api/3/workflow_steps/32375dc0-92c7-489e-b8db-48c22b8caf89",
             "label": null,
             "isExecuted": false,
             "group": null,
             "uuid": "a1daead1-223e-4536-8650-09f8d1ca8b38"
+        },
+        {
+            "@type": "WorkflowRoute",
+            "name": "Update Cloud-Init (API) -> Start VM (API)",
+            "targetStep": "/api/3/workflow_steps/c56a6e2a-1ea1-46fc-8bdb-b24b77ecff8b",
+            "sourceStep": "/api/3/workflow_steps/e8f4a1c2-3b4d-5e6f-9a0b-1c2d3e4f5a6b",
+            "label": null,
+            "isExecuted": false,
+            "group": null,
+            "uuid": "f1a2b3c4-d5e6-4789-f012-34567890abcd"
         },
         {
             "@type": "WorkflowRoute",

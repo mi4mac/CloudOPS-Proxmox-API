@@ -133,6 +133,15 @@ If you want to override the built‑in defaults, create the following global var
 - **Encrypted:** ❌ No  
 - **Description:** Template path for the Rocky Linux 9 container. **Change this to the correct path of your Rocky Linux 9 CT template.**
 
+#### 2.13 Proxmox cloud-init login user (VM)
+
+- **Name:** `proxmox_ci_user`  
+- **Value:** `root`  
+- **Default Value:** `root`  
+- **Type:** String  
+- **Encrypted:** ❌ No  
+- **Description:** Linux account name for Proxmox **`ciuser`** / **`cipassword`** during VM provisioning. Must match what your cloud template supports (`root` or `cloud-user` for Rocky GenericCloud). The playbook maps the VM Instance **`rootPassword`** field to **`cipassword`**.
+
 ---
 
 ## Verification (optional but recommended)
@@ -141,7 +150,7 @@ After creating the variables (if you decide to use them):
 
 1. **Check the list**
    - Go to **Settings → Global Variables**.
-   - Make sure all 12 variables are present.
+   - Make sure all Proxmox-related variables you use are present (see sections 2.4–2.13; the pack ships defaults in `playbooks/globalVariables.json`).
 
 2. **Check encryption**
    - Open `proxmox_api_token`.
@@ -181,6 +190,7 @@ You can access the variables in playbooks like this:
 {{globalVars.proxmox_template_ubuntu2204_ct    | default('local:vztmpl/ubuntu-22.04-standard_22.04-1_amd64.tar.zst')}}
 {{globalVars.proxmox_template_debian13_ct      | default('local:vztmpl/debian-13-standard_13.1-2_amd64.tar.zst')}}
 {{globalVars.proxmox_template_rockylinux9_ct   | default('local:vztmpl/rockylinux-9-default_20240912_amd64.tar.xz')}}
+{{globalVars.proxmox_ci_user                  | default('root')}}
 ```
 
 ---

@@ -1,6 +1,6 @@
 {
   "name": "proxmox-api",
-  "version": "2.0.5",
+  "version": "2.0.6",
   "label": "API Connector Proxmox",
   "description": "Native FortiSOAR connector for the Proxmox VE API. Enables VM and container provisioning, configuration and deletion via the Proxmox REST API using token-based authentication. Supports arbitrary configurations per connector instance (host, port, token).",
   "publisher": "Fortinet / Custom",
@@ -160,6 +160,20 @@
         {"name": "node", "title": "Node", "type": "text", "required": true, "description": "Proxmox node name"},
         {"name": "vmid", "title": "VMID", "type": "integer", "required": true, "description": "VMID of the VM"},
         {"name": "body_params", "title": "Body Parameters", "type": "json", "required": true, "description": "Parameters as JSON object (for example ipconfig0, nameserver, ciuser)"}
+      ],
+      "output_schema": {}
+    },
+    {
+      "operation": "update_vm_cloudinit",
+      "title": "Update VM Cloud-Init",
+      "description": "Regenerates the cloud-init drive after config changes (qm cloudinit update)",
+      "category": "investigation",
+      "is_config_required": true,
+      "visible": true,
+      "enabled": true,
+      "parameters": [
+        {"name": "node", "title": "Node", "type": "text", "required": true, "description": "Proxmox node name"},
+        {"name": "vmid", "title": "VMID", "type": "integer", "required": true, "description": "VMID of the VM"}
       ],
       "output_schema": {}
     },

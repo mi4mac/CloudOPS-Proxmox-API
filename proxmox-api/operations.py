@@ -227,6 +227,16 @@ def config_vm(config, params):
     return _request(config, "PUT", path, data=data)
 
 
+def update_vm_cloudinit(config, params):
+    """PUT /api2/json/nodes/{node}/qemu/{vmid}/cloudinit - regenerate cloud-init drive (qm cloudinit update)."""
+    node = params.get("node") or config.get("node")
+    vmid = params.get("vmid")
+    if not node or vmid is None:
+        raise ConnectorError("node and vmid are required")
+    path = "nodes/{}/qemu/{}/cloudinit".format(node, vmid)
+    return _request(config, "PUT", path, data={})
+
+
 def start_vm(config, params):
     """POST /api2/json/nodes/{node}/qemu/{vmid}/status/start."""
     node = params.get("node") or config.get("node")
@@ -587,6 +597,7 @@ operations = {
     "create_container": create_container,
     "config_container": config_container,
     "config_vm": config_vm,
+    "update_vm_cloudinit": update_vm_cloudinit,
     "start_vm": start_vm,
     "stop_vm": stop_vm,
     "start_container": start_container,

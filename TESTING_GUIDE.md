@@ -16,14 +16,14 @@ This guide describes detailed test scenarios for the Proxmox API migration in Fo
    - [ ] Proxmox server is reachable.
    - [ ] API token works.
    - [ ] Templates available:
-     - [ ] Rocky9 VM template (VMID: 9000)
+     - [ ] Rocky9 VM template (VMID: 9000) with cloud-init drive (`ide2`)
      - [ ] Ubuntu2204 CT template
      - [ ] Debian13 CT template
      - [ ] RockyLinux9 CT template
 
 2. **FortiSOAR**
-   - [ ] Global variables created.
-   - [ ] HTTP connector configured.
+   - [ ] Global variables created (optional: `proxmox_template_rocky9_vm`, `proxmox_ci_user`).
+   - [ ] Proxmox API connector **2.0.6** or later installed (`API Connector Proxmox.tgz`).
    - [ ] Provision playbook migrated.
    - [ ] Destroy playbook migrated.
 
@@ -127,21 +127,24 @@ This guide describes detailed test scenarios for the Proxmox API migration in Fo
 
 1. Create a VM Instance request:
    - Name: `test-rocky9-vm-01`
-   - VM Type: `rocky9-vm`
+   - VM Type: `Rocky9-VM` (picklist value; case-sensitive in playbook)
    - CPU Cores: `2`
    - Memory: `2048 MB`
    - Disk: `20 GB`
    - IP Address: `10.255.255.133`
+   - Root Password: (e.g. `fortinet` or a test password)
 
-2. Run the Provision playbook.
+2. Run the Provision playbook (or full approval flow).
 
 3. **Expected results:**
+   - ✅ Playbook steps: Clone VM → Config VM → **Update Cloud-Init** → Start VM (Clone may take several minutes on full clone).
    - ✅ VM template is cloned.
-   - ✅ VM is configured.
+   - ✅ VM is configured (including `ciuser` / `cipassword`).
    - ✅ VM is started.
    - ✅ Proxmox ID is stored.
    - ✅ Status: `Active`.
    - ✅ Logs contain a success message.
+   - ✅ Success email lists host, username (`proxmox_ci_user`, default `root`), and password.
 
 4. **Verification on Proxmox:**
 
@@ -149,13 +152,17 @@ This guide describes detailed test scenarios for the Proxmox API migration in Fo
    qm list | grep test-rocky9-vm-01
    qm status <VMID>
    qm config <VMID>
+   qm cloudinit dump <VMID> user
    ```
+
+5. **Verification login:** Console or SSH as the configured user (`root` by default) with the **rootPassword** from the FortiSOAR record.
 
 **Success criteria:**
 
 - VM exists on Proxmox.
 - VM is running (`status: running`).
 - VM has the correct configuration (CPU, memory, disk, IP, network).
+- Login works with the password from the VM Instance record (if `proxmox_ci_user` matches the template).
 
 ---
 

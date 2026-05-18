@@ -10,10 +10,56 @@ This guide helps you troubleshoot issues with the Proxmox API integration in For
 
 When a provision or destroy run fails, the connector’s error message (for example a Proxmox API error) is written into the **Logs** field of the VM Instance record:
 
-- **Provision:** On error, **Set Provision Failure Result** runs (it reads the error from Get Next VMID, Create Container, Start Container, Clone VM, Config VM, or Start VM). Then **Update VM Instance Failure** writes `cmd_result` into the Logs. On success, **Set Provision Result (CT/VM)** goes directly to **Update VM Instance Success** (status “Active”, Proxmox ID and Logs).
+- **Provision:** On error, **Set Provision Failure Result** runs (it reads the error from Get Next VMID, Create Container, Start Container, Clone VM, Config VM, Update Cloud-Init, or Start VM). Then **Update VM Instance Failure** writes `cmd_result` into the Logs. On success, **Set Provision Result (CT/VM)** goes directly to **Update VM Instance Success** (status “Active”, Proxmox ID and Logs).
 - **Destroy:** Similarly, **Set Destroy Failure Result** (errors from Stop/Destroy VM or container) and **Update Failed Destroyed VM**.
 
 This way you can see the exact Proxmox or connector error directly on the VM Instance record (for example `API error 403: Permission check failed …`). In addition, the playbook execution view contains detailed step logs for each connector step.
+
+---
+
+## VM provisioning (Rocky9-VM) – playbook flow
+
+The **> Provision VM Instances** playbook uses connector **2.0.6** or later for QEMU VMs:
+
+| Step | Proxmox equivalent | Purpose |
+|------|-------------------|---------|
+| Clone VM (API) | `qm clone` (full) | Clone template; connector **waits** for the async clone task to finish |
+| Config VM (API) | `qm set` | CPU, RAM, disk, `net0`, `ipconfig0`, **`ciuser`**, **`cipassword`**, `nameserver` |
+| Update Cloud-Init (API) | `qm cloudinit update` | Regenerate cloud-init drive after config changes |
+| Start VM (API) | `qm start` | Boot the guest |
+
+**Global variables (optional):**
+
+- `proxmox_template_rocky9_vm` – template VMID (default `9000`)
+- `proxmox_ci_user` – cloud-init login user (default `root`; use `cloud-user` for some Rocky cloud images)
+- `proxmox_bridge`, `proxmox_vlan_tag`, `proxmox_gateway`, `proxmox_storage`, `proxmox_default_node`
+
+The VM Instance **`rootPassword`** field is sent to Proxmox as **`cipassword`** for **`ciuser`**. The success email uses the same username.
+
+**Template requirements:** QEMU template with a **cloud-init** drive (`ide2 … cloudinit`), virtio NIC, and a cloud image that supports cloud-init (see [Cloud-Init Support](https://pve.proxmox.com/wiki/Cloud-Init_Support)).
+
+### Lock timeout on Config VM (`lock-<vmid>.conf`)
+
+**Symptom:** `API error 500: can't lock file '/var/lock/qemu-server/lock-107.conf' - got timeout`
+
+**Cause:** **Config VM** ran while **Clone VM** was still holding the lock (common on connector versions before **2.0.5**).
+
+**Resolution:**
+
+1. Upgrade to connector **2.0.6** (clone waits for the UPID task).
+2. On Proxmox, wait for the clone task to finish (**Node → Tasks**) before retrying.
+3. If stuck with no active task: `qm unlock <vmid>` (use with care).
+
+### Login / password does not match email
+
+**Symptom:** VM starts but console/SSH password fails.
+
+**Checks:**
+
+1. Confirm **Update Cloud-Init (API)** ran successfully after **Config VM**.
+2. On Proxmox: `qm cloudinit dump <vmid> user`
+3. Align **`proxmox_ci_user`** with your template (e.g. `root` vs `cloud-user`).
+4. Ensure the record **`rootPassword`** is set before provisioning.
 
 ---
 

@@ -50,6 +50,11 @@
         "default_value": "9000"
     },
     {
+        "name": "proxmox_ci_user",
+        "value": "root",
+        "default_value": "root"
+    },
+    {
         "name": "proxmox_template_debian13_ct",
         "value": "local:vztmpl/debian-13-standard_13.1-2_amd64.tar.zst",
         "default_value": "local:vztmpl/debian-13-standard_13.1-2_amd64.tar.zst"
