@@ -286,7 +286,9 @@
             "arguments": {
                 "name": "Proxmox VE Hypervisor",
                 "config": "''",
-                "params": [],
+                "params": {
+                    "node": "{{ globalVars.proxmox_default_node | default('pve') }}"
+                },
                 "version": "2.0.0",
                 "connector": "proxmox-ve",
                 "operation": "get_node_status",
@@ -309,6 +311,7 @@
                 "name": "Proxmox VE Hypervisor",
                 "config": "''",
                 "params": {
+                    "node": "{{ globalVars.proxmox_default_node | default('pve') }}",
                     "storage": "{{ globalVars.proxmox_storage | default('local-lvm') }}"
                 },
                 "version": "2.0.0",

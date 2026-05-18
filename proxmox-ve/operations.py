@@ -17,6 +17,24 @@ logger = get_logger("Proxmox VE Hypervisor")
 BASE_PATH = "/api2/json"
 
 
+def _params_dict(params):
+    """FortiSOAR may send params as [] when no step inputs are defined."""
+    return params if isinstance(params, dict) else {}
+
+
+def _resolve_node(config, params):
+    """Node from step params or connector configuration (Default Node Name)."""
+    p = _params_dict(params)
+    node = p.get("node") or config.get("node") or ""
+    if isinstance(node, str):
+        node = node.strip()
+    if not node:
+        raise ConnectorError(
+            "node is required (pass node in the playbook step or set Default Node Name on the connector configuration)"
+        )
+    return node
+
+
 def _base_url(config):
     """Builds the base URL from the connector configuration."""
     host = config.get("host", "").strip().rstrip("/")
@@ -118,7 +136,7 @@ def get_next_vmid(config, params):
 
 def clone_vm(config, params):
     """POST /api2/json/nodes/{node}/qemu/{vmid}/clone. Waits for async clone task (UPID) before returning."""
-    node = params.get("node") or config.get("node")
+    node = _resolve_node(config, params)
     vmid = params.get("vmid")
     if not node or vmid is None:
         raise ConnectorError("node and vmid are required")
@@ -139,7 +157,7 @@ def clone_vm(config, params):
 
 def create_container(config, params):
     """POST /api2/json/nodes/{node}/lxc. After create, applies features (e.g. nesting=1) via config API so they take effect (like legacy scripts)."""
-    node = params.get("node") or config.get("node")
+    node = _resolve_node(config, params)
     vmid = params.get("vmid")
     if not node:
         raise ConnectorError("node is required")
@@ -187,7 +205,7 @@ def create_container(config, params):
 
 def config_container(config, params):
     """PUT /api2/json/nodes/{node}/lxc/{vmid}/config. Set features (e.g. nesting=1), unprivileged, etc."""
-    node = params.get("node") or config.get("node")
+    node = _resolve_node(config, params)
     vmid = params.get("vmid")
     body_params = params.get("body_params")
     if not node or vmid is None:
@@ -209,7 +227,7 @@ def config_container(config, params):
 
 def config_vm(config, params):
     """PUT /api2/json/nodes/{node}/qemu/{vmid}/config."""
-    node = params.get("node") or config.get("node")
+    node = _resolve_node(config, params)
     vmid = params.get("vmid")
     body_params = params.get("body_params")
     if not node or vmid is None:
@@ -310,7 +328,7 @@ def _validate_resize_size(size):
 
 def resize_vm_disk(config, params):
     """PUT /api2/json/nodes/{node}/qemu/{vmid}/resize (qm resize). Grows disk when target_gb exceeds current size."""
-    node = params.get("node") or config.get("node")
+    node = _resolve_node(config, params)
     vmid = params.get("vmid")
     disk = params.get("disk") or "scsi0"
     size = _validate_resize_size(params.get("size"))
@@ -387,7 +405,7 @@ def resize_vm_disk(config, params):
 
 def update_vm_cloudinit(config, params):
     """PUT /api2/json/nodes/{node}/qemu/{vmid}/cloudinit - regenerate cloud-init drive (qm cloudinit update)."""
-    node = params.get("node") or config.get("node")
+    node = _resolve_node(config, params)
     vmid = params.get("vmid")
     if not node or vmid is None:
         raise ConnectorError("node and vmid are required")
@@ -397,7 +415,7 @@ def update_vm_cloudinit(config, params):
 
 def start_vm(config, params):
     """POST /api2/json/nodes/{node}/qemu/{vmid}/status/start."""
-    node = params.get("node") or config.get("node")
+    node = _resolve_node(config, params)
     vmid = params.get("vmid")
     if not node or vmid is None:
         raise ConnectorError("node and vmid are required")
@@ -407,7 +425,7 @@ def start_vm(config, params):
 
 def stop_vm(config, params):
     """POST /api2/json/nodes/{node}/qemu/{vmid}/status/stop."""
-    node = params.get("node") or config.get("node")
+    node = _resolve_node(config, params)
     vmid = params.get("vmid")
     if not node or vmid is None:
         raise ConnectorError("node and vmid are required")
@@ -417,7 +435,7 @@ def stop_vm(config, params):
 
 def start_container(config, params):
     """POST /api2/json/nodes/{node}/lxc/{vmid}/status/start."""
-    node = params.get("node") or config.get("node")
+    node = _resolve_node(config, params)
     vmid = params.get("vmid")
     if not node or vmid is None:
         raise ConnectorError("node and vmid are required")
@@ -427,7 +445,7 @@ def start_container(config, params):
 
 def stop_container(config, params):
     """POST /api2/json/nodes/{node}/lxc/{vmid}/status/stop."""
-    node = params.get("node") or config.get("node")
+    node = _resolve_node(config, params)
     vmid = params.get("vmid")
     if not node or vmid is None:
         raise ConnectorError("node and vmid are required")
@@ -437,7 +455,7 @@ def stop_container(config, params):
 
 def destroy_vm(config, params):
     """DELETE /api2/json/nodes/{node}/qemu/{vmid}?purge=1."""
-    node = params.get("node") or config.get("node")
+    node = _resolve_node(config, params)
     vmid = params.get("vmid")
     if not node or vmid is None:
         raise ConnectorError("node and vmid are required")
@@ -462,7 +480,7 @@ def destroy_container(config, params):
     Proxmox requires containers to be stopped before destruction.
     Do not send a body with DELETE (Proxmox returns 501). Use query param for force.
     """
-    node = params.get("node") or config.get("node")
+    node = _resolve_node(config, params)
     vmid = params.get("vmid")
     if not node or vmid is None:
         raise ConnectorError("node and vmid are required")
@@ -599,7 +617,7 @@ def _format_interfaces_summary(cfg):
 
 def list_vms(config, params):
     """GET /api2/json/nodes/{node}/qemu - list all VMs on the node. Optionally include config (disks, net) per VM."""
-    node = params.get("node") or config.get("node")
+    node = _resolve_node(config, params)
     if not node:
         raise ConnectorError("node is required")
     path = "nodes/{}/qemu".format(node)
@@ -626,7 +644,7 @@ def list_vms(config, params):
 
 def list_containers(config, params):
     """GET /api2/json/nodes/{node}/lxc - list all containers on the node. Optionally include config (rootfs, mp, net) per container."""
-    node = params.get("node") or config.get("node")
+    node = _resolve_node(config, params)
     if not node:
         raise ConnectorError("node is required")
     path = "nodes/{}/lxc".format(node)
@@ -653,7 +671,7 @@ def list_containers(config, params):
 
 def get_vm_config(config, params):
     """GET /api2/json/nodes/{node}/qemu/{vmid}/config - VM config (disks, net, etc.)."""
-    node = params.get("node") or config.get("node")
+    node = _resolve_node(config, params)
     vmid = params.get("vmid")
     if not node or vmid is None:
         raise ConnectorError("node and vmid are required")
@@ -663,7 +681,7 @@ def get_vm_config(config, params):
 
 def get_container_config(config, params):
     """GET /api2/json/nodes/{node}/lxc/{vmid}/config - container config (rootfs, mp, net, etc.)."""
-    node = params.get("node") or config.get("node")
+    node = _resolve_node(config, params)
     vmid = params.get("vmid")
     if not node or vmid is None:
         raise ConnectorError("node and vmid are required")
@@ -673,7 +691,7 @@ def get_container_config(config, params):
 
 def get_task_status(config, params):
     """GET /api2/json/nodes/{node}/tasks/{upid}/status - status of a task (for example clone job)."""
-    node = params.get("node") or config.get("node")
+    node = _resolve_node(config, params)
     upid = params.get("upid")
     if not node or not upid:
         raise ConnectorError("node and upid are required")
@@ -699,7 +717,7 @@ def get_cluster_resources(config, params):
 
 def get_vm_status(config, params):
     """GET /api2/json/nodes/{node}/qemu/{vmid}/status/current - detailed status of a VM. Requires VM.Audit."""
-    node = params.get("node") or config.get("node")
+    node = _resolve_node(config, params)
     vmid = params.get("vmid")
     if not node or vmid is None:
         raise ConnectorError("node and vmid are required")
@@ -709,7 +727,7 @@ def get_vm_status(config, params):
 
 def get_container_status(config, params):
     """GET /api2/json/nodes/{node}/lxc/{vmid}/status/current - detailed status of a container. Requires VM.Audit."""
-    node = params.get("node") or config.get("node")
+    node = _resolve_node(config, params)
     vmid = params.get("vmid")
     if not node or vmid is None:
         raise ConnectorError("node and vmid are required")
@@ -719,26 +737,25 @@ def get_container_status(config, params):
 
 def get_node_status(config, params):
     """GET /api2/json/nodes/{node}/status - node resources (memory, CPU). Requires Sys.Audit."""
-    node = params.get("node") or config.get("node")
-    if not node:
-        raise ConnectorError("node is required")
+    node = _resolve_node(config, params)
     path = "nodes/{}/status".format(node)
     return _request(config, "GET", path)
 
 
 def get_storage_status(config, params):
     """GET /api2/json/nodes/{node}/storage/{storage}/status - storage status (disk). Requires Datastore.Audit."""
-    node = params.get("node") or config.get("node")
-    storage = params.get("storage")
-    if not node or not storage:
-        raise ConnectorError("node and storage are required")
+    p = _params_dict(params)
+    node = _resolve_node(config, params)
+    storage = p.get("storage")
+    if not storage:
+        raise ConnectorError("storage is required")
     path = "nodes/{}/storage/{}/status".format(node, storage)
     return _request(config, "GET", path)
 
 
 def get_storage_content(config, params):
     """GET /api2/json/nodes/{node}/storage/{storage}/content - storage content (templates, images). Requires Datastore.Audit."""
-    node = params.get("node") or config.get("node")
+    node = _resolve_node(config, params)
     storage = params.get("storage")
     if not node or not storage:
         raise ConnectorError("node and storage are required")

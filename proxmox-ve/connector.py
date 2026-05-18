@@ -17,7 +17,9 @@ class ProxmoxApiConnector(Connector):
             op = operations.get(operation_name)
             if not op:
                 raise ConnectorError("Unknown operation: {}".format(operation_name))
-            result = op(config, params or {})
+            if not isinstance(params, dict):
+                params = {}
+            result = op(config, params)
             return result
         except ConnectorError:
             raise
