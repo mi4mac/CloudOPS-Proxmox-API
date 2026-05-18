@@ -144,7 +144,7 @@
         {
             "@type": "WorkflowStep",
             "name": "Resize VM Disk API",
-            "description": "Runs only when Custom VM Disk Size = resize. Grows scsi0 to diskGB on the record (target total, grow-only). Requires connector 2.0.7+.",
+            "description": "Runs only when Custom VM Disk Size = resize. Grows scsi0 to diskGB on the record (target total, grow-only +delta G). Requires connector 2.0.8+.",
             "arguments": {
                 "name": "API Connector Proxmox",
                 "config": "''",

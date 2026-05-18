@@ -3,7 +3,7 @@
 !/solution-pack-proxmox-api-migration.zip
 !/CloudOPS_Solution_Pack.zip
 
-# Stray connector drops at repo root (use connectors/proxmox-api_2.0.7.tgz and API Connector Proxmox.tgz)
+# Stray connector drops at repo root (use connectors/proxmox-api_2.0.8.tgz and API Connector Proxmox.tgz)
 /proxmox-api_2.0.*.tgz
 
 # No npm project in this repo

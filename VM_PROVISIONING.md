@@ -6,7 +6,7 @@ See also: [PACK_README.md](PACK_README.md), [TROUBLESHOOTING_GUIDE.md](TROUBLESH
 
 ## Prerequisites
 
-- FortiSOAR with **API Connector Proxmox** **2.0.7+** (from `CloudOPS_Solution_Pack.zip` or `API Connector Proxmox.tgz`)
+- FortiSOAR with **API Connector Proxmox** **2.0.8+** (from `CloudOPS_Solution_Pack.zip` or `API Connector Proxmox.tgz`)
 - Proxmox user/role/token with clone, config, cloud-init, resize, and power permissions ([TOKEN_CAPABILITIES.md](TOKEN_CAPABILITIES.md))
 - Rocky 9 **QEMU template** with cloud-init drive (`ide2`), virtio NIC, `qemu-guest-agent` recommended
 - Globals (optional): `proxmox_template_rocky9_vm`, `proxmox_ci_user`, `proxmox_default_disk_gb`, `proxmox_vm_boot_disk`, network/storage globals in [SCHRITT_2_GLOBAL_VARIABLES.md](SCHRITT_2_GLOBAL_VARIABLES.md)
@@ -59,6 +59,7 @@ qm start <NEWID>
 |---------|-----|
 | No bootable disk | [TROUBLESHOOTING_GUIDE.md](TROUBLESHOOTING_GUIDE.md) — do not set `scsi0` on config |
 | Disk became 20 GB with diskGB 10 | Resize no longer runs for default 10; re-import latest pack |
+| Asked for 11 GB, got 22 GB | Connector **2.0.8+** only uses `+delta G` after reading real disk size; older builds could treat `11G` as **add** 11 GB |
 | `lock-*.conf` timeout | Clone not finished — use connector 2.0.5+ / wait on Proxmox tasks |
 | Login password wrong | `proxmox_ci_user`, **Update Cloud-Init API**, **rootPassword** on record |
 | Import UUID error | [TROUBLESHOOTING_GUIDE.md](TROUBLESHOOTING_GUIDE.md) |
@@ -70,6 +71,7 @@ qm start <NEWID>
 | 2.0.5+ | Clone waits for async task |
 | 2.0.6+ | `update_vm_cloudinit` |
 | 2.0.7+ | `resize_vm_disk` (grow-only `target_gb`) |
+| 2.0.8+ | Reliable current disk size (`qm config` + `maxdisk`); skips resize if unknown (no accidental double grow) |
 
 ## Testing
 

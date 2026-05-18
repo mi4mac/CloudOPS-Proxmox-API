@@ -65,7 +65,7 @@ The VM Instance **`rootPassword`** field is sent to Proxmox as **`cipassword`** 
 
 **Fix:** The playbook no longer sets `scsi0` on configure (only CPU, RAM, `net0`, `ipconfig0`, `ciuser`, `cipassword`, `nameserver`). Re-import the pack or edit **Config VM API** in FortiSOAR to match.
 
-**Disk size:** **Resize VM Disk API** runs only when **diskGB** on the record is not empty and not **10** (`proxmox_default_disk_gb`). Empty or **10** keeps the cloned template size (avoids unintended resize to 20 GB). Set **20**, **32**, etc. to grow. See [VM_PROVISIONING.md](VM_PROVISIONING.md). Containers still use **rootfs** at create. Connector **2.0.7+** required.
+**Disk size:** **Resize VM Disk API** runs only when **diskGB** on the record is not empty and not **10** (`proxmox_default_disk_gb`). Empty or **10** keeps the cloned template size (avoids unintended resize to 20 GB). Set **20**, **32**, etc. to grow. The connector grows with **`+delta G`** to the **target total** (e.g. 10 GB template + **11 GB** request → `+1G` → 11 GB). Use connector **2.0.8+** so current size is read from `qm config` or `maxdisk`; older **2.0.7** could apply **`11G`** as “add 11 GB” when size was missing → **22 GB** on an 11 GB disk. See [VM_PROVISIONING.md](VM_PROVISIONING.md). Containers still use **rootfs** at create.
 
 ### Lock timeout on Config VM (`lock-<vmid>.conf`)
 

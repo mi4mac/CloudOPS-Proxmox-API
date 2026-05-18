@@ -240,6 +240,24 @@ def _disk_size_gb_from_config_value(disk_value):
     return None
 
 
+def _current_vm_disk_size_gb(config, node, vmid, disk="scsi0"):
+    """Best-effort boot disk size in GB from qemu config, then status/current maxdisk."""
+    cfg_resp = get_vm_config(config, {"node": node, "vmid": vmid})
+    cfg = cfg_resp.get("data") if isinstance(cfg_resp.get("data"), dict) else cfg_resp
+    if isinstance(cfg, dict):
+        current_gb = _disk_size_gb_from_config_value(cfg.get(disk))
+        if current_gb is not None:
+            return current_gb
+    try:
+        status_resp = get_vm_status(config, {"node": node, "vmid": vmid})
+        data = status_resp.get("data") if isinstance(status_resp.get("data"), dict) else status_resp
+        if isinstance(data, dict) and data.get("maxdisk") is not None:
+            return int(data["maxdisk"]) / (1024.0 ** 3)
+    except ConnectorError as e:
+        logger.warning("Could not read VM %s status for disk size: %s", vmid, str(e))
+    return None
+
+
 def resize_vm_disk(config, params):
     """PUT /api2/json/nodes/{node}/qemu/{vmid}/resize (qm resize). Grows disk when target_gb exceeds current size."""
     node = params.get("node") or config.get("node")
@@ -254,27 +272,25 @@ def resize_vm_disk(config, params):
             target_gb = int(target_gb)
         except (TypeError, ValueError):
             raise ConnectorError("target_gb must be an integer")
-        cfg_resp = get_vm_config(config, {"node": node, "vmid": vmid})
-        cfg = cfg_resp.get("data") if isinstance(cfg_resp.get("data"), dict) else cfg_resp
-        disk_val = cfg.get(disk) if isinstance(cfg, dict) else None
-        current_gb = _disk_size_gb_from_config_value(disk_val)
+        current_gb = _current_vm_disk_size_gb(config, node, vmid, disk)
         if current_gb is None:
-            logger.warning(
-                "Could not read current %s size for VM %s; resizing to %sG",
-                disk,
-                vmid,
-                target_gb,
-            )
-            size = "{}G".format(target_gb)
-        elif target_gb <= int(math.floor(current_gb + 0.001)):
+            return {
+                "success": 1,
+                "skipped": True,
+                "message": (
+                    "Could not determine current {} size for VM {}; "
+                    "skipped resize to avoid adding {}G instead of growing to {}G total. "
+                    "Check qm config / status/current or resize manually."
+                ).format(disk, vmid, target_gb, target_gb),
+            }
+        if target_gb <= int(math.floor(current_gb + 0.001)):
             return {
                 "success": 1,
                 "skipped": True,
                 "message": "disk already {:.2f} GB (target {} GB)".format(current_gb, target_gb),
             }
-        else:
-            delta = max(1, int(math.ceil(target_gb - current_gb)))
-            size = "+{}G".format(delta)
+        delta = max(1, int(math.ceil(target_gb - current_gb)))
+        size = "+{}G".format(delta)
     if not size:
         raise ConnectorError("size or target_gb is required")
     path = "nodes/{}/qemu/{}/resize".format(node, vmid)
