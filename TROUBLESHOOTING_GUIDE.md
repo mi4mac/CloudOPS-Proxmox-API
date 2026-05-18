@@ -42,6 +42,7 @@ The **> Provision VM Instances** playbook uses connector **2.0.6** or later for 
 |------|-------------------|---------|
 | Clone VM (API) | `qm clone` (full) | Clone template; connector **waits** for the async clone task to finish |
 | Config VM (API) | `qm set` | CPU, RAM, `net0`, `ipconfig0`, **`ciuser`**, **`cipassword`**, `nameserver` (does **not** set `scsi0`) |
+| Custom VM Disk Size | (decision) | **Resize** only if **diskGB** is set and ≠ **proxmox_default_disk_gb** (10); else keep template disk |
 | Resize VM Disk (API) | `qm resize scsi0 …` | Grow boot disk to **diskGB** (grow-only; skips if template disk is already larger) |
 | Update Cloud-Init (API) | `qm cloudinit update` | Regenerate cloud-init drive after config changes |
 | Start VM (API) | `qm start` | Boot the guest |
@@ -64,7 +65,7 @@ The VM Instance **`rootPassword`** field is sent to Proxmox as **`cipassword`** 
 
 **Fix:** The playbook no longer sets `scsi0` on configure (only CPU, RAM, `net0`, `ipconfig0`, `ciuser`, `cipassword`, `nameserver`). Re-import the pack or edit **Config VM (API)** in FortiSOAR to match.
 
-**Disk size:** **Resize VM Disk (API)** grows `scsi0` (or `proxmox_vm_boot_disk`) to **diskGB** after configure. Containers still use **rootfs** at create time. Connector **2.0.7+** required for `resize_vm_disk`.
+**Disk size:** **Resize VM Disk (API)** runs only when **diskGB** on the record is not empty and not **10** (`proxmox_default_disk_gb`). Empty or **10** keeps the cloned template size (avoids unintended resize to 20 GB). Set **20**, **32**, etc. to grow. Containers still use **rootfs** at create. Connector **2.0.7+** required.
 
 ### Lock timeout on Config VM (`lock-<vmid>.conf`)
 

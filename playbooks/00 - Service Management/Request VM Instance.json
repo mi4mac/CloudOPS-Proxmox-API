@@ -544,7 +544,7 @@
                                 "label": "Disk (GB)",
                                 "title": "Text",
                                 "usable": true,
-                                "tooltip": "Disk size in GB. Rocky9-VM: target total boot disk after clone (grow-only; default 10). Containers: rootfs size at create.",
+                                "tooltip": "Disk size in GB. Rocky9-VM: empty or 10 = template disk; other values resize after clone. Containers: rootfs at create (default 10).",
                                 "dataType": "text",
                                 "formType": "text",
                                 "required": false,

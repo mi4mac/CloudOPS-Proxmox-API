@@ -60,6 +60,11 @@
         "default_value": "scsi0"
     },
     {
+        "name": "proxmox_default_disk_gb",
+        "value": "10",
+        "default_value": "10"
+    },
+    {
         "name": "proxmox_template_debian13_ct",
         "value": "local:vztmpl/debian-13-standard_13.1-2_amd64.tar.zst",
         "default_value": "local:vztmpl/debian-13-standard_13.1-2_amd64.tar.zst"
