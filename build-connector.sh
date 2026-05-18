@@ -39,8 +39,14 @@ find "$OUT_DIR" -maxdepth 1 -name 'proxmox-api_*.tgz' ! -name "proxmox-api_${VER
 
 RELEASE_DIR="releases"
 mkdir -p "$RELEASE_DIR"
-cp -f "$TGZ" "${RELEASE_DIR}/proxmox-api_${VERSION}_INSTALL_THIS.tgz"
+INSTALL_TGZ="${RELEASE_DIR}/proxmox-api_${VERSION}_INSTALL_THIS.tgz"
+PACK_ZIP="${RELEASE_DIR}/API_Connector_Proxmox_Pack.zip"
+cp -f "$TGZ" "$INSTALL_TGZ"
 shasum -a 256 "$TGZ" | tee "${RELEASE_DIR}/proxmox-api_${VERSION}.sha256"
-ls -la "$TGZ" "$ALIAS" "${RELEASE_DIR}/proxmox-api_${VERSION}_INSTALL_THIS.tgz"
+rm -f "$PACK_ZIP"
+zip -q -j "$PACK_ZIP" \
+    "$INSTALL_TGZ" \
+    "${RELEASE_DIR}/proxmox-api_${VERSION}.sha256"
+ls -la "$TGZ" "$ALIAS" "$INSTALL_TGZ" "$PACK_ZIP"
 echo "Connector ${VERSION} built ($(date -u +%Y-%m-%dT%H:%M:%SZ))."
-echo "FortiSOAR: upload ${RELEASE_DIR}/proxmox-api_${VERSION}_INSTALL_THIS.tgz (not the solution pack)."
+echo "FortiSOAR: upload ${INSTALL_TGZ} or unzip ${PACK_ZIP} and upload the .tgz inside."
