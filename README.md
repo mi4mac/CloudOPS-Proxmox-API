@@ -4,7 +4,7 @@ This repository contains a **FortiSOAR solution pack** and a **native Proxmox co
 
 ## What’s included
 
-- `proxmox-api/` – Python connector for the Proxmox VE API (`API Connector Proxmox.tgz` is built from this folder, current connector version **2.0.8**).
+- `proxmox-api/` – Python connector for the Proxmox VE API (`API Connector Proxmox.tgz` is built from this folder, current connector version **2.0.9**). Run `./build-connector.sh` or `./build-pack.sh` before import.
 - `**CloudOPS_Solution_Pack.zip`** – All-in-one importable solution pack (the only pack artifact in the repo). It includes:
   - **VM Instances**, **Network Interfaces**, and **Proxmox Inventory** modules.
   - Playbooks for request → approve → provision → destroy → cleanup, plus **> Refresh Proxmox Inventory**.

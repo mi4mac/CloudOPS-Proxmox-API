@@ -37,7 +37,7 @@ Installation
 ------------
 1. Import the connector package `API Connector Proxmox.tgz` in FortiSOAR.
 2. Import the Docker connector package `docker-2.0.1.tgz` in FortiSOAR.
-3. Configure the `proxmox-api` connector with the correct **host**, **port**, and **API token** (these values are read from the connector configuration, not from global variables). Use connector version **2.0.8** or later for VM provisioning (clone wait, disk resize with correct `+delta G`, cloud-init update, `ciuser`/`cipassword` on configure).
+3. Configure the `proxmox-api` connector with the correct **host**, **port**, and **API token** (these values are read from the connector configuration, not from global variables). Use connector version **2.0.9** or later for VM provisioning (clone wait, disk resize with correct `+delta G`, cloud-init update, `ciuser`/`cipassword` on configure).
 4. Configure the `docker` connector with the correct Docker Engine API endpoint (for example `http://192.168.222.223:2375`) and verify **Get Version** / **Get Info** succeed.
 5. Import this solution pack from **`CloudOPS_Solution_Pack.zip`** (all-in-one pack; the pack artifact is tracked in the repo).
 6. (Optional) If you want to override the built‑in defaults for node, storage, network, or templates, create/update the corresponding Proxmox global variables as described in `SCHRITT_2_GLOBAL_VARIABLES.md`.
@@ -46,8 +46,8 @@ Upgrade
 -------
 To upgrade from a previous version of this pack:
 
-1. **Connector**: Ensure you are using the latest `API Connector Proxmox.tgz` (version **2.0.8** or later) shipped with this repo. **2.0.8** fixes disk resize when `scsi0` has no `size=` (uses `maxdisk`, never ambiguous `11G` add). **2.0.7** adds **Resize VM Disk** (`resize_vm_disk`); **2.0.6** adds cloud-init update; **2.0.5+** waits for clone tasks. Inventory features require **2.0.4** or later.
-2. **Pack import**: Import the updated **`CloudOPS_Solution_Pack.zip`** into FortiSOAR. Existing data in `v_m_instances`, `network_interfaces` and `proxmox_inventory` is preserved.
+1. **Connector**: Import **`connectors/API Connector Proxmox.tgz`** (or `proxmox-api_2.0.9.tgz`) from Content Hub / connector upload — **not only** the solution pack. FortiSOAR skips connector code if the **version number is unchanged** (e.g. already **2.0.8**). Use **2.0.9+** or check **Delete all existing versions** when re-importing the same version. **2.0.8** fixes disk resize (`maxdisk`, `+delta G`); **2.0.7** adds **Resize VM Disk**; **2.0.5+** waits for clone tasks.
+2. **Pack import**: Import the updated **`CloudOPS_Solution_Pack.zip`** (export `date` is refreshed on each `./build-pack.sh`). Existing data in `v_m_instances`, `network_interfaces` and `proxmox_inventory` is preserved.
 3. **Global variables** (optional): After import, you can review the Proxmox global variables and adjust them if you want to override the defaults for node, storage, network, or templates. See `SCHRITT_2_GLOBAL_VARIABLES.md` for details.
 4. **Roles / permissions**: Make sure users who should manage VMs have access to the `VM Instances` and `Proxmox Inventory` modules and relevant playbooks.
 

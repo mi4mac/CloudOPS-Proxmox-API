@@ -21,6 +21,38 @@ if [[ ! -f "$PACK_DIR/info.json" ]]; then
     exit 1
 fi
 
+echo "Building connector archive..."
+./build-connector.sh
+
+VERSION="$(python3 -c "import json; print(json.load(open('proxmox-api/info.json'))['version'])")"
+echo "Syncing connectors into ${PACK_DIR}/connectors (proxmox-api ${VERSION})..."
+mkdir -p "${PACK_DIR}/connectors"
+cp -f connectors/data.json "${PACK_DIR}/connectors/"
+cp -f "connectors/proxmox-api_${VERSION}.tgz" "${PACK_DIR}/connectors/"
+find "${PACK_DIR}/connectors" -maxdepth 1 -name 'proxmox-api_*.tgz' ! -name "proxmox-api_${VERSION}.tgz" -delete 2>/dev/null || true
+
+PB_SRC='playbooks/00 - Service Management/> Provision VM Instances.json'
+PB_DST="${PACK_DIR}/${PB_SRC}"
+if [[ -f "$PB_SRC" && -f "$PB_DST" ]]; then
+    cp -f "$PB_SRC" "$PB_DST"
+fi
+
+echo "Updating solution pack export date..."
+python3 <<'PY'
+import json
+from datetime import datetime, timezone
+from pathlib import Path
+
+now = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%S+00:00")
+for path in (Path("CloudOPS-Prx-pack-install/info.json"), Path("info.json")):
+    if not path.is_file():
+        continue
+    data = json.loads(path.read_text(encoding="utf-8"))
+    data["date"] = now
+    path.write_text(json.dumps(data, indent=4, ensure_ascii=False) + "\n", encoding="utf-8")
+    print(f"  {path}: date={now}")
+PY
+
 echo "Building solution pack from $PACK_DIR..."
 rm -f "$OUTPUT_ZIP"
 zip -r "$OUTPUT_ZIP" "$PACK_DIR" -x "*.DS_Store" -x "__MACOSX/*"
